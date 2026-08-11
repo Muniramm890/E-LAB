@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Math E-Lab | RIE Ajmer</title>
+    <style>
+        /* CSS Styling */
+        :root {
+            --primary-color: #1e3a8a; /* Deep Academic Blue */
+            --secondary-color: #3b82f6; /* Bright Action Blue */
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+        }
+
+        /* Header / Navbar */
+        header { 
+            background: var(--primary-color); 
+            color: white; 
+            padding: 2rem; 
+            text-align: center; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+
+        header h1 { margin: 0; font-size: 2.5rem; font-weight: 700; letter-spacing: 0.5px; }
+        header p { margin: 10px 0 0; font-size: 1.1rem; opacity: 0.9; font-weight: 300; }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+        /* Filter Controls */
+        .filter-container { 
+            display: flex; 
+            justify-content: center; 
+            gap: 12px; 
+            flex-wrap: wrap; 
+            margin-bottom: 3rem; 
+        }
+
+        .filter-btn { 
+            padding: 10px 24px; 
+            border: 2px solid var(--secondary-color); 
+            background: transparent; 
+            color: var(--secondary-color); 
+            border-radius: 30px; 
+            font-size: 1rem;
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: all 0.3s ease; 
+        }
+
+        .filter-btn:hover, .filter-btn.active { 
+            background: var(--secondary-color); 
+            color: white; 
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Models Grid */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+            gap: 2rem; 
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 12px; 
+            padding: 1.8rem; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
+            border-top: 5px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1); 
+        }
+
+        .badge { 
+            align-self: flex-start;
+            padding: 5px 12px; 
+            background: #e5e7eb; 
+            color: var(--text-main); 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            margin-bottom: 1.2rem; 
+        }
+
+        .card h3 { margin: 0 0 12px 0; font-size: 1.4rem; color: var(--primary-color); }
+        .card p { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem; flex-grow: 1; }
+
+        .launch-btn { 
+            text-align: center;
+            padding: 12px; 
+            background: var(--secondary-color); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            transition: background 0.3s ease; 
+        }
+
+        .launch-btn:hover { background: var(--primary-color); }
+
+        /* Utility Class for JS Filtering */
+        .hidden { display: none !important; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Digital Math E-Lab</h1>
+        <p>PAC Program - RIE Ajmer | Interactive Mathematics Models</p>
+    </header>
+    
+    <main class="container">
+        
+        <!-- Filters (Class-wise) -->
+        <div class="filter-container" id="filterContainer">
+            <button class="filter-btn active" data-filter="all">All Classes</button>
+            <button class="filter-btn" data-filter="class-6">Class 6</button>
+            <button class="filter-btn" data-filter="class-8">Class 8</button>
+            <button class="filter-btn" data-filter="class-9">Class 9</button>
+            <button class="filter-btn" data-filter="class-10">Class 10</button>
+        </div>
+
+        <!-- Math Models Grid -->
+        <div class="grid" id="modelsGrid">
+            
+            <!-- Model 1: Class 10 -->
+            <article class="card class-10">
+                <span class="badge">Class 10</span>
+                <h3>Real Numbers Visualization</h3>
+                <p>Interactive tool to understand HCF, LCM, and the Fundamental Theorem of Arithmetic visually.</p>
+                <!-- Yahan model ke actual page ka link aayega -->
+                <a href="models/class10-real-numbers.html" class="launch-btn">Launch Model</a>
+            </article>
+
+            <!-- Model 2: Class 10 -->
+            <article class="card class-10">
+                <span class="badge">Class 10</span>
+                <h3>Algebraic Polynomials</h3>
+                <p>Dynamically plot points to visualize the geometrical meaning of zeros of linear and quadratic polynomials.</p>
+                <a href="models/class10-polynomials.html" class="launch-btn">Launch Model</a>
+            </article>
+
+            <!-- Model 3: Class 9 -->
+            <article class="card class-9">
+                <span class="badge">Class 9</span>
+                <h3>Coordinate Geometry Plane</h3>
+                <p>Interactive Cartesian plane to plot coordinates, understand axes, and identify quadrants.</p>
+                <a href="models/class9-coordinate.html" class="launch-btn">Launch Model</a>
+            </article>
+
+            <!-- Model 4: Class 8 -->
+            <article class="card class-8">
+                <span class="badge">Class 8</span>
+                <h3>Understanding Quadrilaterals</h3>
+                <p>Manipulate vertices and sides to explore the properties of parallelograms, rhombuses, and squares.</p>
+                <a href="models/class8-quadrilaterals.html" class="launch-btn">Launch Model</a>
+            </article>
+            
+            <!-- Model 5: Class 6 -->
+            <article class="card class-6">
+                <span class="badge">Class 6</span>
+                <h3>Fractions Builder</h3>
+                <p>Interactive pie charts and blocks to add, subtract, and compare basic fractions.</p>
+                <a href="models/class6-fractions.html" class="launch-btn">Launch Model</a>
+            </article>
+
+        </div>
+    </main>
+
+    <!-- JavaScript for Filtering -->
+    <script>
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.card');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                
+                // 1. Remove active styling from all buttons
+                filterButtons.forEach(b => b.classList.remove('active'));
+                
+                // 2. Add active styling to clicked button
+                btn.classList.add('active');
+
+                // 3. Get the filter category
+                const filterValue = btn.getAttribute('data-filter');
+
+                // 4. Show/Hide cards based on category
+                cards.forEach(card => {
+                    if (filterValue === 'all') {
+                        card.classList.remove('hidden');
+                    } else {
+                        if (card.classList.contains(filterValue)) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
