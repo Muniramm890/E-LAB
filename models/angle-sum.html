@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
+<title>Angle-Sum Explorer | Quadrilaterals Lab</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  .vtx{ cursor:grab; }
+  .vtx:active{ cursor:grabbing; }
+  .edge{ stroke:#eaf2fb; stroke-width:3; fill:rgba(47,117,172,0.18); }
+  .diag-line{ stroke:var(--brass); stroke-width:2; stroke-dasharray:6 5; }
+  .ang-label{ font-family:'IBM Plex Mono', monospace; font-weight:700; fill:#fff; paint-order:stroke; stroke:#0a2138; stroke-width:4; font-size:15px; }
+  .vlabel{ font-family:'IBM Plex Mono', monospace; font-size:13px; fill:var(--text-mid); }
+  .arc{ fill:rgba(201,138,62,0.35); stroke:var(--brass-lt); stroke-width:1.4; }
+</style>
+</head>
+<body class="blueprint-bg">
+  <header class="site-header">
+    <a href="../index.html" class="back-link">← E-Lab Home</a>
+    <div class="title-block">
+      <div><b>SHEET</b>1 / 6</div>
+      <div><b>REF</b>§4.2</div>
+      <div><b>TOPIC</b>Angle Sum</div>
+      <div><b>CLASS</b>8</div>
+    </div>
+  </header>
+
+  <div class="lab-shell" id="shell">
+    <button class="panel-toggle" id="panelToggle" title="Show/hide control panel">☰</button>
+    <aside class="panel">
+      <div class="panel-inner">
+        <p class="eyebrow">Quadrilateral Angle-Sum Theorem</p>
+        <h2 style="font-size:1.5rem;margin:.4rem 0 1rem;">Drag any vertex. The sum never changes.</h2>
+
+        <div class="status-badge yes" id="sumBadge">SUM = 360°</div>
+
+        <div class="section-label">Presets</div>
+        <div class="chip-row">
+          <button class="chip" data-preset="square">Square</button>
+          <button class="chip" data-preset="kite">Kite</button>
+          <button class="chip" data-preset="trap">Trapezium</button>
+          <button class="chip" data-preset="dart">Concave dart</button>
+          <button class="chip" data-preset="random">Randomise</button>
+        </div>
+
+        <div class="section-label">Live angles</div>
+        <div class="readout" id="angleReadout"></div>
+
+        <div class="section-label">Proof</div>
+        <div class="toggle-row">
+          <span>Show diagonal-split proof</span>
+          <label class="switch"><input type="checkbox" id="proofToggle"><span class="slider"></span></label>
+        </div>
+        <div class="note-box" id="proofNote">
+          Turn this on to split the quadrilateral into two triangles along a diagonal — exactly like <b>SOME</b> in the textbook. Each triangle's angles sum to 180°, and together they make the quadrilateral's four angles, so 180° + 180° = 360°.
+        </div>
+
+        <div class="section-label">Why it's always 360°</div>
+        <div class="proof-box">
+          Any simple quadrilateral can be split by one diagonal into <b>two triangles</b>. Each triangle's interior angles sum to 180° (a fixed fact). Adding both triangles counts every corner of the quadrilateral exactly once, so the total is 180° + 180° = <b>360°</b> — no matter how the vertices are dragged, as long as the sides don't cross.
+        </div>
+      </div>
+    </aside>
+
+    <main class="stage">
+      <div class="stage-frame">
+        <svg id="svg" viewBox="0 0 640 460" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="legend">
+          <span><i style="background:var(--brass-lt)"></i>Vertices — drag to reshape</span>
+          <span><i style="background:#2f75ac"></i>Interior region</span>
+          <span><i style="background:var(--brass)"></i>Diagonal split (proof mode)</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script>
+const svgns = "http://www.w3.org/2000/svg";
+const svg = document.getElementById('svg');
+const VB = {w:640,h:460};
+
+let pts = [ {x:150,y:360}, {x:190,y:110}, {x:480,y:90}, {x:500,y:340} ]; // A B C D
+let labels = ['A','B','C','D'];
+let proofOn = false;
+let dragIndex = -1;
+
+function toSvgPoint(evt){
+  const pt = svg.createSVGPoint();
+  pt.x = evt.clientX; pt.y = evt.clientY;
+  const ctm = svg.getScreenCTM().inverse();
+  const loc = pt.matrixTransform(ctm);
+  return {x:loc.x, y:loc.y};
+}
+
+function computeAngles(P){
+  const n = P.length;
+  const turns = [];
+  for(let i=0;i<n;i++){
+    const prev = P[(i-1+n)%n], curr = P[i], next = P[(i+1)%n];
+    const vin = {x:curr.x-prev.x, y:curr.y-prev.y};
+    const vout = {x:next.x-curr.x, y:next.y-curr.y};
+    const cross = vin.x*vout.y - vin.y*vout.x;
+    const dot = vin.x*vout.x + vin.y*vout.y;
+    turns.push(Math.atan2(cross,dot));
+  }
+  const total = turns.reduce((a,b)=>a+b,0);
+  const sign = total>=0?1:-1;
+  return turns.map(t => (Math.PI - sign*t) * 180/Math.PI);
+}
+
+function angleArcPath(P, i, radius){
+  const n = P.length;
+  const prev = P[(i-1+n)%n], curr = P[i], next = P[(i+1)%n];
+  let a1 = Math.atan2(prev.y-curr.y, prev.x-curr.x);
+  let a2 = Math.atan2(next.y-curr.y, next.x-curr.x);
+  // sweep the interior side: choose the arc that goes the "short way" through interior
+  let diff = a2 - a1;
+  while(diff <= -Math.PI) diff += 2*Math.PI;
+  while(diff > Math.PI) diff -= 2*Math.PI;
+  const sweepFlag = diff > 0 ? 1 : 0;
+  const large = Math.abs(diff) > Math.PI ? 1 : 0;
+  const p1 = {x:curr.x + radius*Math.cos(a1), y:curr.y + radius*Math.sin(a1)};
+  const p2 = {x:curr.x + radius*Math.cos(a2), y:curr.y + radius*Math.sin(a2)};
+  return `M ${curr.x} ${curr.y} L ${p1.x} ${p1.y} A ${radius} ${radius} 0 ${large} ${sweepFlag} ${p2.x} ${p2.y} Z`;
+}
+
+function render(){
+  svg.innerHTML = '';
+  const angles = computeAngles(pts);
+  const sumEl = document.getElementById('sumBadge');
+  const sum = angles.reduce((a,b)=>a+b,0);
+  sumEl.textContent = `SUM = ${sum.toFixed(1)}°`;
+
+  // fill polygon
+  const poly = document.createElementNS(svgns,'polygon');
+  poly.setAttribute('points', pts.map(p=>`${p.x},${p.y}`).join(' '));
+  poly.setAttribute('class','edge');
+  svg.appendChild(poly);
+
+  // proof diagonal
+  if(proofOn){
+    const d = document.createElementNS(svgns,'line');
+    d.setAttribute('x1',pts[0].x); d.setAttribute('y1',pts[0].y);
+    d.setAttribute('x2',pts[2].x); d.setAttribute('y2',pts[2].y);
+    d.setAttribute('class','diag-line');
+    svg.appendChild(d);
+  }
+
+  // angle arcs + labels
+  angles.forEach((ang,i)=>{
+    const arcPath = document.createElementNS(svgns,'path');
+    arcPath.setAttribute('d', angleArcPath(pts, i, 34));
+    arcPath.setAttribute('class','arc');
+    svg.appendChild(arcPath);
+
+    const t = document.createElementNS(svgns,'text');
+    const cx = pts[i].x, cy = pts[i].y;
+    // push label outward from centroid
+    const centroid = pts.reduce((a,p)=>({x:a.x+p.x/4,y:a.y+p.y/4}),{x:0,y:0});
+    const dx = cx-centroid.x, dy = cy-centroid.y;
+    const len = Math.hypot(dx,dy)||1;
+    t.setAttribute('x', cx + dx/len*54);
+    t.setAttribute('y', cy + dy/len*54);
+    t.setAttribute('class','ang-label');
+    t.setAttribute('text-anchor','middle');
+    t.textContent = ang.toFixed(0)+'°';
+    svg.appendChild(t);
+  });
+
+  // vertex handles + names
+  pts.forEach((p,i)=>{
+    const vl = document.createElementNS(svgns,'text');
+    vl.setAttribute('x', p.x); vl.setAttribute('y', p.y - 22);
+    vl.setAttribute('class','vlabel'); vl.setAttribute('text-anchor','middle');
+    vl.textContent = labels[i];
+    svg.appendChild(vl);
+
+    const c = document.createElementNS(svgns,'circle');
+    c.setAttribute('cx',p.x); c.setAttribute('cy',p.y); c.setAttribute('r',10);
+    c.setAttribute('fill', '#e3ac6a'); c.setAttribute('stroke','#0a2138'); c.setAttribute('stroke-width',2);
+    c.setAttribute('class','vtx');
+    c.dataset.index = i;
+    svg.appendChild(c);
+  });
+
+  // angle readout panel
+  const rd = document.getElementById('angleReadout');
+  rd.innerHTML = angles.map((a,i)=>`<div class="readout-row"><span>∠${labels[i]}</span><b>${a.toFixed(1)}°</b></div>`).join('') +
+    `<div class="readout-row" style="border-top:1px solid var(--paper-line);margin-top:4px;padding-top:8px;"><span>Total</span><b>${sum.toFixed(1)}°</b></div>`;
+}
+
+svg.addEventListener('pointerdown', e=>{
+  if(e.target.classList.contains('vtx')){
+    dragIndex = parseInt(e.target.dataset.index);
+    svg.setPointerCapture(e.pointerId);
+  }
+});
+svg.addEventListener('pointermove', e=>{
+  if(dragIndex<0) return;
+  const p = toSvgPoint(e);
+  p.x = Math.max(20, Math.min(VB.w-20, p.x));
+  p.y = Math.max(20, Math.min(VB.h-20, p.y));
+  pts[dragIndex] = p;
+  render();
+});
+function endDrag(e){ dragIndex = -1; }
+svg.addEventListener('pointerup', endDrag);
+svg.addEventListener('pointercancel', endDrag);
+svg.addEventListener('pointerleave', ()=>{ if(dragIndex<0) return; });
+
+document.getElementById('proofToggle').addEventListener('change', e=>{
+  proofOn = e.target.checked;
+  render();
+});
+
+const presets = {
+  square: [{x:200,y:340},{x:200,y:120},{x:420,y:120},{x:420,y:340}],
+  kite: [{x:320,y:400},{x:170,y:220},{x:320,y:90},{x:460,y:220}],
+  trap: [{x:150,y:360},{x:230,y:100},{x:430,y:100},{x:520,y:360}],
+  dart: [{x:150,y:360},{x:320,y:230},{x:480,y:360},{x:320,y:90}],
+};
+document.querySelectorAll('[data-preset]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const key = btn.dataset.preset;
+    if(key==='random'){
+      pts = [
+        {x:120+Math.random()*80, y:300+Math.random()*80},
+        {x:150+Math.random()*80, y:90+Math.random()*80},
+        {x:430+Math.random()*80, y:70+Math.random()*80},
+        {x:460+Math.random()*80, y:300+Math.random()*80},
+      ];
+    } else {
+      pts = presets[key].map(p=>({...p}));
+    }
+    render();
+  });
+});
+
+// panel toggle
+const shell = document.getElementById('shell');
+document.getElementById('panelToggle').addEventListener('click', ()=>{
+  shell.classList.toggle('panel-collapsed');
+});
+
+render();
+</script>
+</body>
+</html>
