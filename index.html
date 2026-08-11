@@ -1,237 +1,353 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5">
-<title>Quadrilaterals Drafting Lab | RIE Ajmer Digital Math E-Lab</title>
-<link rel="stylesheet" href="style.css">
-<style>
-  body{ overflow-x:hidden; }
-  .hero{
-    padding: 3.4rem 1.6rem 2.6rem;
-    position:relative;
-    overflow:hidden;
-  }
-  .hero-inner{ max-width:1100px; margin:0 auto; display:grid; grid-template-columns: 1.15fr 0.85fr; gap:2.5rem; align-items:center; }
-  @media (max-width:900px){ .hero-inner{ grid-template-columns:1fr; } }
-  .hero h2{ font-size:clamp(2rem, 5vw, 3.1rem); line-height:1.05; color:var(--text-hi); margin:0.7rem 0 1rem; }
-  .hero h2 em{ font-style:normal; color:var(--brass-lt); }
-  .hero p.lede{ font-size:1.05rem; color:var(--text-mid); line-height:1.65; max-width:52ch; }
-  .hero-cta{ display:flex; gap:12px; margin-top:1.6rem; flex-wrap:wrap; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Math E-Lab | RIE Ajmer PAC Program</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a192f;
+            --card-bg: rgba(16, 37, 66, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-gold: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(56, 189, 248, 0.2);
+            --radius: 16px;
+        }
 
-  /* Signature: an animated carpenter's-diagonal rectangle construction */
-  .rig{ display:flex; align-items:center; justify-content:center; }
-  .rig svg{ width:100%; max-width:380px; }
-  .diag{ stroke:var(--brass-lt); stroke-width:2.4; }
-  .quad-outline{ fill:none; stroke:var(--text-hi); stroke-width:2.6; stroke-linejoin:round; }
-  @keyframes sweep{ 0%,18%{ --a:20deg; } 50%,68%{ --a:90deg; } 100%{ --a:20deg; } }
-  .pivot{ animation: rotpair 7s ease-in-out infinite; transform-origin:190px 190px; }
-  @keyframes rotpair{ 0%,15%{ transform:rotate(20deg);} 50%,65%{ transform:rotate(90deg);} 100%{ transform:rotate(20deg);} }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%);
+        }
 
-  .stats-strip{
-    max-width:1100px; margin:0 auto; padding:0 1.6rem 1rem;
-    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
-    background:var(--grid-line-strong); border:1px solid var(--grid-line-strong); border-radius:12px; overflow:hidden;
-  }
-  .stats-strip div{ background:var(--blueprint-dk); padding:1rem 1.1rem; }
-  .stats-strip b{ display:block; font-family:'Fraunces',serif; font-size:1.6rem; color:var(--brass-lt); }
-  .stats-strip span{ font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:.08em; }
-  @media (max-width:700px){ .stats-strip{ grid-template-columns:repeat(2,1fr);} }
+        /* Header */
+        header {
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-glow);
+            background: rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(12px);
+        }
 
-  .container{ max-width:1100px; margin:0 auto; padding:2.4rem 1.6rem 1rem; }
+        .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
 
-  .filter-container{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:2rem; }
+        header h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            color: var(--text-main);
+            font-weight: 700;
+        }
 
-  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(310px,1fr)); gap:1.4rem; }
+        header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin-top: 0.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-  .card{
-    background:var(--paper); color:var(--ink); border-radius:12px; overflow:hidden;
-    box-shadow:var(--shadow); display:flex; flex-direction:column; text-decoration:none;
-    border:1px solid rgba(0,0,0,0.08);
-    transition:.25s;
-  }
-  .card:hover{ transform:translateY(-6px); box-shadow:0 20px 40px rgba(0,0,0,0.4); }
-  .card-fig{
-    height:150px; background:var(--paper-dim); position:relative; overflow:hidden;
-    border-bottom:1px solid var(--paper-line);
-  }
-  .card-fig svg{ width:100%; height:100%; }
-  .card-num{ position:absolute; top:10px; left:10px; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; background:var(--ink); color:var(--brass-lt); padding:3px 9px; border-radius:20px; letter-spacing:.05em; }
-  .card-body{ padding:1.3rem 1.3rem 1.5rem; display:flex; flex-direction:column; flex-grow:1; }
-  .badge{ align-self:flex-start; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:.08em; padding:4px 10px; background:var(--blueprint); color:var(--text-hi); border-radius:20px; margin-bottom:0.7rem; }
-  .card h3{ font-size:1.22rem; margin-bottom:0.5rem; color:var(--ink); }
-  .card p{ font-size:0.9rem; color:#5a5241; line-height:1.55; margin:0 0 1.2rem; flex-grow:1; }
-  .launch-btn{ text-align:center; padding:11px; background:var(--brass-dk); color:white; border-radius:8px; font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:0.85rem; letter-spacing:.03em; }
-  .card:hover .launch-btn{ background:var(--rust); }
-  .hidden{ display:none !important; }
+        /* Controls Section */
+        .controls-section {
+            max-width: 1200px;
+            margin: 2rem auto 1rem;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            align-items: center;
+        }
 
-  .chapter-map{ margin:3rem auto 1rem; }
-  .chapter-map h3{ color:var(--text-hi); font-size:1.3rem; margin-bottom:1rem;}
-  .venn-strip{ display:flex; gap:.6rem; flex-wrap:wrap; font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--text-mid); }
-  .venn-strip span{ border:1px solid var(--grid-line-strong); padding:5px 12px; border-radius:20px; }
-</style>
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid var(--border-glow);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .filter-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .pill {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--border-glow);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+        }
+
+        .pill:hover, .pill.active {
+            background: var(--accent-blue);
+            color: var(--bg-dark);
+            border-color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        /* Grid Layout */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem 1.5rem 4rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Card Component */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-gold));
+            opacity: 0.8;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .class-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-weight: 600;
+        }
+
+        .ch-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .card h3 {
+            font-size: 1.35rem;
+            color: var(--text-main);
+            margin-bottom: 0.8rem;
+            font-family: 'Fraunces', serif;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.8rem;
+            flex-grow: 1;
+        }
+
+        .launch-btn {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--accent-blue), #0284c7);
+            color: #0f172a;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+        }
+
+        .launch-btn:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .hidden { display: none !important; }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-glow);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            background: rgba(10, 25, 47, 0.9);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        footer strong { color: var(--accent-gold); }
+    </style>
 </head>
-<body class="blueprint-bg">
+<body>
 
-  <header class="site-header">
-    <div class="brand">
-      <div class="brand-mark">Q</div>
-      <div>
+    <header>
+        <div class="eyebrow">PAC PROGRAMME · RIE AJMER</div>
         <h1>Digital Math E-Lab</h1>
-        <p>PAC PROGRAMME · RIE AJMER · GANITA PRAKASH, GRADE 8</p>
-      </div>
-    </div>
-    <div class="title-block">
-      <div><b>CHAPTER</b>04</div>
-      <div><b>SUBJECT</b>Quadrilaterals</div>
-      <div><b>SHEETS</b>6</div>
-      <div><b>SCALE</b>Responsive</div>
-    </div>
-  </header>
+        <p>Interactive conceptual simulations and drafting models for NCERT Mathematics.</p>
+    </header>
 
-  <section class="hero">
-    <div class="hero-inner">
-      <div>
-        <p class="eyebrow">Chapter 04 · Interactive Construction Lab</p>
-        <h2>Build every <em>quadrilateral</em><br>the way a carpenter would.</h2>
-        <p class="lede">Six hands-on drafting boards covering rectangles &amp; squares, the angle-sum rule, parallelograms, rhombuses, kites &amp; trapeziums, and the full family tree — each with live geometry, draggable construction, and step-by-step congruence proofs pulled straight from the NCERT chapter.</p>
-        <div class="hero-cta">
-          <a href="#models" class="btn solid">Open the models ↓</a>
-          <a href="models/classifier.html" class="btn ghost">Try the Which-Quad? game</a>
+    <div class="controls-section">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search topics (e.g. Quadrilaterals, Polynomials)..." oninput="filterModels()">
         </div>
-      </div>
-      <div class="rig">
-        <svg viewBox="0 0 380 380">
-          <rect x="8" y="8" width="364" height="364" rx="14" fill="none" stroke="var(--grid-line-strong)"/>
-          <g class="pivot">
-            <line x1="90" y1="190" x2="290" y2="190" class="diag"/>
-          </g>
-          <line x1="190" y1="90" x2="190" y2="290" class="diag" opacity="0.55" stroke-dasharray="5 5"/>
-          <circle cx="190" cy="190" r="4" fill="var(--brass-lt)"/>
-          <polygon class="quad-outline" points="290,190 190,290 90,190 190,90">
-            <animate attributeName="points"
-              values="290,190 190,290 90,190 190,90;
-                      190,90 290,190 190,290 90,190;
-                      290,190 190,290 90,190 190,90"
-              dur="7s" repeatCount="indefinite"/>
-          </polygon>
-          <text x="190" y="345" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" fill="var(--text-dim)" letter-spacing="1">EQUAL · BISECTING · ROTATING</text>
-        </svg>
-      </div>
-    </div>
-  </section>
-
-  <div class="stats-strip">
-    <div><b>360°</b><span>Angle sum, every quad</span></div>
-    <div><b>6</b><span>Special quadrilaterals</span></div>
-    <div><b>10</b><span>Book deductions, live</span></div>
-    <div><b>1</b><span>Family, one Venn diagram</span></div>
-  </div>
-
-  <main class="container" id="models">
-    <div class="filter-container" id="filterContainer">
-      <button class="filter-btn btn ghost chip active" data-filter="all">All Sheets</button>
-      <button class="filter-btn btn ghost chip" data-filter="angles">Angle Sum</button>
-      <button class="filter-btn btn ghost chip" data-filter="rect">Rectangle &amp; Square</button>
-      <button class="filter-btn btn ghost chip" data-filter="para">Parallelogram</button>
-      <button class="filter-btn btn ghost chip" data-filter="rhombus">Rhombus</button>
-      <button class="filter-btn btn ghost chip" data-filter="kite">Kite &amp; Trapezium</button>
-      <button class="filter-btn btn ghost chip" data-filter="family">Family Tree</button>
+        <div class="filter-pills" id="filterPills">
+            <button class="pill active" onclick="filterClass('all', this)">All Classes</button>
+            <button class="pill" onclick="filterClass('class-6', this)">Class 6</button>
+            <button class="pill" onclick="filterClass('class-8', this)">Class 8</button>
+            <button class="pill" onclick="filterClass('class-9', this)">Class 9</button>
+            <button class="pill" onclick="filterClass('class-10', this)">Class 10</button>
+        </div>
     </div>
 
-    <div class="grid" id="modelsGrid">
+    <main class="main-container">
+        <div class="grid" id="modelsGrid">
 
-      <a href="models/angle-sum.html" class="card angles">
-        <div class="card-fig"><span class="card-num">4.2</span>
-          <svg viewBox="0 0 300 150"><polygon points="60,120 90,35 220,25 250,110" fill="none" stroke="#0c3559" stroke-width="4"/>
-          <circle cx="60" cy="120" r="4" fill="#c98a3e"/><circle cx="90" cy="35" r="4" fill="#c98a3e"/><circle cx="220" cy="25" r="4" fill="#c98a3e"/><circle cx="250" cy="110" r="4" fill="#c98a3e"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="badge">§4.2 · All Classes</span>
-          <h3>Angle-Sum Explorer</h3>
-          <p>Drag all four vertices of any quadrilateral (even concave!) and watch the four interior angles always add to exactly 360° — with the diagonal-split proof shown live.</p>
-          <span class="launch-btn">Launch Model →</span>
-        </div>
-      </a>
+            <!-- Class 8: Quadrilaterals -->
+            <article class="card class-8" data-title="quadrilaterals angle sum parallelogram rhombus kite rectangle square">
+                <div class="card-header">
+                    <span class="class-badge">Class 8</span>
+                    <span class="ch-num">Chapter 04</span>
+                </div>
+                <h3>Quadrilaterals Drafting Lab</h3>
+                <p>Interactive drafting board covering Angle-Sum Property, Parallelograms, Rhombus, Kites, and Rectangles with live geometry proofs.</p>
+                <a href="models/class8-quadrilaterals.html" class="launch-btn">Launch Module →</a>
+            </article>
 
-      <a href="models/rectangle-square.html" class="card rect">
-        <div class="card-fig"><span class="card-num">4.1</span>
-          <svg viewBox="0 0 300 150"><rect x="70" y="30" width="160" height="90" fill="none" stroke="#0c3559" stroke-width="4"/><line x1="70" y1="30" x2="230" y2="120" stroke="#c98a3e" stroke-width="3"/><line x1="230" y1="30" x2="70" y2="120" stroke="#c98a3e" stroke-width="3"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="badge">§4.1 · Class 8</span>
-          <h3>Carpenter's Problem: Rectangle &amp; Square Lab</h3>
-          <p>Recreate the wood-strip carpenter's construction — drag the diagonals' length, bisection and angle to see exactly when the shape locks into a rectangle or a square.</p>
-          <span class="launch-btn">Launch Model →</span>
-        </div>
-      </a>
+            <!-- Class 10: Polynomials -->
+            <article class="card class-10" data-title="polynomials quadratic zeroes graph parabola parabola">
+                <div class="card-header">
+                    <span class="class-badge">Class 10</span>
+                    <span class="ch-num">Chapter 02</span>
+                </div>
+                <h3>Polynomial Zeroes Visualizer</h3>
+                <p>Dynamically plot quadratic parabolas and visualize how roots correspond to geometric X-axis intercepts in real time.</p>
+                <a href="models/class10-polynomials.html" class="launch-btn">Launch Module →</a>
+            </article>
 
-      <a href="models/parallelogram.html" class="card para">
-        <div class="card-fig"><span class="card-num">4.3</span>
-          <svg viewBox="0 0 300 150"><polygon points="60,120 100,30 240,30 200,120" fill="none" stroke="#0c3559" stroke-width="4"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="badge">§4.3 · Class 8</span>
-          <h3>Parallelogram Construction Lab</h3>
-          <p>Set two adjacent sides and the included angle, then watch the parallel-line construction complete itself — with live adjacent/opposite angle relationships.</p>
-          <span class="launch-btn">Launch Model →</span>
-        </div>
-      </a>
+            <!-- Class 9: Coordinate Geometry -->
+            <article class="card class-9" data-title="coordinate geometry cartesian plane quadrants plotting">
+                <div class="card-header">
+                    <span class="class-badge">Class 9</span>
+                    <span class="ch-num">Chapter 03</span>
+                </div>
+                <h3>Cartesian Coordinate Explorer</h3>
+                <p>Interactive 2D Cartesian plane for plotting points, identifying quadrants, and understanding distance metrics.</p>
+                <a href="#" class="launch-btn" style="opacity: 0.6; pointer-events: none;">Coming Soon</a>
+            </article>
 
-      <a href="models/rhombus.html" class="card rhombus">
-        <div class="card-fig"><span class="card-num">4.4</span>
-          <svg viewBox="0 0 300 150"><polygon points="150,15 220,75 150,135 80,75" fill="none" stroke="#0c3559" stroke-width="4"/><line x1="150" y1="15" x2="150" y2="135" stroke="#c98a3e" stroke-width="2" stroke-dasharray="4 4"/><line x1="80" y1="75" x2="220" y2="75" stroke="#c98a3e" stroke-width="2" stroke-dasharray="4 4"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="badge">§4.4 · Class 8</span>
-          <h3>Rhombus &amp; Kite Diagonal Lab</h3>
-          <p>Slide the two perpendicular diagonals off-centre to morph continuously between a kite and a true rhombus — see exactly which condition makes the difference.</p>
-          <span class="launch-btn">Launch Model →</span>
-        </div>
-      </a>
+            <!-- Class 6: Fractions -->
+            <article class="card class-6" data-title="fractions pie chart visual arithmetic parts">
+                <div class="card-header">
+                    <span class="class-badge">Class 6</span>
+                    <span class="ch-num">Chapter 07</span>
+                </div>
+                <h3>Interactive Fractions Builder</h3>
+                <p>Visual pie-chart and fraction strip builder to compare, add, and subtract proper and improper fractions.</p>
+                <a href="#" class="launch-btn" style="opacity: 0.6; pointer-events: none;">Coming Soon</a>
+            </article>
 
-      <a href="models/kite-trapezium.html" class="card kite">
-        <div class="card-fig"><span class="card-num">4.6</span>
-          <svg viewBox="0 0 300 150"><polygon points="150,20 210,70 150,135 95,70" fill="none" stroke="#0c3559" stroke-width="4"/></svg>
         </div>
-        <div class="card-body">
-          <span class="badge">§4.6 · Class 8</span>
-          <h3>Kite &amp; Trapezium Studio</h3>
-          <p>Two tabs, one board: build a kite from two adjacent equal side-pairs, then flip to a trapezium and toggle isosceles legs to reveal the hidden rectangle inside.</p>
-          <span class="launch-btn">Launch Model →</span>
-        </div>
-      </a>
+    </main>
 
-      <a href="models/classifier.html" class="card family">
-        <div class="card-fig"><span class="card-num">4.7</span>
-          <svg viewBox="0 0 300 150"><ellipse cx="150" cy="75" rx="130" ry="60" fill="none" stroke="#0c3559" stroke-width="3"/><ellipse cx="120" cy="75" rx="75" ry="42" fill="none" stroke="#c98a3e" stroke-width="3"/><ellipse cx="175" cy="75" rx="45" ry="28" fill="none" stroke="#bf4d2e" stroke-width="3"/></svg>
-        </div>
-        <div class="card-body">
-          <span class="badge">Full Chapter · Game</span>
-          <h3>Which Quad? Family Tree + Quiz</h3>
-          <p>An interactive Venn diagram of Quadrilateral → Trapezium/Kite/Parallelogram → Rectangle/Rhombus → Square, plus a scored true/false round built from the book's own exercises.</p>
-          <span class="launch-btn">Launch Model →</span>
-        </div>
-      </a>
+    <footer>
+        <p>Developed for <strong>Regional Institute of Education (NCERT), Ajmer</strong></p>
+        <p style="margin-top: 5px; opacity: 0.7;">Digital Math E-Lab System · NCERT Curriculum Aligned</p>
+    </footer>
 
-    </div>
-  </main>
+    <script>
+        let currentClassFilter = 'all';
 
-  <footer class="page-footer">Digital Math E-Lab · Regional Institute of Education, Ajmer · Built for NCERT Ganita Prakash, Grade 8, Chapter 4</footer>
+        function filterClass(className, element) {
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            element.classList.add('active');
+            currentClassFilter = className;
+            filterModels();
+        }
 
-  <script>
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const cards = document.querySelectorAll('.card');
-    filterButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const f = btn.getAttribute('data-filter');
-        cards.forEach(card => {
-          card.classList.toggle('hidden', !(f === 'all' || card.classList.contains(f)));
-        });
-      });
-    });
-  </script>
+        function filterModels() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.card');
+
+            cards.forEach(card => {
+                const matchesClass = (currentClassFilter === 'all') || card.classList.contains(currentClassFilter);
+                const titleText = card.getAttribute('data-title') || '';
+                const cardContent = card.innerText.toLowerCase();
+                const matchesSearch = titleText.includes(query) || cardContent.includes(query);
+
+                if (matchesClass && matchesSearch) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
