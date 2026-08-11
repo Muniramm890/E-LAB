@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quadrilaterals Lab | Class 8 | E-Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    /* ============================================================
+       BLUEPRINT DESIGN SYSTEM & TABS
+       ============================================================ */
+    :root {
+        --blueprint-dk: #0c3559;
+        --blueprint-lt: #2f75ac;
+        --grid-line: rgba(210, 232, 255, 0.09);
+        --grid-line-strong: rgba(210, 232, 255, 0.16);
+        --brass: #c98a3e;
+        --brass-lt: #e3ac6a;
+        --text-hi: #f3f7fc;
+        --text-mid: #b9cee3;
+        --panel-bg: #f8f4ea;
+        --panel-text: #0a2138;
+    }
+
+    body {
+        margin: 0; font-family: 'IBM Plex Sans', sans-serif;
+        background: var(--blueprint-dk); color: var(--text-hi);
+        background-image: 
+            linear-gradient(var(--grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 20px 20px;
+        height: 100vh; display: flex; flex-direction: column;
+    }
+
+    /* Header */
+    header { padding: 15px 20px; border-bottom: 1px solid var(--grid-line-strong); display: flex; justify-content: space-between; align-items: center; background: rgba(12, 53, 89, 0.9); }
+    .back-btn { color: var(--brass-lt); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; border: 1px solid var(--brass); padding: 5px 15px; border-radius: 20px; }
+    .back-btn:hover { background: var(--brass); color: var(--blueprint-dk); }
+    h1 { margin: 0; font-size: 1.2rem; font-family: 'IBM Plex Mono', monospace; letter-spacing: 1px; }
+
+    /* Tabs Bar */
+    .tabs-bar { display: flex; gap: 10px; padding: 15px 20px; background: rgba(0,0,0,0.2); overflow-x: auto; }
+    .tab-btn {
+        background: transparent; border: 1px solid var(--blueprint-lt); color: var(--text-mid);
+        padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem;
+        border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap;
+    }
+    .tab-btn:hover { border-color: var(--brass-lt); color: var(--text-hi); }
+    .tab-btn.active { background: var(--brass); color: var(--blueprint-dk); border-color: var(--brass); font-weight: bold; }
+
+    /* Main Layout */
+    .module-container { display: flex; flex: 1; overflow: hidden; }
+    
+    /* Tab Content Area */
+    .tab-content { display: none; width: 100%; height: 100%; }
+    .tab-content.active { display: flex; width: 100%; }
+
+    /* Split Screen for each Tab (Controls + Canvas) */
+    .controls-panel { width: 320px; background: var(--panel-bg); color: var(--panel-text); padding: 20px; overflow-y: auto; border-right: 3px solid var(--brass); }
+    .canvas-panel { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+    
+    /* Typography inside controls */
+    h2 { font-size: 1.3rem; margin-top: 0; color: var(--panel-text); }
+    p { font-size: 0.9rem; line-height: 1.5; }
+    .highlight-box { background: rgba(201,138,62,0.2); padding: 10px; border-radius: 6px; border: 1px solid var(--brass); margin-top: 15px; font-family: 'IBM Plex Mono', monospace; font-weight: bold;}
+    
+    /* Dummy Canvas Area for next models */
+    .stage-frame { width: 90%; max-width: 700px; height: 70%; background: rgba(0,0,0,0.2); border: 1px solid var(--grid-line-strong); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 40px rgba(0,0,0,0.3); }
+</style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="back-btn">← Back to E-Lab</a>
+        <h1>CLASS 8 : QUADRILATERALS MODULE</h1>
+    </header>
+
+    <!-- TAB NAVIGATION -->
+    <div class="tabs-bar">
+        <button class="tab-btn active" onclick="openTab(event, 'tab-angle-sum')">1. Angle Sum Property</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-parallelogram')">2. Parallelogram</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-rhombus')">3. Rhombus & Kite</button>
+        <button class="tab-btn" onclick="openTab(event, 'tab-rectangle')">4. Rectangle & Square</button>
+    </div>
+
+    <div class="module-container">
+
+        <!-- ==========================================
+             TAB 1: ANGLE SUM (Active by default)
+             ========================================== -->
+        <div id="tab-angle-sum" class="tab-content active">
+            <div class="controls-panel">
+                <h2>Angle Sum Property</h2>
+                <p>Drag any vertex (A, B, C, or D) on the blueprint to change the shape of the quadrilateral.</p>
+                
+                <div class="highlight-box" id="sumBadge" style="text-align: center; font-size: 1.1rem; color: var(--blueprint-dk); background: var(--brass-lt);">
+                    SUM = 360°
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 10px; border-bottom: 1px solid var(--brass); padding-bottom: 5px;">Live Angles</h3>
+                    <div id="angleReadout" style="background: rgba(0,0,0,0.05); padding: 10px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;">
+                        <!-- Angles will update here dynamically -->
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <h3 style="font-size: 1rem; margin-bottom: 10px; border-bottom: 1px solid var(--brass); padding-bottom: 5px;">Shape Presets</h3>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button onclick="applyPreset('square')" style="padding: 6px 12px; border: 1px solid var(--blueprint-dk); border-radius: 15px; cursor: pointer; background: white;">Square</button>
+                        <button onclick="applyPreset('kite')" style="padding: 6px 12px; border: 1px solid var(--blueprint-dk); border-radius: 15px; cursor: pointer; background: white;">Kite</button>
+                        <button onclick="applyPreset('trap')" style="padding: 6px 12px; border: 1px solid var(--blueprint-dk); border-radius: 15px; cursor: pointer; background: white;">Trapezium</button>
+                    </div>
+                </div>
+
+                <p style="margin-top: 25px; font-size: 0.85rem; line-height: 1.6;">
+                    <strong>Proof:</strong> A quadrilateral can be divided into two triangles by a diagonal. Since each triangle's angles sum to 180°, the total is 180° + 180° = 360°.
+                </p>
+            </div>
+            
+            <div class="canvas-panel">
+                <div class="stage-frame" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+                    <!-- Actual Interactive SVG Canvas -->
+                    <svg id="angleSumSvg" viewBox="0 0 640 460" xmlns="http://www.w3.org/2000/svg" style="width: 100%; max-width: 640px; height: auto; touch-action: none;">
+                        <style>
+                            .vtx { cursor: pointer; touch-action: none; }
+                            .vtx:active { cursor: grabbing; }
+                            .edge { stroke: #f3f7fc; stroke-width: 3; fill: rgba(47, 117, 172, 0.25); }
+                            .ang-label { font-family: 'IBM Plex Mono', monospace; font-weight: bold; fill: #fff; paint-order: stroke; stroke: #0a2138; stroke-width: 4; font-size: 14px; }
+                            .vlabel { font-family: 'IBM Plex Mono', monospace; font-size: 14px; fill: #b9cee3; font-weight: bold; }
+                        </style>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 2: PARALLELOGRAM
+             ========================================== -->
+        <div id="tab-parallelogram" class="tab-content">
+            <div class="controls-panel">
+                <h2>Properties of Parallelogram</h2>
+                <p>Opposite sides are equal and parallel. Opposite angles are equal.</p>
+                <div class="highlight-box">
+                    Adjacent Angles sum to 180°
+                </div>
+            </div>
+            <div class="canvas-panel">
+                <div class="stage-frame">
+                    <h3 style="color:var(--text-dim); font-family:'IBM Plex Mono'">[ Parallelogram Interactive SVG Here ]</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             TAB 3 & 4 can follow the same structure...
+             ========================================== -->
+        
+    </div>
+
+    <!-- TAB SWITCHING LOGIC -->
+<!-- TAB SWITCHING & MODULE CONTROLLER LOGIC -->
+    <script>
+        function openTab(evt, tabId) {
+            // 1. Hide all tab contents using modern querySelectorAll
+            document.querySelectorAll(".tab-content").forEach(content => {
+                content.classList.remove("active");
+            });
+
+            // 2. Remove 'active' class from all tab buttons
+            document.querySelectorAll(".tab-btn").forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            // 3. Show the selected tab and highlight the clicked button
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+
+            // ==========================================
+            // 4. TRIGGER TAB-SPECIFIC MATH MODELS
+            // ==========================================
+            if (tabId === 'tab-angle-sum') {
+                // Jab Angle Sum tab khule, toh canvas ko wapas sahi position me render karein
+                if (typeof renderAngleSum === 'function') {
+                    renderAngleSum(); 
+                }
+            } 
+            else if (tabId === 'tab-parallelogram') {
+                // Yahan Parallelogram ka future logic aayega
+                console.log("Parallelogram module loaded");
+                // Example: applyPreset('parallelogram');
+            } 
+            else if (tabId === 'tab-rhombus') {
+                // Yahan Rhombus ka future logic aayega
+                console.log("Rhombus module loaded");
+            } 
+            else if (tabId === 'tab-rectangle') {
+                // Yahan Rectangle ka future logic aayega
+                console.log("Rectangle module loaded");
+            }
+        }
+    </script>
+</body>
+</html>
