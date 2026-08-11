@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeroes of a Polynomial | E-Lab</title>
+    <!-- Chart.js for Graphing -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: var(--bg-color); color: var(--text-main); }
+        
+        header { background: var(--primary-color); color: white; padding: 1.5rem 2rem; display: flex; align-items: center; gap: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; transition: 0.3s; }
+        .back-btn:hover { background: rgba(255,255,255,0.4); }
+        header h1 { margin: 0; font-size: 1.8rem; }
+
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
+        
+        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+
+        .control-panel, .graph-panel { background: var(--card-bg); padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 5px solid var(--secondary-color); }
+        
+        .control-panel h2 { margin-top: 0; color: var(--primary-color); font-size: 1.3rem; }
+        .equation-display { font-size: 1.5rem; font-weight: bold; text-align: center; margin: 1.5rem 0; color: var(--secondary-color); padding: 10px; background: #eff6ff; border-radius: 8px; }
+        
+        .input-group { margin-bottom: 1.2rem; }
+        .input-group label { display: block; font-weight: 600; margin-bottom: 5px; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
+        
+        .result-box { margin-top: 2rem; padding: 15px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; }
+        .result-box h3 { margin: 0 0 10px 0; color: #166534; font-size: 1.1rem; }
+        .zeroes-text { font-size: 1.2rem; font-weight: bold; color: #15803d; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="back-btn">← Back to E-Lab</a>
+        <h1>Zeroes of a Quadratic Polynomial</h1>
+    </header>
+
+    <div class="container">
+        <!-- Controls for a, b, c -->
+        <div class="control-panel">
+            <h2>Adjust Coefficients</h2>
+            <p>Change values for <strong>y = ax² + bx + c</strong></p>
+            
+            <div class="equation-display" id="eqDisplay">y = 1x² + 0x - 4</div>
+
+            <div class="input-group">
+                <label for="valA">Value of 'a' (cannot be 0)</label>
+                <input type="number" id="valA" value="1" step="0.5" oninput="updateGraph()">
+            </div>
+            <div class="input-group">
+                <label for="valB">Value of 'b'</label>
+                <input type="number" id="valB" value="0" step="0.5" oninput="updateGraph()">
+            </div>
+            <div class="input-group">
+                <label for="valC">Value of 'c'</label>
+                <input type="number" id="valC" value="-4" step="0.5" oninput="updateGraph()">
+            </div>
+
+            <div class="result-box">
+                <h3>Zeroes (X-Intercepts):</h3>
+                <div class="zeroes-text" id="zeroesDisplay">Calculating...</div>
+            </div>
+        </div>
+
+        <!-- Graph Display -->
+        <div class="graph-panel">
+            <canvas id="polyChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let chartInstance = null;
+
+        function updateGraph() {
+            let a = parseFloat(document.getElementById('valA').value);
+            let b = parseFloat(document.getElementById('valB').value);
+            let c = parseFloat(document.getElementById('valC').value);
+
+            // Prevent a = 0 (not quadratic)
+            if (a === 0) {
+                a = 0.001; 
+            }
+
+            // Update Equation Text
+            document.getElementById('eqDisplay').innerHTML = `y = ${a}x² ${b >= 0 ? '+' : ''}${b}x ${c >= 0 ? '+' : ''}${c}`;
+
+            // Calculate Zeroes using Quadratic Formula
+            let D = (b * b) - (4 * a * c);
+            let zeroesText = "";
+            let zeroes = [];
+
+            if (D > 0) {
+                let x1 = (-b + Math.sqrt(D)) / (2 * a);
+                let x2 = (-b - Math.sqrt(D)) / (2 * a);
+                zeroes.push(x1, x2);
+                zeroesText = `x = ${x1.toFixed(2)}, x = ${x2.toFixed(2)}`;
+            } else if (D === 0) {
+                let x = -b / (2 * a);
+                zeroes.push(x);
+                zeroesText = `x = ${x.toFixed(2)} (Equal Zeroes)`;
+            } else {
+                zeroesText = "No Real Zeroes (Graph won't touch X-axis)";
+            }
+
+            document.getElementById('zeroesDisplay').innerText = zeroesText;
+
+            // Generate Data Points for Chart
+            // Find vertex X to center the graph
+            let vertexX = -b / (2 * a);
+            let xValues = [];
+            let yValues = [];
+
+            for (let i = vertexX - 6; i <= vertexX + 6; i += 0.2) {
+                xValues.push(i.toFixed(1));
+                yValues.push((a * i * i) + (b * i) + c);
+            }
+
+            drawChart(xValues, yValues);
+        }
+
+        function drawChart(xValues, yValues) {
+            const ctx = document.getElementById('polyChart').getContext('2d');
+            
+            if (chartInstance) {
+                chartInstance.destroy(); // Clear old chart
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: xValues,
+                    datasets: [{
+                        label: 'y = ax² + bx + c',
+                        data: yValues,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0, // hide dots for smooth curve
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'X Axis', font: {weight: 'bold'} },
+                            grid: { color: (ctx) => ctx.tick.value === 0 ? '#000' : '#e5e7eb', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 }
+                        },
+                        y: {
+                            title: { display: true, text: 'Y Axis', font: {weight: 'bold'} },
+                            grid: { color: (ctx) => ctx.tick.value === 0 ? '#000' : '#e5e7eb', lineWidth: (ctx) => ctx.tick.value === 0 ? 2 : 1 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize on load
+        window.onload = updateGraph;
+    </script>
+</body>
+</html>
