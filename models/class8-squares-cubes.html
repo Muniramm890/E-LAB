@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Squares and Cubes | Class 8 | Math E-Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           ENTERPRISE BLUEPRINT THEME & ENGINE STYLES
+           ============================================================ */
+        :root {
+            --blueprint-dk: #061c30;
+            --blueprint-md: #0c3559;
+            --blueprint-lt: #2f75ac;
+            --grid-line: rgba(210, 232, 255, 0.1);
+            --grid-line-strong: rgba(210, 232, 255, 0.25);
+            --accent-1: #c98a3e; /* Brass */
+            --accent-2: #38bdf8; /* Cyan */
+            --accent-3: #f43f5e; /* Rose for Gnomons */
+            --paper-bg: #f8f9fa;
+            --paper-text: #1a2a3a;
+            --text-hi: #ffffff;
+            --text-mid: #a8c4df;
+            --success: #10b981;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--blueprint-dk);
+            color: var(--text-hi);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* HEADER */
+        header {
+            padding: 12px 20px;
+            background: linear-gradient(180deg, #041220 0%, var(--blueprint-md) 100%);
+            border-bottom: 1px solid var(--grid-line-strong);
+            display: flex; align-items: center; z-index: 10;
+        }
+        .back-btn {
+            color: var(--accent-1); text-decoration: none; font-family: 'IBM Plex Mono', monospace; 
+            font-size: 0.8rem; border: 1px solid var(--accent-1); padding: 5px 12px; 
+            border-radius: 20px; transition: 0.2s; margin-right: 15px;
+        }
+        .back-btn:hover { background: var(--accent-1); color: var(--blueprint-dk); }
+        .module-title h1 { font-family: 'Fraunces', serif; font-size: 1.2rem; }
+        .module-title p { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); letter-spacing: 1px; }
+
+        /* TABS */
+        .tabs-bar {
+            display: flex; gap: 8px; padding: 10px 20px; background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--grid-line-strong); overflow-x: auto;
+        }
+        .tab-btn {
+            background: transparent; border: 1px solid var(--blueprint-lt); color: var(--text-mid);
+            padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+            border-radius: 6px; cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn:hover { border-color: var(--accent-2); color: var(--text-hi); }
+        .tab-btn.active { background: var(--accent-2); color: var(--blueprint-dk); border-color: var(--accent-2); font-weight: 700; box-shadow: 0 0 15px rgba(56,189,248,0.4); }
+
+        /* WORKSPACE */
+        .workspace {
+            display: flex; flex: 1; position: relative; overflow: hidden;
+            background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 30px 30px; background-position: center;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 360px; background: var(--paper-bg); color: var(--paper-text);
+            border-right: 4px solid var(--accent-2); display: flex; flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+        }
+        .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
+        .toggle-btn {
+            position: absolute; top: 20px; right: -40px; width: 40px; height: 50px;
+            background: var(--accent-2); border: none; border-radius: 0 8px 8px 0;
+            color: var(--blueprint-dk); font-size: 1.2rem; cursor: pointer;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.2); transition: 0.2s;
+        }
+
+        .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; }
+        .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; color: var(--blueprint-dk); margin-bottom: 5px; }
+        
+        .data-panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        
+        .math-eq { font-family: 'IBM Plex Mono', monospace; font-size: 1.6rem; font-weight: bold; text-align: center; color: var(--blueprint-md); margin: 10px 0; }
+        .math-sub { font-size: 0.85rem; color: #64748b; text-align: center; }
+
+        /* CUSTOM SLIDER */
+        .slider-container { margin: 20px 0; }
+        .slider-label { display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--accent-2); cursor: pointer; margin-top: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #cbd5e1; border-radius: 4px; }
+        
+        .proof-box { background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--accent-2); padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.5; }
+        .proof-box strong { color: var(--blueprint-md); }
+
+        /* CANVAS */
+        .stage { flex: 1; position: relative; touch-action: none; display: flex; align-items: center; justify-content: center; padding: 20px;}
+        .canvas-container {
+            width: 100%; height: 100%; background: rgba(4, 18, 32, 0.7); 
+            border: 1px solid var(--grid-line-strong); border-radius: 12px; 
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        svg { width: 100%; height: 100%; touch-action: none; }
+
+        /* SVG GEOMETRY STYLES */
+        .grid-cell { stroke: rgba(255,255,255,0.2); stroke-width: 1; transition: fill 0.3s; }
+        .grid-cell.base { fill: rgba(56, 189, 248, 0.15); }
+        .grid-cell.gnomon { fill: rgba(244, 63, 94, 0.4); stroke: #f43f5e; }
+        
+        .iso-face-top { fill: rgba(56, 189, 248, 0.6); stroke: #0f172a; stroke-width: 0.5; }
+        .iso-face-left { fill: rgba(56, 189, 248, 0.4); stroke: #0f172a; stroke-width: 0.5; }
+        .iso-face-right { fill: rgba(56, 189, 248, 0.2); stroke: #0f172a; stroke-width: 0.5; }
+        .iso-outline { fill: none; stroke: #fff; stroke-width: 2; stroke-linejoin: round; }
+
+        .svg-text { font-family: 'IBM Plex Mono', monospace; font-weight: bold; fill: #fff; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div style="display: flex; align-items: center;">
+            <a href="../index.html" class="back-btn">← E-Lab</a>
+            <div class="module-title">
+                <h1>Squares & Cubes Visualizer</h1>
+                <p>GANITA PRAKASH · CHAPTER 1 · INTERACTIVE ENGINE</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="tabs-bar" id="tabsBar"></div>
+
+    <div class="workspace">
+        <aside class="sidebar" id="sidebar">
+            <button class="toggle-btn" onclick="app.toggleSidebar()">☰</button>
+            <div class="sidebar-content" id="sidebarContent">
+                <!-- HTML Injected by JS Engine -->
+            </div>
+        </aside>
+
+        <main class="stage">
+            <div class="canvas-container">
+                <svg id="visualizerBoard" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================================
+         JAVASCRIPT MATH ENGINE & RENDERING
+         ============================================================ -->
+    <script>
+        const svg = document.getElementById('visualizerBoard');
+        const VB = { w: 800, h: 600 };
+
+        // ==========================================
+        // MODULE 1: PERFECT SQUARES & GNOMONS (2D)
+        // ==========================================
+        class SquareModule {
+            constructor() {
+                this.N = 5; // Default value
+                this.maxN = 15;
+            }
+
+            setN(val) {
+                this.N = parseInt(val);
+                app.renderSVG();
+                app.renderSidebarMath();
+            }
+
+            getSidebarHTML() {
+                return `
+                    <h2>Perfect Squares (N²)</h2>
+                    <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Visualize how multiplying a number by itself creates a geometric square.</p>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label"><span>Value of N:</span> <span id="nLabel" style="color:var(--accent-2)">${this.N}</span></div>
+                        <input type="range" min="1" max="${this.maxN}" value="${this.N}" oninput="app.activeModule.setN(this.value)">
+                    </div>
+
+                    <div class="data-panel" id="mathPanel">
+                        <!-- Populated by renderSidebarMath -->
+                    </div>
+
+                    <div class="proof-box">
+                        <strong>The Gnomon Pattern:</strong><br><br>
+                        Notice the pink L-shaped boundary? To grow from $(N-1)^2$ to $N^2$, we add exactly $(2N - 1)$ blocks.<br><br>
+                        This proves mathematically that adding consecutive odd numbers always creates a perfect square!
+                    </div>
+                `;
+            }
+
+            renderSidebarMath() {
+                const el = document.getElementById('mathPanel');
+                if(!el) return;
+                document.getElementById('nLabel').innerText = this.N;
+
+                let oddSumStr = "";
+                let sum = 0;
+                for(let i=1; i<=this.N; i++) {
+                    let odd = 2*i - 1;
+                    oddSumStr += odd + (i < this.N ? " + " : "");
+                    sum += odd;
+                }
+
+                el.innerHTML = `
+                    <div class="math-sub">Area of Square (N × N)</div>
+                    <div class="math-eq">${this.N} × ${this.N} = ${this.N * this.N}</div>
+                    
+                    <div style="margin-top: 20px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
+                        <div class="math-sub" style="color:var(--accent-3); font-weight:bold;">Sum of first ${this.N} odd numbers</div>
+                        <div style="font-family:'IBM Plex Mono', monospace; font-size:0.9rem; text-align:center; margin-top:10px; color:#334155; word-wrap:break-word;">
+                            ${oddSumStr} <br><br> <strong style="font-size:1.2rem; color:var(--blueprint-md);">= ${sum}</strong>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderSVG() {
+                let html = '';
+                const cellSize = Math.min(400 / this.maxN, 35); // Dynamic scaling
+                const totalSize = this.N * cellSize;
+                const startX = (VB.w - totalSize) / 2;
+                const startY = (VB.h - totalSize) / 2;
+
+                // Draw N x N Grid
+                for(let row = 0; row < this.N; row++) {
+                    for(let col = 0; col < this.N; col++) {
+                        const x = startX + col * cellSize;
+                        const y = startY + row * cellSize;
+                        
+                        // Highlight the outermost layer (Gnomon) for the current N
+                        let isGnomon = (row === this.N - 1 || col === this.N - 1);
+                        let cls = isGnomon ? 'grid-cell gnomon' : 'grid-cell base';
+                        
+                        // If N=1, base is also gnomon visually
+                        if(this.N === 1) cls = 'grid-cell gnomon';
+
+                        html += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" class="${cls}" />`;
+                    }
+                }
+
+                // Add Dimension Labels
+                html += `<text x="${startX + totalSize/2}" y="${startY - 15}" class="svg-text" text-anchor="middle" font-size="18">N = ${this.N}</text>`;
+                html += `<text x="${startX - 20}" y="${startY + totalSize/2}" class="svg-text" text-anchor="middle" dominant-baseline="middle" font-size="18">N = ${this.N}</text>`;
+
+                return html;
+            }
+        }
+
+        // ==========================================
+        // MODULE 2: PERFECT CUBES (3D ISOMETRIC)
+        // ==========================================
+        class CubeModule {
+            constructor() {
+                this.N = 3;
+                this.maxN = 8; // Kept lower to prevent SVG overload and maintain visual clarity
+            }
+
+            setN(val) {
+                this.N = parseInt(val);
+                app.renderSVG();
+                app.renderSidebarMath();
+            }
+
+            getSidebarHTML() {
+                return `
+                    <h2>Perfect Cubes (N³)</h2>
+                    <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Visualize how multiplying a number three times creates a 3D volume.</p>
+                    
+                    <div class="slider-container">
+                        <div class="slider-label"><span>Value of N:</span> <span id="nLabel2" style="color:var(--accent-2)">${this.N}</span></div>
+                        <input type="range" min="1" max="${this.maxN}" value="${this.N}" oninput="app.activeModule.setN(this.value)">
+                    </div>
+
+                    <div class="data-panel" id="mathPanel">
+                        <!-- Populated by renderSidebarMath -->
+                    </div>
+
+                    <div class="proof-box">
+                        <strong>Volume vs Area:</strong><br><br>
+                        Unlike a square which grows in 2 dimensions, a cube grows in 3 dimensions (Length × Width × Height). <br><br>
+                        Notice how rapidly the total number of blocks increases as N grows!
+                    </div>
+                `;
+            }
+
+            renderSidebarMath() {
+                const el = document.getElementById('mathPanel');
+                if(!el) return;
+                document.getElementById('nLabel2').innerText = this.N;
+
+                const cubeVal = this.N * this.N * this.N;
+
+                el.innerHTML = `
+                    <div class="math-sub">Volume of Cube (N × N × N)</div>
+                    <div class="math-eq">${this.N} × ${this.N} × ${this.N}</div>
+                    <div class="math-eq" style="color:var(--accent-2); font-size:2.2rem;">= ${cubeVal}</div>
+                `;
+            }
+
+            // Isometric Projection Math
+            iso(x, y, z, scale, centerX, centerY) {
+                // Standard isometric projection angles
+                const isoX = (x - y) * Math.cos(Math.PI / 6);
+                const isoY = (x + y) * Math.sin(Math.PI / 6) - z;
+                return { 
+                    x: centerX + isoX * scale, 
+                    y: centerY + isoY * scale 
+                };
+            }
+
+            renderSVG() {
+                let html = '';
+                const scale = Math.min(250 / this.maxN, 45); // Size of 1 unit block
+                const cx = VB.w / 2;
+                const cy = VB.h / 2 + (this.N * scale * 0.5); // Center visually
+
+                // Draw a large cube subdivided into N grids (Much faster than 1000 individual cubes)
+                // We draw the 3 visible faces: Top (z=N), Left (y=N), Right (x=N)
+
+                // 1. TOP FACE (Grid on XY plane at Z=N)
+                for(let x=0; x<this.N; x++) {
+                    for(let y=0; y<this.N; y++) {
+                        let p1 = this.iso(x, y, this.N, scale, cx, cy);
+                        let p2 = this.iso(x+1, y, this.N, scale, cx, cy);
+                        let p3 = this.iso(x+1, y+1, this.N, scale, cx, cy);
+                        let p4 = this.iso(x, y+1, this.N, scale, cx, cy);
+                        html += `<polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y} ${p4.x},${p4.y}" class="iso-face-top" />`;
+                    }
+                }
+
+                // 2. LEFT FACE (Grid on XZ plane at Y=N)
+                for(let x=0; x<this.N; x++) {
+                    for(let z=0; z<this.N; z++) {
+                        let p1 = this.iso(x, this.N, z, scale, cx, cy);
+                        let p2 = this.iso(x+1, this.N, z, scale, cx, cy);
+                        let p3 = this.iso(x+1, this.N, z+1, scale, cx, cy);
+                        let p4 = this.iso(x, this.N, z+1, scale, cx, cy);
+                        html += `<polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y} ${p4.x},${p4.y}" class="iso-face-left" />`;
+                    }
+                }
+
+                // 3. RIGHT FACE (Grid on YZ plane at X=N)
+                for(let y=0; y<this.N; y++) {
+                    for(let z=0; z<this.N; z++) {
+                        let p1 = this.iso(this.N, y, z, scale, cx, cy);
+                        let p2 = this.iso(this.N, y+1, z, scale, cx, cy);
+                        let p3 = this.iso(this.N, y+1, z+1, scale, cx, cy);
+                        let p4 = this.iso(this.N, y, z+1, scale, cx, cy);
+                        html += `<polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y} ${p4.x},${p4.y}" class="iso-face-right" />`;
+                    }
+                }
+
+                // Overall Outline for sharpness
+                let o1 = this.iso(0, this.N, 0, scale, cx, cy); // Bottom left
+                let o2 = this.iso(this.N, this.N, 0, scale, cx, cy); // Bottom center
+                let o3 = this.iso(this.N, 0, 0, scale, cx, cy); // Bottom right
+                let o4 = this.iso(this.N, 0, this.N, scale, cx, cy); // Mid right
+                let o5 = this.iso(0, 0, this.N, scale, cx, cy); // Top center
+                let o6 = this.iso(0, this.N, this.N, scale, cx, cy); // Mid left
+                
+                html += `<polygon points="${o1.x},${o1.y} ${o2.x},${o2.y} ${o3.x},${o3.y} ${o4.x},${o4.y} ${o5.x},${o5.y} ${o6.x},${o6.y}" class="iso-outline" />`;
+                
+                // Inner Y outline
+                let center = this.iso(this.N, this.N, this.N, scale, cx, cy);
+                html += `<polyline points="${o2.x},${o2.y} ${center.x},${center.y} ${o6.x},${o6.y}" class="iso-outline" />`;
+                html += `<line x1="${center.x}" y1="${center.y}" x2="${o4.x}" y2="${o4.y}" class="iso-outline" />`;
+
+                // Dimension Labels
+                html += `<text x="${o1.x - 30}" y="${o1.y - (o1.y - o6.y)/2}" class="svg-text" font-size="18">N=${this.N}</text>`;
+                html += `<text x="${o2.x + 10}" y="${o2.y + 25}" class="svg-text" font-size="18">N=${this.N}</text>`;
+
+                return html;
+            }
+        }
+
+        // ==========================================
+        // MAIN APP CONTROLLER
+        // ==========================================
+        const app = {
+            modules: {
+                'squares': new SquareModule(),
+                'cubes': new CubeModule(),
+            },
+            activeTab: 'squares',
+            activeModule: null,
+
+            init() {
+                this.renderTabs();
+                this.switchTab('squares');
+            },
+
+            renderTabs() {
+                const tabs = [
+                    { id: 'squares', name: '1. Perfect Squares (2D)' },
+                    { id: 'cubes', name: '2. Perfect Cubes (3D)' }
+                ];
+                let html = '';
+                tabs.forEach(t => {
+                    html += `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`;
+                });
+                document.getElementById('tabsBar').innerHTML = html;
+            },
+
+            switchTab(tabId) {
+                if(!this.modules[tabId]) return;
+                this.activeTab = tabId;
+                this.activeModule = this.modules[tabId];
+                this.renderTabs();
+                
+                // Inject Sidebar HTML and immediately call math renderer
+                document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
+                this.activeModule.renderSidebarMath();
+                
+                this.renderSVG();
+            },
+
+            renderSVG() {
+                svg.innerHTML = this.activeModule.renderSVG();
+            },
+
+            toggleSidebar() {
+                document.getElementById('sidebar').classList.toggle('collapsed');
+            }
+        };
+
+        // Boot Application
+        window.onload = () => app.init();
+    </script>
+</body>
+</html>
