@@ -28,7 +28,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
         body {
             font-family: 'IBM Plex Sans', sans-serif;
             background-color: var(--blueprint-dk);
@@ -37,7 +37,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            user-select: none; /* Prevent text selection while drafting */
         }
 
         /* HEADER & TABS */
@@ -49,13 +48,15 @@
             align-items: center;
             justify-content: space-between;
             z-index: 10;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .brand-area { display: flex; align-items: center; gap: 15px; }
         .back-btn {
-            color: var(--brass-lt); text-decoration: none; font-family: 'IBM Plex Mono', monospace; 
-            font-size: 0.8rem; border: 1px solid var(--brass); padding: 5px 12px; 
-            border-radius: 20px; transition: 0.2s;
+            color: var(--brass-lt); text-decoration: none; font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem; border: 1px solid var(--brass); padding: 5px 12px;
+            border-radius: 20px; transition: 0.2s; white-space: nowrap;
         }
         .back-btn:hover { background: var(--brass); color: var(--blueprint-dk); box-shadow: 0 0 10px var(--brass-glow); }
         .module-title h1 { font-family: 'Fraunces', serif; font-size: 1.2rem; margin-bottom: 2px; }
@@ -68,7 +69,7 @@
         .tab-btn {
             background: transparent; border: 1px solid var(--blueprint-lt); color: var(--text-mid);
             padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
-            border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap;
+            border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex: none;
         }
         .tab-btn:hover { border-color: var(--brass-lt); color: var(--text-hi); }
         .tab-btn.active { background: var(--brass); color: var(--blueprint-dk); border-color: var(--brass); font-weight: 700; box-shadow: 0 0 15px rgba(201,138,62,0.3); }
@@ -76,7 +77,7 @@
         /* WORKSPACE: Sidebar + Canvas */
         .workspace {
             display: flex; flex: 1; position: relative; overflow: hidden;
-            background-image: 
+            background-image:
                 linear-gradient(var(--grid-line) 1px, transparent 1px),
                 linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
             background-size: 25px 25px;
@@ -84,13 +85,14 @@
 
         /* DYNAMIC SIDEBAR */
         .sidebar {
-            width: 350px; background: var(--paper-bg); color: var(--paper-text);
+            width: 360px; background: var(--paper-bg); color: var(--paper-text);
             border-right: 4px solid var(--brass); display: flex; flex-direction: column;
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+            flex: none;
         }
         .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
-        
+
         .toggle-btn {
             position: absolute; top: 20px; right: -40px; width: 40px; height: 50px;
             background: var(--brass); border: none; border-radius: 0 8px 8px 0;
@@ -100,47 +102,67 @@
         }
         .toggle-btn:hover { background: var(--brass-lt); width: 45px; right: -45px;}
 
-        .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; }
-        .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; color: var(--blueprint-dk); margin-bottom: 5px; }
-        .sidebar-content p { font-size: 0.9rem; line-height: 1.5; color: #4a5a6a; margin-bottom: 15px; }
-        
+        .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+        .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.35rem; color: var(--blueprint-dk); margin-bottom: 5px; }
+        .sidebar-content p { font-size: 0.88rem; line-height: 1.5; color: #4a5a6a; margin-bottom: 15px; }
+
         .data-panel { background: #ffffff; border: 1px solid var(--paper-line); border-radius: 8px; padding: 15px; margin-bottom: 15px; }
-        .data-row { display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; padding: 5px 0; border-bottom: 1px dashed #eee; }
+        .data-row { display: flex; justify-content: space-between; align-items:center; font-family: 'IBM Plex Mono', monospace; font-size: 0.86rem; padding: 5px 0; border-bottom: 1px dashed #eee; gap:10px; }
         .data-row:last-child { border-bottom: none; }
-        
-        .badge { display: block; text-align: center; padding: 10px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 1.1rem; margin-bottom: 15px; }
+
+        .badge { display: block; text-align: center; padding: 10px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 1rem; margin-bottom: 15px; }
         .badge.success { background: #e4f3ea; color: var(--success); border: 1px solid var(--success); }
         .badge.info { background: #e3f2fd; color: #0277bd; border: 1px solid #0277bd; }
+        .badge.danger { background: #fbe9e5; color: var(--danger); border: 1px solid var(--danger); }
 
         .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .action-btn { padding: 8px; border: 1px solid var(--blueprint-md); background: white; border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; transition: 0.2s; }
+        .action-btn { padding: 9px; border: 1px solid var(--blueprint-md); background: white; border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; transition: 0.2s; }
         .action-btn:hover { background: var(--blueprint-md); color: white; }
 
-        .proof-box { background: rgba(47, 117, 172, 0.1); border-left: 4px solid var(--blueprint-lt); padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.85rem; }
+        .proof-box { background: rgba(47, 117, 172, 0.1); border-left: 4px solid var(--blueprint-lt); padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.84rem; line-height:1.55; margin-bottom: 4px; }
 
-        /* CANVAS AREA */
+        .pill-row { display: flex; gap: 8px; margin-bottom: 14px; }
+        .pill-btn { flex: 1; padding: 9px 6px; border: 1px solid var(--blueprint-md); background: white; border-radius: 20px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; text-align: center; transition: 0.2s; }
+        .pill-btn.active { background: var(--blueprint-md); color: white; font-weight: 700; }
+
+        .range-row { margin-bottom: 12px; }
+        .range-row label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; }
+        .range-row input[type=range] { width: 100%; accent-color: var(--brass); height: 22px; cursor: pointer; }
+
+        .check-item { display: inline-flex; align-items: center; }
+        .dot { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800; color: white; }
+
+        /* STAGE */
         .stage { flex: 1; position: relative; touch-action: none; display: flex; align-items: center; justify-content: center; padding: 20px;}
         .canvas-container {
-            width: 100%; max-width: 900px; height: 100%; max-height: 600px;
+            width: 100%; max-width: 900px; height: 100%; max-height: 620px;
             background: rgba(4, 18, 32, 0.6); border: 1px solid var(--grid-line-strong);
             border-radius: 12px; box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.3);
             position: relative; overflow: hidden;
         }
 
-        /* SVG STYLING */
-        svg { width: 100%; height: 100%; touch-action: none; }
+        svg { width: 100%; height: 100%; touch-action: none; display:block; }
         .axis { stroke: rgba(255,255,255,0.15); stroke-width: 1; }
         .shape-edge { stroke: #f3f7fc; stroke-width: 3; fill: rgba(47, 117, 172, 0.3); stroke-linejoin: round; }
         .diag-line { stroke: var(--brass); stroke-width: 2; stroke-dasharray: 6 6; }
-        .ang-arc { fill: var(--brass-glow); stroke: var(--brass-lt); stroke-width: 1.5; }
-        .vtx-handle { cursor: grab; fill: var(--brass); stroke: #fff; stroke-width: 2; transition: r 0.1s; }
-        .vtx-handle:hover { r: 10; fill: var(--brass-lt); }
-        .vtx-handle:active { cursor: grabbing; r: 12; }
-        
-        /* TEXT IN SVG */
+        .ang-arc { fill: var(--brass-glow); stroke: var(--brass-lt); stroke-width: 1.5; pointer-events:none; }
+        .vtx-handle { cursor: grab; fill: var(--brass); stroke: #fff; stroke-width: 2; }
+        .vtx-handle:hover { fill: var(--brass-lt); }
+        .vtx-handle:active { cursor: grabbing; }
+
         .svg-label { font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 14px; fill: white; pointer-events: none; }
         .svg-text-bg { paint-order: stroke; stroke: var(--blueprint-dk); stroke-width: 4; }
+        .venn-region { cursor: pointer; transition: filter 0.15s; }
+        .venn-region:hover { filter: brightness(1.35); }
 
+        /* Mobile */
+        @media (max-width: 860px) {
+            .sidebar { width: 86vw; }
+            .module-title h1 { font-size: 1rem; }
+            .toggle-btn { top: auto; bottom: 18px; right: -46px; width: 46px; height: 46px; border-radius: 50%; }
+        }
+        .sidebar-content::-webkit-scrollbar { width: 8px; }
+        .sidebar-content::-webkit-scrollbar-thumb { background: var(--paper-line); border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -150,21 +172,17 @@
             <a href="../index.html" class="back-btn">← E-Lab</a>
             <div class="module-title">
                 <h1>Quadrilaterals Drafting Lab</h1>
-                <p>CLASS 8 · CHAPTER 04 · INTERACTIVE ENGINE</p>
+                <p>CLASS 8 · CHAPTER 04 · GANITA PRAKASH · INTERACTIVE ENGINE</p>
             </div>
         </div>
     </header>
 
-    <div class="tabs-bar" id="tabsBar">
-        <!-- Tabs generated dynamically via JS -->
-    </div>
+    <div class="tabs-bar" id="tabsBar"></div>
 
     <div class="workspace">
         <aside class="sidebar" id="sidebar">
-            <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-            <div class="sidebar-content" id="sidebarContent">
-                <!-- HTML Injected by JavaScript Engine -->
-            </div>
+            <button class="toggle-btn" onclick="toggleSidebar()" title="Show/hide calculation panel">☰</button>
+            <div class="sidebar-content" id="sidebarContent"></div>
         </aside>
 
         <main class="stage">
@@ -174,272 +192,709 @@
         </main>
     </div>
 
-    <!-- ============================================================
-         JAVASCRIPT GEOMETRY ENGINE (THE "HEAVY DEV" ARCHITECTURE)
-         ============================================================ -->
     <script>
-        // --- 1. CORE MATH & UTILITIES ---
+        // =====================================================================
+        // 1. CORE MATH ENGINE
+        // =====================================================================
         const MathUtils = {
             distance: (p1, p2) => Math.hypot(p2.x - p1.x, p2.y - p1.y),
-            angleBetween: (p1, center, p2) => {
-                const a = Math.atan2(p1.y - center.y, p1.x - center.x);
-                const b = Math.atan2(p2.y - center.y, p2.x - center.x);
-                let ang = b - a;
-                if (ang < 0) ang += 2 * Math.PI;
-                return ang;
-            },
+
+            // Robust interior-angle calc via signed turning angles — correct for
+            // convex AND concave (reflex) simple polygons, any winding direction.
             interiorAngles: (pts) => {
-                const angles = [];
                 const n = pts.length;
-                for(let i=0; i<n; i++) {
-                    const prev = pts[(i-1+n)%n], curr = pts[i], next = pts[(i+1)%n];
-                    const v1 = { x: prev.x - curr.x, y: prev.y - curr.y };
-                    const v2 = { x: next.x - curr.x, y: next.y - curr.y };
-                    const cross = v2.x * v1.y - v2.y * v1.x;
-                    const dot = v1.x * v2.x + v1.y * v2.y;
-                    let ang = Math.atan2(cross, dot);
-                    if(ang < 0) ang += 2 * Math.PI;
-                    angles.push(ang * (180 / Math.PI));
+                const turns = [];
+                for (let i = 0; i < n; i++) {
+                    const prev = pts[(i - 1 + n) % n], curr = pts[i], next = pts[(i + 1) % n];
+                    const vin = { x: curr.x - prev.x, y: curr.y - prev.y };
+                    const vout = { x: next.x - curr.x, y: next.y - curr.y };
+                    const cross = vin.x * vout.y - vin.y * vout.x;
+                    const dot = vin.x * vout.x + vin.y * vout.y;
+                    turns.push(Math.atan2(cross, dot));
                 }
-                return angles;
+                const total = turns.reduce((a, b) => a + b, 0);
+                const sign = total >= 0 ? 1 : -1;
+                return turns.map(t => (Math.PI - sign * t) * 180 / Math.PI);
             },
-            // Generate SVG Arc path string
-            describeArc: (x, y, radius, startAngle, endAngle) => {
-                const start = { x: x + radius * Math.cos(endAngle), y: y + radius * Math.sin(endAngle) };
-                const end = { x: x + radius * Math.cos(startAngle), y: y + radius * Math.sin(startAngle) };
-                const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
-                return `M ${x} ${y} L ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
+
+            describeArc: (x, y, radius, a1, a2, sweepFlag, largeArc) => {
+                const p1 = { x: x + radius * Math.cos(a1), y: y + radius * Math.sin(a1) };
+                const p2 = { x: x + radius * Math.cos(a2), y: y + radius * Math.sin(a2) };
+                return `M ${x} ${y} L ${p1.x} ${p1.y} A ${radius} ${radius} 0 ${largeArc} ${sweepFlag} ${p2.x} ${p2.y} Z`;
             }
         };
 
-        // --- 2. THE SVG CANVAS CONTROLLER ---
+        // Draws the interior angle arc + degree label at vertex i of polygon pts.
+        function arcAndLabel(pts, i, angleDeg) {
+            const n = pts.length;
+            const prev = pts[(i - 1 + n) % n], curr = pts[i], next = pts[(i + 1) % n];
+            const a1 = Math.atan2(prev.y - curr.y, prev.x - curr.x);
+            const a2 = Math.atan2(next.y - curr.y, next.x - curr.x);
+            let diff = a2 - a1;
+            while (diff <= -Math.PI) diff += 2 * Math.PI;
+            while (diff > Math.PI) diff -= 2 * Math.PI;
+            const sweepFlag = diff > 0 ? 1 : 0;
+            const radius = 36;
+            let out = '';
+            const reflex = angleDeg > 185;
+            if (!reflex) {
+                out += `<path d="${MathUtils.describeArc(curr.x, curr.y, radius, a1, a2, sweepFlag, 0)}" class="ang-arc"/>`;
+            }
+            let mid = a1 + diff / 2;
+            if (reflex) mid += Math.PI;
+            const labelR = reflex ? 30 : 56;
+            const lx = curr.x + Math.cos(mid) * labelR;
+            const ly = curr.y + Math.sin(mid) * labelR;
+            out += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" class="svg-label svg-text-bg">${angleDeg.toFixed(0)}°</text>`;
+            return out;
+        }
+
+        // =====================================================================
+        // 2. SVG CANVAS CONTROLLER
+        // =====================================================================
         const svg = document.getElementById('draftingBoard');
-        const NS = "http://www.w3.org/2000/svg";
         const VB = { w: 800, h: 600 };
-        
+
         function getMousePos(evt) {
             const pt = svg.createSVGPoint();
-            pt.x = evt.clientX || (evt.touches && evt.touches[0].clientX);
-            pt.y = evt.clientY || (evt.touches && evt.touches[0].clientY);
+            pt.x = evt.clientX; pt.y = evt.clientY;
             return pt.matrixTransform(svg.getScreenCTM().inverse());
         }
 
         function drawGrid() {
-            let gridHTML = '';
-            for(let i=0; i<VB.w; i+=50) gridHTML += `<line x1="${i}" y1="0" x2="${i}" y2="${VB.h}" class="axis" />`;
-            for(let i=0; i<VB.h; i+=50) gridHTML += `<line x1="0" y1="${i}" x2="${VB.w}" y2="${i}" class="axis" />`;
-            return gridHTML;
+            let g = '';
+            for (let i = 0; i <= VB.w; i += 50) g += `<line x1="${i}" y1="0" x2="${i}" y2="${VB.h}" class="axis"/>`;
+            for (let i = 0; i <= VB.h; i += 50) g += `<line x1="0" y1="${i}" x2="${VB.w}" y2="${i}" class="axis"/>`;
+            return g;
         }
 
-        // --- 3. MODULE CLASSES (OOP Design) ---
+        function toggleSwitch(checked) {
+            return `<div style="width:40px;height:20px;background:${checked ? 'var(--brass)' : '#ccc'};border-radius:10px;position:relative;flex:none;">
+                <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;left:${checked ? '22px' : '2px'};transition:.2s;"></div>
+            </div>`;
+        }
+        function checkDot(ok) {
+            return `<span class="check-item"><span class="dot" style="background:${ok ? 'var(--success)' : '#c7bda0'}">${ok ? '✓' : '✕'}</span></span>`;
+        }
 
-        // MODULE 1: ANGLE SUM (Free dragging)
+        // =====================================================================
+        // 3. MODULE 1 — ANGLE SUM  (§4.2)
+        // =====================================================================
         class AngleSumModule {
             constructor() {
-                this.pts = [{x:200, y:450}, {x:250, y:150}, {x:600, y:100}, {x:650, y:400}];
+                this.pts = [{ x: 200, y: 450 }, { x: 250, y: 150 }, { x: 600, y: 100 }, { x: 650, y: 400 }];
                 this.labels = ['A', 'B', 'C', 'D'];
                 this.showProof = false;
             }
-
+            updatePoint(i, p) { this.pts[i] = p; }
+            setPreset(type) {
+                const presets = {
+                    square: [{ x: 250, y: 450 }, { x: 250, y: 150 }, { x: 550, y: 150 }, { x: 550, y: 450 }],
+                    kite: [{ x: 400, y: 500 }, { x: 200, y: 250 }, { x: 400, y: 100 }, { x: 600, y: 250 }],
+                    trapezium: [{ x: 150, y: 450 }, { x: 300, y: 150 }, { x: 500, y: 150 }, { x: 650, y: 450 }],
+                    dart: [{ x: 200, y: 450 }, { x: 400, y: 260 }, { x: 600, y: 450 }, { x: 400, y: 100 }],
+                };
+                if (type === 'random') {
+                    this.pts = [
+                        { x: 150 + Math.random() * 100, y: 380 + Math.random() * 100 },
+                        { x: 180 + Math.random() * 100, y: 110 + Math.random() * 100 },
+                        { x: 500 + Math.random() * 120, y: 90 + Math.random() * 100 },
+                        { x: 540 + Math.random() * 100, y: 380 + Math.random() * 100 },
+                    ];
+                } else {
+                    this.pts = presets[type].map(p => ({ ...p }));
+                }
+                app.render();
+            }
+            toggleProof() { this.showProof = !this.showProof; app.render(); }
             getSidebarHTML() {
                 const angles = MathUtils.interiorAngles(this.pts);
-                const sum = angles.reduce((a,b)=>a+b, 0);
-                
+                const sum = angles.reduce((a, b) => a + b, 0);
                 return `
-                    <h2>Angle Sum Property</h2>
-                    <p>Drag any vertex to dynamically reshape the quadrilateral. Notice how the total sum is fixed.</p>
-                    <div class="badge success">SUM = ${Math.round(sum)}°</div>
-                    
+                    <h2>Angle-Sum Property</h2>
+                    <p><b>§4.2</b> · Drag any vertex — even into a concave “dart” — the four interior angles always total 360°.</p>
+                    <div class="badge success">SUM = ${sum.toFixed(1)}°</div>
                     <div class="data-panel">
-                        <div style="font-weight:bold; margin-bottom:8px;">Interior Angles:</div>
-                        ${angles.map((a,i) => `<div class="data-row"><span>∠${this.labels[i]}</span> <span>${a.toFixed(1)}°</span></div>`).join('')}
+                        <div style="font-weight:700;margin-bottom:8px;">Interior angles</div>
+                        ${angles.map((a, i) => `<div class="data-row"><span>∠${this.labels[i]}</span><span>${a.toFixed(1)}°</span></div>`).join('')}
                     </div>
-
                     <div class="btn-grid">
                         <button class="action-btn" onclick="app.activeModule.setPreset('square')">Square</button>
                         <button class="action-btn" onclick="app.activeModule.setPreset('kite')">Kite</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('trap')">Trapezium</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('random')">Random</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('trapezium')">Trapezium</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('dart')">Concave dart</button>
                     </div>
-
-                    <div class="data-panel" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="app.activeModule.toggleProof()">
-                        <strong>Show Diagonal Split</strong>
-                        <div style="width:40px; height:20px; background:${this.showProof ? 'var(--brass)' : '#ccc'}; border-radius:10px; position:relative;">
-                            <div style="width:16px; height:16px; background:white; border-radius:50%; position:absolute; top:2px; left:${this.showProof ? '22px' : '2px'}; transition:0.2s;"></div>
-                        </div>
+                    <button class="action-btn" style="width:100%;margin-bottom:15px;" onclick="app.activeModule.setPreset('random')">🎲 Randomise</button>
+                    <div class="data-panel" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="app.activeModule.toggleProof()">
+                        <strong>Show diagonal-split proof</strong>${toggleSwitch(this.showProof)}
                     </div>
-
-                    <div class="proof-box">
-                        <strong>Theorem:</strong> The sum of angles of a quadrilateral is 360°. Split by a diagonal, it forms 2 triangles (180° + 180° = 360°).
-                    </div>
+                    <div class="proof-box">Split by diagonal AC into ∆ABC and ∆ACD. Each triangle's angles sum to 180°, and together every corner of the quadrilateral is counted once — so 180° + 180° = <b>360°</b>, always.</div>
                 `;
             }
+            renderSVG() {
+                let html = drawGrid();
+                const angles = MathUtils.interiorAngles(this.pts);
+                html += `<polygon points="${this.pts.map(p => `${p.x},${p.y}`).join(' ')}" class="shape-edge"/>`;
+                if (this.showProof) {
+                    html += `<line x1="${this.pts[0].x}" y1="${this.pts[0].y}" x2="${this.pts[2].x}" y2="${this.pts[2].y}" class="diag-line"/>`;
+                }
+                this.pts.forEach((p, i) => { html += arcAndLabel(this.pts, i, angles[i]); });
+                this.pts.forEach((p, i) => {
+                    html += `<text x="${p.x}" y="${p.y - 24}" text-anchor="middle" class="svg-label">${this.labels[i]}</text>`;
+                    html += `<circle cx="${p.x}" cy="${p.y}" r="9" class="vtx-handle" data-id="${i}"/>`;
+                });
+                return html;
+            }
+        }
 
-            setPreset(type) {
-                if(type==='square') this.pts = [{x:250,y:450},{x:250,y:150},{x:550,y:150},{x:550,y:450}];
-                if(type==='kite') this.pts = [{x:400,y:500},{x:200,y:250},{x:400,y:100},{x:600,y:250}];
-                if(type==='trap') this.pts = [{x:150,y:450},{x:300,y:150},{x:500,y:150},{x:650,y:450}];
-                if(type==='random') this.pts = this.pts.map(p => ({x: 100 + Math.random()*500, y: 100 + Math.random()*350}));
+        // =====================================================================
+        // 4. MODULE 2 — RECTANGLE & SQUARE  (§4.1, Carpenter's Problem — diagonal lab)
+        // =====================================================================
+        class RectangleSquareModule {
+            constructor() {
+                this.params = { OA: 120, OC: 120, OB: 120, OD: 120, theta: 60 };
+                this.center = { x: 400, y: 300 };
+            }
+            setParam(k, v) { this.params[k] = parseFloat(v); }
+            setPreset(name) {
+                const P = {
+                    rectangle: { OA: 130, OC: 130, OB: 130, OD: 130, theta: 55 },
+                    square: { OA: 115, OC: 115, OB: 115, OD: 115, theta: 90 },
+                    rhombus: { OA: 70, OC: 70, OB: 145, OD: 145, theta: 90 },
+                    parallelogram: { OA: 60, OC: 60, OB: 125, OD: 125, theta: 55 },
+                    kite: { OA: 95, OC: 95, OB: 60, OD: 155, theta: 90 },
+                    general: { OA: 60, OC: 130, OB: 80, OD: 150, theta: 70 },
+                };
+                this.params = { ...P[name] };
                 app.render();
             }
-
-            toggleProof() { this.showProof = !this.showProof; app.render(); }
-
-            updatePoint(index, newPos) { this.pts[index] = newPos; }
-
+            computePoints() {
+                const { OA, OC, OB, OD, theta } = this.params;
+                const O = this.center;
+                const rad = theta * Math.PI / 180;
+                const d1 = { x: 1, y: 0 }, d2 = { x: Math.cos(rad), y: Math.sin(rad) };
+                const A = { x: O.x - d1.x * OA, y: O.y - d1.y * OA };
+                const C = { x: O.x + d1.x * OC, y: O.y + d1.y * OC };
+                const B = { x: O.x + d2.x * OB, y: O.y + d2.y * OB };
+                const D = { x: O.x - d2.x * OD, y: O.y - d2.y * OD };
+                return { A, B, C, D, O };
+            }
+            classify() {
+                const { OA, OC, OB, OD, theta } = this.params;
+                const eps = 3;
+                const diag1Bisected = Math.abs(OA - OC) < eps;
+                const diag2Bisected = Math.abs(OB - OD) < eps;
+                const eqDiag = Math.abs((OA + OC) - (OB + OD)) < eps;
+                let t = theta % 180; if (t > 90) t = 180 - t;
+                const perp = Math.abs(t - 90) < 2;
+                let name = 'General quadrilateral', tone = 'info';
+                if (diag1Bisected && diag2Bisected && eqDiag && perp) { name = 'Square ✓'; tone = 'success'; }
+                else if (diag1Bisected && diag2Bisected && eqDiag) { name = 'Rectangle ✓'; tone = 'success'; }
+                else if (diag1Bisected && diag2Bisected && perp) { name = 'Rhombus ✓'; tone = 'success'; }
+                else if (diag1Bisected && diag2Bisected) { name = 'Parallelogram ✓'; tone = 'success'; }
+                else if (perp && (diag1Bisected || diag2Bisected)) { name = 'Kite ✓'; tone = 'success'; }
+                return { name, tone, diag1Bisected, diag2Bisected, eqDiag, perp };
+            }
+            updatePoint() {}
+            getSidebarHTML() {
+                const { A, B, C, D } = this.computePoints();
+                const cls = this.classify();
+                const sides = { AB: MathUtils.distance(A, B), BC: MathUtils.distance(B, C), CD: MathUtils.distance(C, D), DA: MathUtils.distance(D, A) };
+                const angles = MathUtils.interiorAngles([A, B, C, D]);
+                const p = this.params;
+                return `
+                    <h2>Rectangle &amp; Square</h2>
+                    <p><b>§4.1</b> · The Carpenter's Problem: set the four half-diagonal lengths and the angle between the diagonals, exactly like joining two wooden strips.</p>
+                    <div class="badge ${cls.tone}">${cls.name}</div>
+                    <div class="data-panel">
+                        <div class="range-row"><label>OA (half-diagonal 1) — ${p.OA}px</label>
+                        <input type="range" min="40" max="160" value="${p.OA}" oninput="app.activeModule.setParam('OA',this.value); app.render();"></div>
+                        <div class="range-row"><label>OC — ${p.OC}px</label>
+                        <input type="range" min="40" max="160" value="${p.OC}" oninput="app.activeModule.setParam('OC',this.value); app.render();"></div>
+                        <div class="range-row"><label>OB (half-diagonal 2) — ${p.OB}px</label>
+                        <input type="range" min="40" max="160" value="${p.OB}" oninput="app.activeModule.setParam('OB',this.value); app.render();"></div>
+                        <div class="range-row"><label>OD — ${p.OD}px</label>
+                        <input type="range" min="40" max="160" value="${p.OD}" oninput="app.activeModule.setParam('OD',this.value); app.render();"></div>
+                        <div class="range-row" style="margin-bottom:0;"><label>Angle between diagonals θ — ${p.theta}°</label>
+                        <input type="range" min="10" max="170" value="${p.theta}" oninput="app.activeModule.setParam('theta',this.value); app.render();"></div>
+                    </div>
+                    <div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:6px;">Diagonal test (Deductions 1–3, 5)</div>
+                        <div class="data-row"><span>AC = BD (equal length)</span>${checkDot(cls.eqDiag)}</div>
+                        <div class="data-row"><span>O bisects AC</span>${checkDot(cls.diag1Bisected)}</div>
+                        <div class="data-row"><span>O bisects BD</span>${checkDot(cls.diag2Bisected)}</div>
+                        <div class="data-row"><span>Diagonals ⟂ (90°)</span>${checkDot(cls.perp)}</div>
+                    </div>
+                    <div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:6px;">Resulting sides &amp; angles</div>
+                        <div class="data-row"><span>AB · BC · CD · DA</span><span>${[sides.AB,sides.BC,sides.CD,sides.DA].map(s=>s.toFixed(0)).join(' · ')}</span></div>
+                        <div class="data-row"><span>∠A · ∠B · ∠C · ∠D</span><span>${angles.map(a => a.toFixed(0)).join('° · ')}°</span></div>
+                    </div>
+                    <div class="btn-grid">
+                        <button class="action-btn" onclick="app.activeModule.setPreset('rectangle')">Rectangle</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('square')">Square</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('rhombus')">Rhombus</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('parallelogram')">Parallelogram</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('kite')">Kite</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('general')">General</button>
+                    </div>
+                    <div class="proof-box">A <b>rectangle</b> needs diagonals that are equal and bisect each other — any angle works. Add a right angle between them and it locks into a <b>square</b>. Keep them bisecting but unequal, still at 90°, and you get a <b>rhombus</b> instead.</div>
+                `;
+            }
             renderSVG() {
+                const { A, B, C, D, O } = this.computePoints();
                 let html = drawGrid();
-                const angles = MathUtils.interiorAngles(this.pts);
-                
-                // Draw Polygon
-                const ptsStr = this.pts.map(p => `${p.x},${p.y}`).join(' ');
-                html += `<polygon points="${ptsStr}" class="shape-edge" />`;
-
-                // Draw Proof Diagonal
-                if(this.showProof) {
-                    html += `<line x1="${this.pts[0].x}" y1="${this.pts[0].y}" x2="${this.pts[2].x}" y2="${this.pts[2].y}" class="diag-line" />`;
-                }
-
-                // Draw Angles & Vertices
-                this.pts.forEach((p, i) => {
-                    const prev = this.pts[(i-1+4)%4], next = this.pts[(i+1)%4];
-                    const a1 = Math.atan2(prev.y - p.y, prev.x - p.x);
-                    const a2 = Math.atan2(next.y - p.y, next.x - p.x);
-                    let start = a1, end = a2;
-                    // Ensure arc is inside
-                    let cross = (prev.x-p.x)*(next.y-p.y) - (prev.y-p.y)*(next.x-p.x);
-                    if(cross > 0) { start = a2; end = a1; }
-                    if(end < start) end += 2*Math.PI;
-                    
-                    html += `<path d="${MathUtils.describeArc(p.x, p.y, 40, start, end)}" class="ang-arc" />`;
-                    
-                    // Angle Text
-                    const midAng = start + (end - start)/2;
-                    const tx = p.x + Math.cos(midAng)*65;
-                    const ty = p.y + Math.sin(midAng)*65;
-                    html += `<text x="${tx}" y="${ty}" text-anchor="middle" dominant-baseline="middle" class="svg-label svg-text-bg">${angles[i].toFixed(0)}°</text>`;
-                    
-                    // Vertex Label
-                    html += `<text x="${p.x - 20}" y="${p.y - 20}" class="svg-label">${this.labels[i]}</text>`;
-                    
-                    // Draggable Handle
-                    html += `<circle cx="${p.x}" cy="${p.y}" r="8" class="vtx-handle" data-id="${i}" />`;
+                html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge"/>`;
+                html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
+                html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
+                html += `<circle cx="${O.x}" cy="${O.y}" r="4" fill="var(--brass-lt)"/><text x="${O.x + 10}" y="${O.y - 10}" class="svg-label">O</text>`;
+                [['A', A], ['B', B], ['C', C], ['D', D]].forEach(([name, p]) => {
+                    const dx = p.x - O.x, dy = p.y - O.y, len = Math.hypot(dx, dy) || 1;
+                    html += `<text x="${p.x + dx / len * 24}" y="${p.y + dy / len * 24}" text-anchor="middle" class="svg-label">${name}</text>`;
+                    html += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--brass)" stroke="#fff" stroke-width="2"/>`;
                 });
-
                 return html;
             }
         }
 
-        // MODULE 2: PARALLELOGRAM (Constrained Logic)
+        // =====================================================================
+        // 5. MODULE 3 — PARALLELOGRAM  (§4.3, side + angle construction)
+        // =====================================================================
         class ParallelogramModule {
             constructor() {
-                // A, B, C are free. D is constrained: D = A + (C - B)
-                this.pts = [{x:200, y:400}, {x:300, y:150}, {x:600, y:150}, {x:500, y:400}];
+                this.pts = [{ x: 220, y: 420 }, { x: 320, y: 170 }, { x: 620, y: 170 }, { x: 520, y: 420 }];
                 this.labels = ['P', 'Q', 'R', 'S'];
+                this.showDiagonals = false;
             }
-
             enforceConstraint(movedIndex, newPos) {
-                // Parallelogram logic: Opposite sides are equal vectors.
-                // Vector PQ = Vector SR. Therefore R = S + (Q - P)
-                if(movedIndex === 0) { // P moved
-                    let dx = newPos.x - this.pts[0].x, dy = newPos.y - this.pts[0].y;
-                    this.pts = this.pts.map(p => ({x: p.x+dx, y: p.y+dy})); // Translate whole shape
-                } else if(movedIndex === 1) { // Q moved
+                if (movedIndex === 0) {
+                    const dx = newPos.x - this.pts[0].x, dy = newPos.y - this.pts[0].y;
+                    this.pts = this.pts.map(p => ({ x: p.x + dx, y: p.y + dy }));
+                } else if (movedIndex === 1) {
                     this.pts[1] = newPos;
-                    this.pts[2] = {x: this.pts[3].x + (this.pts[1].x - this.pts[0].x), y: this.pts[3].y + (this.pts[1].y - this.pts[0].y)};
-                } else if(movedIndex === 2) { // R moved
+                    this.pts[2] = { x: this.pts[3].x + (this.pts[1].x - this.pts[0].x), y: this.pts[3].y + (this.pts[1].y - this.pts[0].y) };
+                } else if (movedIndex === 2) {
                     this.pts[2] = newPos;
-                    this.pts[1] = {x: this.pts[0].x + (this.pts[2].x - this.pts[3].x), y: this.pts[0].y + (this.pts[2].y - this.pts[3].y)};
-                } else if(movedIndex === 3) { // S moved
+                    this.pts[1] = { x: this.pts[0].x + (this.pts[2].x - this.pts[3].x), y: this.pts[0].y + (this.pts[2].y - this.pts[3].y) };
+                } else if (movedIndex === 3) {
                     this.pts[3] = newPos;
-                    this.pts[2] = {x: this.pts[3].x + (this.pts[1].x - this.pts[0].x), y: this.pts[3].y + (this.pts[1].y - this.pts[0].y)};
+                    this.pts[2] = { x: this.pts[3].x + (this.pts[1].x - this.pts[0].x), y: this.pts[3].y + (this.pts[1].y - this.pts[0].y) };
                 }
             }
-
-            updatePoint(index, newPos) { this.enforceConstraint(index, newPos); }
-
+            updatePoint(i, p) { this.enforceConstraint(i, p); }
+            toggleDiagonals() { this.showDiagonals = !this.showDiagonals; app.render(); }
             getSidebarHTML() {
-                const len1 = MathUtils.distance(this.pts[0], this.pts[1]);
-                const len2 = MathUtils.distance(this.pts[1], this.pts[2]);
+                const [P, Q, R, S] = this.pts;
                 const angles = MathUtils.interiorAngles(this.pts);
-
+                const lenPQ = MathUtils.distance(P, Q), lenQR = MathUtils.distance(Q, R);
+                let diagInfo = '';
+                if (this.showDiagonals) {
+                    diagInfo = `<div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:6px;">Diagonals PR &amp; QS</div>
+                        <div class="data-row"><span>Midpoints coincide</span>${checkDot(true)}</div>
+                        <div class="data-row"><span>PR length</span><span>${MathUtils.distance(P, R).toFixed(0)}px</span></div>
+                        <div class="data-row"><span>QS length</span><span>${MathUtils.distance(Q, S).toFixed(0)}px</span></div>
+                    </div>`;
+                }
                 return `
                     <h2>Parallelogram</h2>
-                    <p>Drag vertices Q, R, or S. The engine will constrain the shape to maintain parallel opposite sides.</p>
-                    <div class="badge info">Adjacent Angles = 180°</div>
-                    
+                    <p><b>§4.3</b> · Drag Q, R or S — R is always solved for you so PQ stays parallel &amp; equal to SR.</p>
+                    <div class="badge info">∠P + ∠Q = 180°</div>
                     <div class="data-panel">
-                        <div style="font-weight:bold; margin-bottom:8px; color:var(--brass);">Side Lengths:</div>
-                        <div class="data-row"><span>PQ (Left)</span> <span>${Math.round(len1)} px</span></div>
-                        <div class="data-row"><span>SR (Right)</span> <span>${Math.round(len1)} px</span></div>
-                        <div class="data-row"><span>QR (Top)</span> <span>${Math.round(len2)} px</span></div>
-                        <div class="data-row"><span>PS (Bottom)</span> <span>${Math.round(len2)} px</span></div>
+                        <div style="font-weight:700;margin-bottom:8px;">Sides</div>
+                        <div class="data-row"><span>PQ · SR</span><span>${lenPQ.toFixed(0)}px · ${lenPQ.toFixed(0)}px</span></div>
+                        <div class="data-row"><span>QR · PS</span><span>${lenQR.toFixed(0)}px · ${lenQR.toFixed(0)}px</span></div>
                     </div>
-                    
-                    <div class="proof-box">
-                        <strong>Observation:</strong> Opposite sides are always equal (PQ = SR, QR = PS). Opposite angles are equal.
+                    <div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:8px;">Angles</div>
+                        ${['P', 'Q', 'R', 'S'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
+                    </div>
+                    ${diagInfo}
+                    <div class="data-panel" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="app.activeModule.toggleDiagonals()">
+                        <strong>Show diagonals</strong>${toggleSwitch(this.showDiagonals)}
+                    </div>
+                    <div class="proof-box">Opposite sides stay equal &amp; parallel. Adjacent angles are supplementary; opposite angles are equal. Turn on the diagonals — they always cross at a shared midpoint, proving they bisect each other.</div>
+                `;
+            }
+            renderSVG() {
+                let html = drawGrid();
+                const [P, Q, R, S] = this.pts;
+                html += `<polygon points="${this.pts.map(p => `${p.x},${p.y}`).join(' ')}" class="shape-edge" style="fill:rgba(47,138,91,0.22); stroke:var(--success);"/>`;
+                if (this.showDiagonals) {
+                    html += `<line x1="${P.x}" y1="${P.y}" x2="${R.x}" y2="${R.y}" class="diag-line"/>`;
+                    html += `<line x1="${Q.x}" y1="${Q.y}" x2="${S.x}" y2="${S.y}" class="diag-line"/>`;
+                }
+                this.pts.forEach((p, i) => {
+                    html += `<text x="${p.x - 22}" y="${p.y - 16}" class="svg-label">${this.labels[i]}</text>`;
+                    html += `<circle cx="${p.x}" cy="${p.y}" r="9" class="vtx-handle" data-id="${i}"/>`;
+                });
+                return html;
+            }
+        }
+
+        // =====================================================================
+        // 6. MODULE 4 — RHOMBUS  (§4.4, side + apex-angle construction)
+        // =====================================================================
+        class RhombusModule {
+            constructor() { this.params = { side: 130, apex: 70 }; }
+            setParam(k, v) { this.params[k] = parseFloat(v); }
+            setPreset(name) {
+                const P = { thin: { side: 150, apex: 35 }, fat: { side: 120, apex: 110 }, square: { side: 120, apex: 90 } };
+                this.params = { ...P[name] };
+                app.render();
+            }
+            computePoints() {
+                const { side, apex } = this.params;
+                const A = { x: 280, y: 430 };
+                const rad = apex * Math.PI / 180;
+                const B = { x: A.x + side, y: A.y };
+                const D = { x: A.x + side * Math.cos(-rad), y: A.y + side * Math.sin(-rad) };
+                const C = { x: B.x + (D.x - A.x), y: B.y + (D.y - A.y) };
+                return { A, B, C, D };
+            }
+            updatePoint() {}
+            getSidebarHTML() {
+                const { A, B, C, D } = this.computePoints();
+                const v1 = { x: C.x - A.x, y: C.y - A.y }, v2 = { x: D.x - B.x, y: D.y - B.y };
+                let ang = Math.acos((v1.x * v2.x + v1.y * v2.y) / (Math.hypot(v1.x, v1.y) * Math.hypot(v2.x, v2.y))) * 180 / Math.PI;
+                const acuteAngle = ang > 90 ? 180 - ang : ang;
+                const angles = MathUtils.interiorAngles([A, B, C, D]);
+                const half = this.params.apex / 2;
+                return `
+                    <h2>Rhombus</h2>
+                    <p><b>§4.4</b> · Two equal adjacent sides AB, AD at your chosen apex angle — C completes the parallelogram, so all four sides come out equal.</p>
+                    <div class="badge success">All sides = ${this.params.side}px</div>
+                    <div class="data-panel">
+                        <div class="range-row"><label>Side length — ${this.params.side}px</label>
+                        <input type="range" min="70" max="170" value="${this.params.side}" oninput="app.activeModule.setParam('side',this.value); app.render();"></div>
+                        <div class="range-row" style="margin-bottom:0;"><label>Apex angle ∠A — ${this.params.apex}°</label>
+                        <input type="range" min="30" max="150" value="${this.params.apex}" oninput="app.activeModule.setParam('apex',this.value); app.render();"></div>
+                    </div>
+                    <div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:6px;">Angles</div>
+                        ${['A', 'B', 'C', 'D'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
+                    </div>
+                    <div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:6px;">Diagonal check (Deductions 9–10)</div>
+                        <div class="data-row"><span>Intersection angle</span><span>${acuteAngle.toFixed(0)}° / ${(180 - acuteAngle).toFixed(0)}°</span></div>
+                        <div class="data-row"><span>∠A split by diagonal</span><span>${half.toFixed(0)}° + ${half.toFixed(0)}°</span></div>
+                    </div>
+                    <div class="btn-grid">
+                        <button class="action-btn" onclick="app.activeModule.setPreset('thin')">Thin</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('fat')">Fat</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset('square')">90° (square)</button>
+                    </div>
+                    <div class="proof-box">Notice the intersection angle stays at <b>90°</b> no matter what apex angle you pick — the diagonals of a rhombus always meet at right angles and bisect its vertex angles.</div>
+                `;
+            }
+            renderSVG() {
+                const { A, B, C, D } = this.computePoints();
+                let html = drawGrid();
+                html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge" style="fill:rgba(191,77,46,0.18); stroke:#e08a6a;"/>`;
+                html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
+                html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
+                const offs = { A: [-16, 14], B: [18, 0], C: [16, -12], D: [-18, 4] };
+                [['A', A], ['B', B], ['C', C], ['D', D]].forEach(([n, p]) => {
+                    html += `<text x="${p.x + offs[n][0]}" y="${p.y + offs[n][1] - 12}" text-anchor="middle" class="svg-label">${n}</text>`;
+                    html += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--brass)" stroke="#fff" stroke-width="2"/>`;
+                });
+                return html;
+            }
+        }
+
+        // =====================================================================
+        // 7. MODULE 5 — KITE & TRAPEZIUM  (§4.6, two sub-tabs, one module)
+        // =====================================================================
+        class KiteTrapeziumModule {
+            constructor() {
+                this.subMode = 'kite';
+                this.kiteParams = { m: 90, OB: 70, OD: 170 };
+                this.trapParams = { top: 220, bottom: 380, height: 220, isosceles: true, skew: 0 };
+            }
+            setSubMode(m) { this.subMode = m; app.render(); }
+            setKiteParam(k, v) { this.kiteParams[k] = parseFloat(v); }
+            setTrapParam(k, v) {
+                if (k === 'isosceles') {
+                    this.trapParams.isosceles = !this.trapParams.isosceles;
+                    if (this.trapParams.isosceles) this.trapParams.skew = 0;
+                } else this.trapParams[k] = parseFloat(v);
+                app.render();
+            }
+            updatePoint() {}
+            computeKite() {
+                const { m, OB, OD } = this.kiteParams;
+                const O = { x: 400, y: 260 };
+                return { A: { x: O.x - m, y: O.y }, B: { x: O.x, y: O.y - OB }, C: { x: O.x + m, y: O.y }, D: { x: O.x, y: O.y + OD }, O };
+            }
+            computeTrap() {
+                const { top, bottom, height, skew } = this.trapParams;
+                const cx = 400, cy = 300;
+                return {
+                    P: { x: cx - top / 2 + skew, y: cy - height / 2 },
+                    Q: { x: cx + top / 2 + skew, y: cy - height / 2 },
+                    R: { x: cx + bottom / 2, y: cy + height / 2 },
+                    S: { x: cx - bottom / 2, y: cy + height / 2 },
+                };
+            }
+            getSidebarHTML() { return this.subMode === 'kite' ? this.kiteSidebar() : this.trapSidebar(); }
+            tabsHTML() {
+                return `<div class="pill-row">
+                    <div class="pill-btn ${this.subMode === 'kite' ? 'active' : ''}" onclick="app.activeModule.setSubMode('kite')">Kite</div>
+                    <div class="pill-btn ${this.subMode === 'trapezium' ? 'active' : ''}" onclick="app.activeModule.setSubMode('trapezium')">Trapezium</div>
+                </div>`;
+            }
+            kiteSidebar() {
+                const { A, B, C, D } = this.computeKite();
+                const AB = MathUtils.distance(A, B), DA = MathUtils.distance(D, A);
+                const angles = MathUtils.interiorAngles([A, B, C, D]);
+                return `
+                    <h2>Kite &amp; Trapezium Studio</h2>
+                    ${this.tabsHTML()}
+                    <p><b>§4.6</b> · O sits exactly halfway along AC, so AB always equals BC, and DA always equals DC — a kite by construction.</p>
+                    <div class="badge success">AB=BC=${AB.toFixed(0)}px · CD=DA=${DA.toFixed(0)}px</div>
+                    <div class="data-panel">
+                        <div class="range-row"><label>Half of AC — ${this.kiteParams.m}px</label>
+                        <input type="range" min="50" max="150" value="${this.kiteParams.m}" oninput="app.activeModule.setKiteParam('m',this.value); app.render();"></div>
+                        <div class="range-row"><label>OB — ${this.kiteParams.OB}px</label>
+                        <input type="range" min="40" max="200" value="${this.kiteParams.OB}" oninput="app.activeModule.setKiteParam('OB',this.value); app.render();"></div>
+                        <div class="range-row" style="margin-bottom:0;"><label>OD — ${this.kiteParams.OD}px</label>
+                        <input type="range" min="40" max="220" value="${this.kiteParams.OD}" oninput="app.activeModule.setKiteParam('OD',this.value); app.render();"></div>
+                    </div>
+                    <div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:6px;">Angles</div>
+                        ${['A', 'B', 'C', 'D'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
+                    </div>
+                    <div class="proof-box">Diagonal BD is the kite's axis of symmetry: it bisects AC at right angles, and bisects ∠B and ∠D. Set OB = OD and the kite becomes a rhombus.</div>
+                `;
+            }
+            trapSidebar() {
+                const { P, Q, R, S } = this.computeTrap();
+                const angles = MathUtils.interiorAngles([P, Q, R, S]);
+                return `
+                    <h2>Kite &amp; Trapezium Studio</h2>
+                    ${this.tabsHTML()}
+                    <p><b>§4.6</b> · PQ ∥ SR always. Toggle isosceles to force equal legs UX = VW.</p>
+                    <div class="badge info">∠S+∠P=180° · ∠R+∠Q=180°</div>
+                    <div class="data-panel">
+                        <div class="range-row"><label>Top width PQ — ${this.trapParams.top}px</label>
+                        <input type="range" min="100" max="320" value="${this.trapParams.top}" oninput="app.activeModule.setTrapParam('top',this.value); app.render();"></div>
+                        <div class="range-row"><label>Bottom width SR — ${this.trapParams.bottom}px</label>
+                        <input type="range" min="200" max="480" value="${this.trapParams.bottom}" oninput="app.activeModule.setTrapParam('bottom',this.value); app.render();"></div>
+                        <div class="range-row" style="margin-bottom:${this.trapParams.isosceles ? '0' : '12px'};"><label>Height — ${this.trapParams.height}px</label>
+                        <input type="range" min="120" max="300" value="${this.trapParams.height}" oninput="app.activeModule.setTrapParam('height',this.value); app.render();"></div>
+                        ${!this.trapParams.isosceles ? `<div class="range-row" style="margin-bottom:0;"><label>Skew (scalene) — ${this.trapParams.skew}px</label>
+                        <input type="range" min="-80" max="80" value="${this.trapParams.skew}" oninput="app.activeModule.setTrapParam('skew',this.value); app.render();"></div>` : ''}
+                    </div>
+                    <div class="data-panel" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="app.activeModule.setTrapParam('isosceles')">
+                        <strong>Isosceles trapezium</strong>${toggleSwitch(this.trapParams.isosceles)}
+                    </div>
+                    <div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:6px;">Angles</div>
+                        ${['P', 'Q', 'R', 'S'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
+                    </div>
+                    <div class="proof-box">${this.trapParams.isosceles ? 'With equal legs, base angles at each end match — ∠P = ∠Q and ∠S = ∠R — proven by dropping two perpendiculars and matching congruent right triangles.' : 'Scalene trapezium: only PQ ∥ SR is guaranteed, so the base angles need not match.'}</div>
+                `;
+            }
+            renderSVG() {
+                let html = drawGrid();
+                if (this.subMode === 'kite') {
+                    const { A, B, C, D } = this.computeKite();
+                    html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge" style="fill:rgba(47,117,172,0.25);"/>`;
+                    html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
+                    html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
+                    const offs = { A: [-18, 4], B: [0, -16], C: [18, 4], D: [0, 26] };
+                    [['A', A], ['B', B], ['C', C], ['D', D]].forEach(([n, p]) => {
+                        html += `<text x="${p.x + offs[n][0]}" y="${p.y + offs[n][1]}" text-anchor="middle" class="svg-label">${n}</text>`;
+                        html += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--brass)" stroke="#fff" stroke-width="2"/>`;
+                    });
+                } else {
+                    const { P, Q, R, S } = this.computeTrap();
+                    html += `<polygon points="${P.x},${P.y} ${Q.x},${Q.y} ${R.x},${R.y} ${S.x},${S.y}" class="shape-edge" style="fill:rgba(47,117,172,0.25);"/>`;
+                    const offs = { P: -16, Q: -16, R: 26, S: 26 };
+                    [['P', P], ['Q', Q], ['R', R], ['S', S]].forEach(([n, p]) => {
+                        html += `<text x="${p.x}" y="${p.y + offs[n]}" text-anchor="middle" class="svg-label">${n}</text>`;
+                        html += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--brass)" stroke="#fff" stroke-width="2"/>`;
+                    });
+                }
+                return html;
+            }
+        }
+
+        // =====================================================================
+        // 8. MODULE 6 — WHICH QUAD? FAMILY TREE + QUIZ  (Summary + Fig-it-out Q11)
+        // =====================================================================
+        class FamilyTreeModule {
+            constructor() {
+                this.view = 'venn';
+                this.selected = null;
+                this.order = [0, 1, 2, 3, 4, 5, 6];
+                this.quizIndex = 0; this.score = 0; this.answered = false; this.lastCorrect = null;
+                this.questions = [
+                    { q: "A quadrilateral whose diagonals are equal and bisect each other must be a square.", a: false, why: "That combination alone only guarantees a rectangle — the diagonals also need to be perpendicular to force a square." },
+                    { q: "A quadrilateral having three right angles must be a rectangle.", a: true, why: "Angles sum to 360°, so the fourth angle is forced to be 90° too." },
+                    { q: "A quadrilateral whose diagonals bisect each other must be a parallelogram.", a: true, why: "Bisecting diagonals alone is enough to prove both pairs of opposite sides are parallel." },
+                    { q: "A quadrilateral whose diagonals are perpendicular to each other must be a rhombus.", a: false, why: "Perpendicular diagonals alone only guarantee a kite, not equal sides." },
+                    { q: "A quadrilateral in which the opposite angles are equal must be a parallelogram.", a: true, why: "Equal opposite angles force adjacent angles to be supplementary, which makes both pairs of sides parallel." },
+                    { q: "A quadrilateral in which all the angles are equal is a rectangle.", a: true, why: "Each angle must be 360° ÷ 4 = 90°, so it's a rectangle." },
+                    { q: "Isosceles trapeziums are parallelograms.", a: false, why: "Only one pair of sides is guaranteed parallel — the legs are equal in length but not parallel." },
+                ];
+                this.regions = {
+                    quad: { name: 'Quadrilateral', def: 'Any closed 4-sided figure. Angle sum is always 360°.' },
+                    trapezium: { name: 'Trapezium', def: 'At least one pair of opposite sides is parallel.' },
+                    kite: { name: 'Kite', def: 'Two distinct pairs of adjacent equal sides. Diagonals are perpendicular.' },
+                    parallelogram: { name: 'Parallelogram', def: 'Both pairs of opposite sides parallel. Diagonals bisect each other.' },
+                    rectangle: { name: 'Rectangle', def: 'A parallelogram with all angles 90°. Diagonals equal & bisect each other.' },
+                    rhombus: { name: 'Rhombus', def: 'A parallelogram with all sides equal. Diagonals perpendicular & bisecting — it is also a kite.' },
+                    square: { name: 'Square', def: 'A rectangle that is also a rhombus: all sides equal, all angles 90°.' },
+                };
+            }
+            setView(v) { this.view = v; app.render(); }
+            select(region) { this.selected = region; app.render(); }
+            answer(bool) {
+                if (this.answered) return;
+                this.answered = true;
+                const qi = this.order[this.quizIndex];
+                this.lastCorrect = (bool === this.questions[qi].a);
+                if (this.lastCorrect) this.score++;
+                app.render();
+            }
+            next() { this.quizIndex++; this.answered = false; this.lastCorrect = null; app.render(); }
+            restart() {
+                this.order = [0,1,2,3,4,5,6].sort(() => Math.random() - 0.5);
+                this.quizIndex = 0; this.score = 0; this.answered = false; this.lastCorrect = null;
+                app.render();
+            }
+            updatePoint() {}
+            getSidebarHTML() { return this.view === 'quiz' ? this.quizSidebar() : this.vennSidebar(); }
+            tabsHTML() {
+                return `<div class="pill-row">
+                    <div class="pill-btn ${this.view === 'venn' ? 'active' : ''}" onclick="app.activeModule.setView('venn')">Venn Map</div>
+                    <div class="pill-btn ${this.view === 'quiz' ? 'active' : ''}" onclick="app.activeModule.setView('quiz')">True/False Quiz</div>
+                </div>`;
+            }
+            vennSidebar() {
+                const r = this.selected ? this.regions[this.selected] : null;
+                return `
+                    <h2>Which Quad? Family Tree</h2>
+                    ${this.tabsHTML()}
+                    <p>Tap any region of the diagram to see how that family fits into the others.</p>
+                    ${r ? `<div class="data-panel"><div style="font-weight:700; color:var(--blueprint-md); font-size:1.05rem; margin-bottom:6px;">${r.name}</div><p style="margin:0; font-size:0.86rem; color:#4a5a6a;">${r.def}</p></div>`
+                        : `<div class="proof-box">Every square is a rhombus, a rectangle, a kite, a parallelogram, a trapezium — and a quadrilateral. But not every quadrilateral is a square. Tap a region to explore.</div>`}
+                    <div class="data-panel">
+                        <div style="font-weight:700;margin-bottom:6px;">Chain of inclusion</div>
+                        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.76rem; line-height:2;">
+                        Square ⊂ Rectangle ⊂ Parallelogram ⊂ Trapezium ⊂ Quadrilateral<br>
+                        Square ⊂ Rhombus ⊂ Kite<br>
+                        Square ⊂ Rhombus ⊂ Parallelogram
+                        </div>
                     </div>
                 `;
             }
-
+            quizSidebar() {
+                if (this.quizIndex >= this.order.length) {
+                    return `
+                        <h2>Which Quad? Family Tree</h2>
+                        ${this.tabsHTML()}
+                        <div class="badge success">Score: ${this.score} / ${this.order.length}</div>
+                        <p>Quiz complete — built from the chapter's own Figure-it-out true/false round.</p>
+                        <button class="action-btn" style="width:100%;" onclick="app.activeModule.restart()">↻ Play again</button>
+                    `;
+                }
+                const item = this.questions[this.order[this.quizIndex]];
+                let bottom = `
+                    <div class="btn-grid">
+                        <button class="action-btn" style="background:var(--success); color:white;" onclick="app.activeModule.answer(true)">TRUE</button>
+                        <button class="action-btn" style="background:var(--danger); color:white;" onclick="app.activeModule.answer(false)">FALSE</button>
+                    </div>`;
+                if (this.answered) {
+                    bottom = `<div class="data-panel" style="border-left:4px solid ${this.lastCorrect ? 'var(--success)' : 'var(--danger)'};">
+                        <div style="font-weight:700; color:${this.lastCorrect ? 'var(--success)' : 'var(--danger)'}; margin-bottom:4px;">${this.lastCorrect ? 'Correct!' : 'Not quite.'} — Statement is ${item.a ? 'TRUE' : 'FALSE'}</div>
+                        <p style="margin:0; font-size:0.84rem;">${item.why}</p>
+                    </div>
+                    <button class="action-btn" style="width:100%;" onclick="app.activeModule.next()">Next question →</button>`;
+                }
+                return `
+                    <h2>Which Quad? Family Tree</h2>
+                    ${this.tabsHTML()}
+                    <div class="badge info">Question ${this.quizIndex + 1} / ${this.order.length} · Score ${this.score}</div>
+                    <div class="data-panel"><p style="margin:0; font-weight:600;">${item.q}</p></div>
+                    ${bottom}
+                `;
+            }
             renderSVG() {
                 let html = drawGrid();
-                const ptsStr = this.pts.map(p => `${p.x},${p.y}`).join(' ');
-                html += `<polygon points="${ptsStr}" class="shape-edge" style="fill:rgba(47, 138, 91, 0.2); stroke: var(--success);" />`;
-                
-                // Draw Markers/Arrows to denote parallel lines
-                // (Omitted complex arrow math for brevity, adding labels instead)
+                html += `
+                    <ellipse cx="400" cy="300" rx="370" ry="270" class="venn-region" fill="rgba(47,117,172,0.10)" stroke="#8fb8dc" stroke-width="2" onclick="app.activeModule.select('quad')"/>
+                    <text x="400" y="55" text-anchor="middle" class="svg-label" style="font-size:16px;">QUADRILATERAL</text>
 
-                this.pts.forEach((p, i) => {
-                    html += `<text x="${p.x - 20}" y="${p.y - 20}" class="svg-label">${this.labels[i]}</text>`;
-                    html += `<circle cx="${p.x}" cy="${p.y}" r="8" class="vtx-handle" data-id="${i}" />`;
-                });
+                    <ellipse cx="330" cy="330" rx="290" ry="195" class="venn-region" fill="rgba(56,189,248,0.10)" stroke="#38bdf8" stroke-width="2" onclick="app.activeModule.select('trapezium')"/>
+                    <text x="145" y="165" text-anchor="middle" class="svg-label" style="font-size:14px;">TRAPEZIUM</text>
+
+                    <ellipse cx="490" cy="330" rx="145" ry="155" class="venn-region" fill="rgba(191,77,46,0.14)" stroke="#e08a6a" stroke-width="2" onclick="app.activeModule.select('kite')"/>
+                    <text x="600" y="215" text-anchor="middle" class="svg-label" style="font-size:14px;">KITE</text>
+
+                    <ellipse cx="300" cy="350" rx="195" ry="135" class="venn-region" fill="rgba(47,138,91,0.16)" stroke="var(--success)" stroke-width="2" onclick="app.activeModule.select('parallelogram')"/>
+                    <text x="195" y="255" text-anchor="middle" class="svg-label" style="font-size:13px;">PARALLELOGRAM</text>
+
+                    <ellipse cx="250" cy="365" rx="102" ry="75" class="venn-region" fill="rgba(255,255,255,0.16)" stroke="#fff" stroke-width="2" onclick="app.activeModule.select('rectangle')"/>
+                    <text x="200" y="410" text-anchor="middle" class="svg-label" style="font-size:12px;">RECTANGLE</text>
+
+                    <ellipse cx="380" cy="355" rx="92" ry="88" class="venn-region" fill="rgba(201,138,62,0.22)" stroke="var(--brass)" stroke-width="2" onclick="app.activeModule.select('rhombus')"/>
+                    <text x="435" y="300" text-anchor="middle" class="svg-label" style="font-size:12px;">RHOMBUS</text>
+
+                    <ellipse cx="325" cy="362" rx="46" ry="43" class="venn-region" fill="rgba(255,255,255,0.4)" stroke="#fff" stroke-width="2.4" onclick="app.activeModule.select('square')"/>
+                    <text x="325" y="367" text-anchor="middle" class="svg-label" style="font-size:11px;">SQ</text>
+                `;
                 return html;
             }
         }
 
-        // --- 4. MAIN APP CONTROLLER ---
+        // =====================================================================
+        // 9. MAIN APP CONTROLLER
+        // =====================================================================
         const app = {
             modules: {
                 'angle-sum': new AngleSumModule(),
+                'rectangle-square': new RectangleSquareModule(),
                 'parallelogram': new ParallelogramModule(),
+                'rhombus': new RhombusModule(),
+                'kite-trapezium': new KiteTrapeziumModule(),
+                'family-tree': new FamilyTreeModule(),
             },
+            tabDefs: [
+                { id: 'angle-sum', name: '1 · Angle Sum' },
+                { id: 'rectangle-square', name: '2 · Rectangle & Square' },
+                { id: 'parallelogram', name: '3 · Parallelogram' },
+                { id: 'rhombus', name: '4 · Rhombus' },
+                { id: 'kite-trapezium', name: '5 · Kite & Trapezium' },
+                { id: 'family-tree', name: '6 · Which Quad?' },
+            ],
             activeTab: 'angle-sum',
             activeModule: null,
             dragId: -1,
 
             init() {
+                this.activeModule = this.modules[this.activeTab];
                 this.renderTabs();
-                this.switchTab('angle-sum');
+                this.render();
                 this.setupEvents();
             },
-
             renderTabs() {
-                const tabs = [
-                    { id: 'angle-sum', name: '1. Angle Sum' },
-                    { id: 'parallelogram', name: '2. Parallelogram' },
-                    { id: 'rhombus', name: '3. Rhombus (Coming Soon)' }
-                ];
-                let html = '';
-                tabs.forEach(t => {
-                    html += `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`;
-                });
-                document.getElementById('tabsBar').innerHTML = html;
+                document.getElementById('tabsBar').innerHTML = this.tabDefs.map(t =>
+                    `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`
+                ).join('');
             },
-
-            switchTab(tabId) {
-                if(!this.modules[tabId]) return; // For 'Coming Soon' tabs
-                this.activeTab = tabId;
-                this.activeModule = this.modules[tabId];
+            switchTab(id) {
+                if (!this.modules[id]) return;
+                this.activeTab = id;
+                this.activeModule = this.modules[id];
                 this.renderTabs();
                 this.render();
             },
-
             render() {
                 document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
                 document.getElementById('draftingBoard').innerHTML = this.activeModule.renderSVG();
             },
-
             setupEvents() {
                 svg.addEventListener('pointerdown', e => {
                     if (e.target.classList.contains('vtx-handle')) {
@@ -448,32 +903,23 @@
                         e.preventDefault();
                     }
                 });
-
                 svg.addEventListener('pointermove', e => {
                     if (this.dragId === -1) return;
                     let pt = getMousePos(e);
-                    // Boundary Constraints
                     pt.x = Math.max(20, Math.min(VB.w - 20, pt.x));
                     pt.y = Math.max(20, Math.min(VB.h - 20, pt.y));
-                    
                     this.activeModule.updatePoint(this.dragId, pt);
                     this.render();
                 });
-
                 const endDrag = () => { this.dragId = -1; };
                 svg.addEventListener('pointerup', endDrag);
                 svg.addEventListener('pointercancel', endDrag);
             }
         };
 
-        // --- 5. UI UTILITIES ---
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
 
-        // Boot up the engine
         window.onload = () => app.init();
-
     </script>
 </body>
 </html>
