@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions | Digital Math E-Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a192f;
+            --card-bg: rgba(16, 37, 66, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-gold: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(56, 189, 248, 0.2);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%), 
+                              radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-glow);
+            background: rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--accent-gold);
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            backdrop-filter: blur(8px);
+        }
+
+        .content-container h2 {
+            font-family: 'Fraunces', serif;
+            color: var(--accent-gold);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .content-container h2:first-child {
+            margin-top: 0;
+        }
+
+        .content-container p, .content-container ul {
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+            font-size: 1.05rem;
+        }
+
+        .content-container ul {
+            padding-left: 1.5rem;
+        }
+
+        .content-container li {
+            margin-bottom: 0.5rem;
+        }
+
+        .last-updated {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-glow);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            background: rgba(10, 25, 47, 0.9);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .back-btn {
+                position: static;
+                transform: none;
+                justify-content: center;
+                margin-bottom: 1rem;
+            }
+            .content-container {
+                margin: 1.5rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-btn">← Back to Home</a>
+        <h1>Terms & Conditions</h1>
+    </header>
+
+    <main class="content-container">
+        <span class="last-updated">Last Updated: August 2026</span>
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>By accessing and using the Digital Math E-Lab platform, you accept and agree to be bound by the terms and provisions of this agreement. If you do not agree to abide by these terms, please do not use this educational service.</p>
+
+        <h2>2. Purpose of the Platform</h2>
+        <p>The Digital Math E-Lab is designed strictly for educational purposes, providing interactive conceptual simulations aligned with the NCERT Mathematics curriculum. It is intended to support learning and teaching methodologies.</p>
+
+        <h2>3. Use of Content and Simulations</h2>
+        <ul>
+            <li>All drafting models, simulations, and visualizers are intellectual property provided for academic use.</li>
+            <li>You may not modify, reproduce, or commercially distribute the digital models without explicit permission.</li>
+            <li>The platform is free to use for students and educators for personal and classroom learning.</li>
+        </ul>
+
+        <h2>4. User Conduct</h2>
+        <p>Users agree to use the platform responsibly. Any attempt to disrupt the service, reverse-engineer the interactive models, or misuse the educational resources will result in restricted access.</p>
+
+        <h2>5. Disclaimer of Warranties</h2>
+        <p>While we strive to ensure the mathematical accuracy of all simulations and plotting models, the platform is provided on an "as is" and "as available" basis. We make no representations or warranties of any kind regarding the continuous availability or error-free operation of the software.</p>
+
+        <h2>6. Changes to Terms</h2>
+        <p>We reserve the right to modify these terms at any time. Any changes will be updated on this page. Continued use of the Digital Math E-Lab after any such changes shall constitute your consent to such changes.</p>
+
+        <h2>7. Contact Information</h2>
+        <p>For any queries regarding these terms or the functionality of the mathematical models, please reach out through the official educational institutional channels.</p>
+    </main>
+
+    <footer>
+        <p>Digital Math E-Lab System · NCERT Curriculum Aligned</p>
+    </footer>
+</body>
+</html>
