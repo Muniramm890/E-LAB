@@ -1,445 +1,1191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Squares and Cubes | Class 8 | Math E-Lab</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600&display=swap" rel="stylesheet">
-    <style>
-        /* ============================================================
-           ENTERPRISE BLUEPRINT THEME & ENGINE STYLES
-           ============================================================ */
-        :root {
-            --blueprint-dk: #061c30;
-            --blueprint-md: #0c3559;
-            --blueprint-lt: #2f75ac;
-            --grid-line: rgba(210, 232, 255, 0.1);
-            --grid-line-strong: rgba(210, 232, 255, 0.25);
-            --accent-1: #c98a3e; /* Brass */
-            --accent-2: #38bdf8; /* Cyan */
-            --accent-3: #f43f5e; /* Rose for Gnomons */
-            --paper-bg: #f8f9fa;
-            --paper-text: #1a2a3a;
-            --text-hi: #ffffff;
-            --text-mid: #a8c4df;
-            --success: #10b981;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Class 8: A Square and A Cube | Digital E-Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --blueprint-dk: #061c30;
+        --blueprint-md: #0c3559;
+        --blueprint-lt: #2f75ac;
+        --grid-line: rgba(210, 232, 255, 0.1);
+        --grid-line-strong: rgba(210, 232, 255, 0.25);
+        --brass: #c98a3e;
+        --brass-lt: #e3ac6a;
+        --brass-glow: rgba(201, 138, 62, 0.4);
+        --paper-bg: #f5f0e1;
+        --paper-text: #1a2a3a;
+        --paper-line: #d1c7b1;
+        --text-hi: #ffffff;
+        --text-mid: #a8c4df;
+        --success: #2f8a5b;
+        --danger: #c1452f;
+        --violet: #8b6fc9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            font-family: 'IBM Plex Sans', sans-serif;
-            background-color: var(--blueprint-dk);
-            color: var(--text-hi);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            user-select: none;
-        }
+    html, body {
+        font-family: 'IBM Plex Sans', sans-serif;
+        background-color: var(--blueprint-dk);
+        color: var(--text-hi);
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
 
-        /* HEADER */
-        header {
-            padding: 12px 20px;
-            background: linear-gradient(180deg, #041220 0%, var(--blueprint-md) 100%);
-            border-bottom: 1px solid var(--grid-line-strong);
-            display: flex; align-items: center; z-index: 10;
-        }
-        .back-btn {
-            color: var(--accent-1); text-decoration: none; font-family: 'IBM Plex Mono', monospace; 
-            font-size: 0.8rem; border: 1px solid var(--accent-1); padding: 5px 12px; 
-            border-radius: 20px; transition: 0.2s; margin-right: 15px;
-        }
-        .back-btn:hover { background: var(--accent-1); color: var(--blueprint-dk); }
-        .module-title h1 { font-family: 'Fraunces', serif; font-size: 1.2rem; }
-        .module-title p { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); letter-spacing: 1px; }
+    header {
+        padding: 12px 20px;
+        background: linear-gradient(180deg, #041220 0%, var(--blueprint-md) 100%);
+        border-bottom: 1px solid var(--grid-line-strong);
+        display: flex; align-items: center; justify-content: space-between;
+        z-index: 10; flex-wrap: wrap; gap: 10px; flex: none;
+    }
+    .brand-area { display: flex; align-items: center; gap: 15px; }
+    .back-btn {
+        color: var(--brass-lt); text-decoration: none; font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.8rem; border: 1px solid var(--brass); padding: 5px 12px;
+        border-radius: 20px; transition: 0.2s; white-space: nowrap;
+    }
+    .back-btn:hover { background: var(--brass); color: var(--blueprint-dk); box-shadow: 0 0 10px var(--brass-glow); }
+    .module-title h1 { font-family: 'Fraunces', serif; font-size: 1.2rem; margin-bottom: 2px; }
+    .module-title p { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); letter-spacing: 1px; }
 
-        /* TABS */
-        .tabs-bar {
-            display: flex; gap: 8px; padding: 10px 20px; background: rgba(0,0,0,0.3);
-            border-bottom: 1px solid var(--grid-line-strong); overflow-x: auto;
-        }
-        .tab-btn {
-            background: transparent; border: 1px solid var(--blueprint-lt); color: var(--text-mid);
-            padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
-            border-radius: 6px; cursor: pointer; transition: 0.3s;
-        }
-        .tab-btn:hover { border-color: var(--accent-2); color: var(--text-hi); }
-        .tab-btn.active { background: var(--accent-2); color: var(--blueprint-dk); border-color: var(--accent-2); font-weight: 700; box-shadow: 0 0 15px rgba(56,189,248,0.4); }
+    .tabs-bar {
+        display: flex; gap: 8px; padding: 10px 20px; background: rgba(0,0,0,0.3);
+        border-bottom: 1px solid var(--grid-line-strong); overflow-x: auto; flex: none;
+    }
+    .tab-btn {
+        background: transparent; border: 1px solid var(--blueprint-lt); color: var(--text-mid);
+        padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+        border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex: none;
+    }
+    .tab-btn:hover { border-color: var(--brass-lt); color: var(--text-hi); }
+    .tab-btn.active { background: var(--brass); color: var(--blueprint-dk); border-color: var(--brass); font-weight: 700; box-shadow: 0 0 15px rgba(201,138,62,0.3); }
 
-        /* WORKSPACE */
-        .workspace {
-            display: flex; flex: 1; position: relative; overflow: hidden;
-            background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-            background-size: 30px 30px; background-position: center;
-        }
+    /* WORKSPACE */
+    .workspace {
+        display: flex; flex: 1; min-height: 0; position: relative; overflow: hidden;
+        background-image:
+            linear-gradient(var(--grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 25px 25px;
+    }
 
-        /* SIDEBAR */
-        .sidebar {
-            width: 360px; background: var(--paper-bg); color: var(--paper-text);
-            border-right: 4px solid var(--accent-2); display: flex; flex-direction: column;
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5);
-        }
-        .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
-        .toggle-btn {
-            position: absolute; top: 20px; right: -40px; width: 40px; height: 50px;
-            background: var(--accent-2); border: none; border-radius: 0 8px 8px 0;
-            color: var(--blueprint-dk); font-size: 1.2rem; cursor: pointer;
-            box-shadow: 4px 0 10px rgba(0,0,0,0.2); transition: 0.2s;
-        }
+    .sidebar {
+        width: 370px; background: var(--paper-bg); color: var(--paper-text);
+        border-right: 4px solid var(--brass); display: flex; flex-direction: column;
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+        flex: none; min-height: 0;
+    }
+    .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
 
-        .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; }
-        .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; color: var(--blueprint-dk); margin-bottom: 5px; }
-        
-        .data-panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        
-        .math-eq { font-family: 'IBM Plex Mono', monospace; font-size: 1.6rem; font-weight: bold; text-align: center; color: var(--blueprint-md); margin: 10px 0; }
-        .math-sub { font-size: 0.85rem; color: #64748b; text-align: center; }
+    .toggle-btn {
+        position: absolute; top: 20px; right: -40px; width: 40px; height: 50px;
+        background: var(--brass); border: none; border-radius: 0 8px 8px 0;
+        color: var(--blueprint-dk); font-size: 1.2rem; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 4px 0 10px rgba(0,0,0,0.2); transition: 0.2s; z-index: 6;
+    }
+    .toggle-btn:hover { background: var(--brass-lt); width: 45px; right: -45px;}
 
-        /* CUSTOM SLIDER */
-        .slider-container { margin: 20px 0; }
-        .slider-label { display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; }
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--accent-2); cursor: pointer; margin-top: -8px; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #cbd5e1; border-radius: 4px; }
-        
-        .proof-box { background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--accent-2); padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.85rem; line-height: 1.5; }
-        .proof-box strong { color: var(--blueprint-md); }
+    .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; }
+    .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.3rem; color: var(--blueprint-dk); margin-bottom: 5px; }
+    .sidebar-content p { font-size: 0.87rem; line-height: 1.5; color: #4a5a6a; margin-bottom: 14px; }
 
-        /* CANVAS */
-        .stage { flex: 1; position: relative; touch-action: none; display: flex; align-items: center; justify-content: center; padding: 20px;}
-        .canvas-container {
-            width: 100%; height: 100%; background: rgba(4, 18, 32, 0.7); 
-            border: 1px solid var(--grid-line-strong); border-radius: 12px; 
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.3);
-            display: flex; align-items: center; justify-content: center; overflow: hidden;
-        }
-        svg { width: 100%; height: 100%; touch-action: none; }
+    .data-panel { background: #ffffff; border: 1px solid var(--paper-line); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+    .data-row { display: flex; justify-content: space-between; align-items:center; font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; padding: 5px 0; border-bottom: 1px dashed #eee; gap:10px; }
+    .data-row:last-child { border-bottom: none; }
 
-        /* SVG GEOMETRY STYLES */
-        .grid-cell { stroke: rgba(255,255,255,0.2); stroke-width: 1; transition: fill 0.3s; }
-        .grid-cell.base { fill: rgba(56, 189, 248, 0.15); }
-        .grid-cell.gnomon { fill: rgba(244, 63, 94, 0.4); stroke: #f43f5e; }
-        
-        .iso-face-top { fill: rgba(56, 189, 248, 0.6); stroke: #0f172a; stroke-width: 0.5; }
-        .iso-face-left { fill: rgba(56, 189, 248, 0.4); stroke: #0f172a; stroke-width: 0.5; }
-        .iso-face-right { fill: rgba(56, 189, 248, 0.2); stroke: #0f172a; stroke-width: 0.5; }
-        .iso-outline { fill: none; stroke: #fff; stroke-width: 2; stroke-linejoin: round; }
+    .badge { display: block; text-align: center; padding: 10px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 1rem; margin-bottom: 14px; }
+    .badge.success { background: #e4f3ea; color: var(--success); border: 1px solid var(--success); }
+    .badge.info { background: #e3f2fd; color: #0277bd; border: 1px solid #0277bd; }
+    .badge.danger { background: #fbe9e5; color: var(--danger); border: 1px solid var(--danger); }
+    .badge.violet { background: #efe9fb; color: var(--violet); border: 1px solid var(--violet); }
 
-        .svg-text { font-family: 'IBM Plex Mono', monospace; font-weight: bold; fill: #fff; pointer-events: none; }
-    </style>
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .btn-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    .action-btn { padding: 9px; border: 1px solid var(--blueprint-md); background: white; border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; transition: 0.2s; }
+    .action-btn:hover { background: var(--blueprint-md); color: white; }
+    .action-btn.primary { background: var(--brass); border-color: var(--brass); color: white; font-weight: 700; }
+    .action-btn.primary:hover { background: var(--brass-lt); }
+    .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .action-btn.wide { width: 100%; margin-bottom: 12px; }
+
+    .proof-box { background: rgba(47, 117, 172, 0.1); border-left: 4px solid var(--blueprint-lt); padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.83rem; line-height:1.55; margin-bottom: 4px; }
+
+    .pill-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .pill-btn { flex: 1; padding: 9px 6px; border: 1px solid var(--blueprint-md); background: white; border-radius: 20px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; text-align: center; transition: 0.2s; min-width: 60px; }
+    .pill-btn.active { background: var(--blueprint-md); color: white; font-weight: 700; }
+
+    .range-row { margin-bottom: 12px; }
+    .range-row label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; }
+    .range-row input[type=range] { width: 100%; accent-color: var(--brass); height: 22px; cursor: pointer; }
+    .num-input {
+        width: 100%; padding: 9px 12px; border: 1px solid var(--blueprint-md); border-radius: 6px;
+        font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; margin-bottom: 12px; background: white;
+    }
+
+    .check-item { display: inline-flex; align-items: center; }
+    .dot { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800; color: white; }
+
+    .stage { flex: 1; min-width: 0; position: relative; display: flex; align-items: center; justify-content: center; padding: 20px;}
+    .canvas-container {
+        width: 100%; max-width: 900px; height: 100%; max-height: 620px;
+        background: rgba(4, 18, 32, 0.6); border: 1px solid var(--grid-line-strong);
+        border-radius: 12px; box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.3);
+        position: relative; overflow: hidden; display:flex;
+    }
+    #stageContainer { width:100%; height:100%; min-height:0; }
+
+    .axis { stroke: rgba(255,255,255,0.15); stroke-width: 1; }
+    .svg-label { font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 14px; fill: white; pointer-events: none; }
+    .svg-text-bg { paint-order: stroke; stroke: var(--blueprint-dk); stroke-width: 4; }
+
+    /* HTML stage (tables, locker grid, quiz, tricks) */
+    .html-stage { width: 100%; height: 100%; min-height: 0; overflow-y: auto; padding: 22px; color: var(--text-hi); -webkit-overflow-scrolling: touch; }
+    .html-stage h3 { font-family:'Fraunces',serif; font-size:1.3rem; margin-bottom:10px; color: var(--brass-lt); }
+
+    /* Locker grid */
+    .locker-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; max-width: 620px; margin: 0 auto; }
+    .locker-cell {
+        aspect-ratio: 1; border-radius: 6px; display:flex; align-items:center; justify-content:center;
+        font-family:'IBM Plex Mono',monospace; font-size: 0.72rem; font-weight:700;
+        background: #24405c; color: var(--text-mid); border: 1px solid rgba(255,255,255,0.08);
+        transition: all 0.25s ease; position:relative;
+    }
+    .locker-cell.open { background: var(--success); color: white; box-shadow: 0 0 10px rgba(47,138,91,0.6); }
+    .locker-cell.square { outline: 2px solid var(--brass-lt); }
+    .locker-cell.prime-flag::after { content:'★'; position:absolute; top:-6px; right:-4px; font-size:0.6rem; color: var(--brass-lt); }
+
+    /* Reference table */
+    .ref-table-wrap { max-width: 720px; margin: 0 auto; }
+    table.ref-table { width: 100%; border-collapse: collapse; font-family:'IBM Plex Mono',monospace; font-size: 0.82rem; }
+    table.ref-table th { background: var(--blueprint-md); color: var(--brass-lt); padding: 8px 6px; position: sticky; top:0; text-align:center; }
+    table.ref-table td { padding: 7px 6px; text-align:center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    table.ref-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+    table.ref-table tr.hl td { background: rgba(201,138,62,0.18); }
+
+    /* Trick cards */
+    .trick-card-lg { max-width: 620px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid var(--grid-line-strong); border-radius: 12px; padding: 22px; }
+    .trick-card-lg h4 { font-family:'Fraunces',serif; font-size: 1.15rem; color: var(--brass-lt); margin-bottom: 10px; }
+    .trick-card-lg .ex { background: rgba(56,189,248,0.1); border-left: 3px solid var(--blueprint-lt); padding: 12px; border-radius: 0 8px 8px 0; margin-top: 12px; font-family:'IBM Plex Mono',monospace; font-size: 0.85rem; }
+
+    /* Quiz */
+    .quiz-wrap { max-width: 560px; margin: 0 auto; text-align: center; }
+    .quiz-progress { font-family:'IBM Plex Mono',monospace; color: var(--text-mid); margin-bottom: 14px; font-size:0.82rem; }
+    .quiz-prompt { font-family:'Fraunces',serif; font-size: 1.6rem; margin-bottom: 22px; line-height:1.4; }
+    .quiz-input-row { display:flex; gap:10px; justify-content:center; margin-bottom: 16px; }
+    .quiz-input-row input { width: 160px; padding: 12px; font-size:1.1rem; border-radius:8px; border:none; font-family:'IBM Plex Mono',monospace; text-align:center; }
+    .quiz-btn { padding: 12px 22px; border-radius: 8px; border:none; background: var(--brass); color: white; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; }
+    .quiz-btn:hover { background: var(--brass-lt); }
+    .quiz-tf-row { display:flex; gap:14px; justify-content:center; margin-bottom:16px; }
+    .quiz-tf-row button { flex:1; max-width:150px; padding:14px; border-radius:8px; border:none; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:0.95rem; }
+    .quiz-tf-row button.true-btn { background: var(--success); color:white; }
+    .quiz-tf-row button.false-btn { background: var(--danger); color:white; }
+    .quiz-feedback { padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem; }
+    .quiz-feedback.correct { background: rgba(47,138,91,0.2); border:1px solid var(--success); }
+    .quiz-feedback.wrong { background: rgba(193,69,47,0.2); border:1px solid var(--danger); }
+
+    /* Mobile */
+    @media (max-width: 860px) {
+        .sidebar { width: 86vw; }
+        .module-title h1 { font-size: 1rem; }
+        .toggle-btn { top: auto; bottom: 18px; right: -46px; width: 46px; height: 46px; border-radius: 50%; }
+        .locker-grid { gap: 4px; }
+    }
+    .sidebar-content::-webkit-scrollbar, .html-stage::-webkit-scrollbar { width: 8px; }
+    .sidebar-content::-webkit-scrollbar-thumb, .html-stage::-webkit-scrollbar-thumb { background: var(--paper-line); border-radius: 6px; }
+    .html-stage::-webkit-scrollbar-thumb { background: var(--blueprint-lt); }
+</style>
 </head>
 <body>
 
-    <header>
-        <div style="display: flex; align-items: center;">
-            <a href="../index.html" class="back-btn">← E-Lab</a>
-            <div class="module-title">
-                <h1>Squares & Cubes Visualizer</h1>
-                <p>GANITA PRAKASH · CHAPTER 1 · INTERACTIVE ENGINE</p>
-            </div>
+<header>
+    <div class="brand-area">
+        <a href="../index.html" class="back-btn">← E-Lab</a>
+        <div class="module-title">
+            <h1>A Square and A Cube</h1>
+            <p>CLASS 8 · CHAPTER 01 · GANITA PRAKASH · INTERACTIVE ENGINE</p>
         </div>
-    </header>
-
-    <div class="tabs-bar" id="tabsBar"></div>
-
-    <div class="workspace">
-        <aside class="sidebar" id="sidebar">
-            <button class="toggle-btn" onclick="app.toggleSidebar()">☰</button>
-            <div class="sidebar-content" id="sidebarContent">
-                <!-- HTML Injected by JS Engine -->
-            </div>
-        </aside>
-
-        <main class="stage">
-            <div class="canvas-container">
-                <svg id="visualizerBoard" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg"></svg>
-            </div>
-        </main>
     </div>
+</header>
 
-    <!-- ============================================================
-         JAVASCRIPT MATH ENGINE & RENDERING
-         ============================================================ -->
-    <script>
-        const svg = document.getElementById('visualizerBoard');
-        const VB = { w: 800, h: 600 };
+<div class="tabs-bar" id="tabsBar"></div>
 
-        // ==========================================
-        // MODULE 1: PERFECT SQUARES & GNOMONS (2D)
-        // ==========================================
-        class SquareModule {
-            constructor() {
-                this.N = 5; // Default value
-                this.maxN = 15;
-            }
+<div class="workspace">
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()" title="Show/hide panel">☰</button>
+        <div class="sidebar-content" id="sidebarContent"></div>
+    </aside>
+    <main class="stage">
+        <div class="canvas-container">
+            <div id="stageContainer"></div>
+        </div>
+    </main>
+</div>
 
-            setN(val) {
-                this.N = parseInt(val);
-                app.renderSVG();
-                app.renderSidebarMath();
-            }
+<script>
+// =========================================================================
+// 1. MATH UTILITIES
+// =========================================================================
+const MathUtils = {
+    primeFactorize(n) {
+        let x = Math.abs(Math.trunc(n));
+        const factors = [];
+        if (x < 2) return factors;
+        let d = 2;
+        while (d * d <= x) {
+            while (x % d === 0) { factors.push(d); x /= d; }
+            d++;
+        }
+        if (x > 1) factors.push(x);
+        return factors;
+    },
+    groupFactors(factors) {
+        const map = {};
+        factors.forEach(f => map[f] = (map[f] || 0) + 1);
+        return map; // {prime: count}
+    },
+    isPerfectSquare(n) {
+        if (n < 0) return false;
+        const r = Math.round(Math.sqrt(n));
+        return r * r === n;
+    },
+    isqrtFloor(n) { return Math.floor(Math.sqrt(n)); },
+    isPerfectCube(n) {
+        const r = Math.round(Math.cbrt(n));
+        return r * r * r === n;
+    },
+    icbrtFloor(n) { return Math.floor(Math.cbrt(n) + 1e-9); },
+    randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; },
+    formatFactorization(factors) {
+        return factors.join(' × ');
+    }
+};
 
-            getSidebarHTML() {
-                return `
-                    <h2>Perfect Squares (N²)</h2>
-                    <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Visualize how multiplying a number by itself creates a geometric square.</p>
-                    
-                    <div class="slider-container">
-                        <div class="slider-label"><span>Value of N:</span> <span id="nLabel" style="color:var(--accent-2)">${this.N}</span></div>
-                        <input type="range" min="1" max="${this.maxN}" value="${this.N}" oninput="app.activeModule.setN(this.value)">
-                    </div>
+function toggleSwitch(checked) {
+    return `<div style="width:40px;height:20px;background:${checked ? 'var(--brass)' : '#ccc'};border-radius:10px;position:relative;flex:none;">
+        <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;left:${checked ? '22px' : '2px'};transition:.2s;"></div>
+    </div>`;
+}
+function checkDot(ok) {
+    return `<span class="check-item"><span class="dot" style="background:${ok ? 'var(--success)' : '#c7bda0'}">${ok ? '✓' : '✕'}</span></span>`;
+}
 
-                    <div class="data-panel" id="mathPanel">
-                        <!-- Populated by renderSidebarMath -->
-                    </div>
+// =========================================================================
+// 2. MODULE 1 — LOCKER PUZZLE  (Chapter opener, §)
+// =========================================================================
+class LockerModule {
+    constructor() {
+        this.total = 100;
+        this.initState();
+    }
+    initState() {
+        this.lockers = new Array(this.total + 1).fill(false);
+        this.toggleCounts = new Array(this.total + 1).fill(0);
+        this.person = 0;
+        this.playing = false;
+        if (this.timer) clearInterval(this.timer);
+        this.timer = null;
+    }
+    reset() {
+        this.initState();
+        app.render();
+    }
+    doStep() {
+        if (this.person >= this.total) return false;
+        this.person++;
+        for (let L = this.person; L <= this.total; L += this.person) {
+            this.lockers[L] = !this.lockers[L];
+            this.toggleCounts[L]++;
+        }
+        return true;
+    }
+    stepOnce() { this.doStep(); app.render(); }
+    playPause() {
+        if (this.playing) { clearInterval(this.timer); this.playing = false; app.render(); return; }
+        if (this.person >= this.total) return;
+        this.playing = true;
+        this.timer = setInterval(() => {
+            const cont = this.doStep();
+            app.render();
+            if (!cont || this.person >= this.total) { clearInterval(this.timer); this.playing = false; app.render(); }
+        }, 160);
+        app.render();
+    }
+    jumpToEnd() {
+        if (this.playing) { clearInterval(this.timer); this.playing = false; }
+        while (this.person < this.total) this.doStep();
+        app.render();
+    }
+    updatePoint() {}
+    getSidebarHTML() {
+        const done = this.person >= this.total;
+        const openList = [];
+        for (let i = 1; i <= this.total; i++) if (this.lockers[i]) openList.push(i);
+        const primeCode = [];
+        for (let i = 2; i <= this.total && primeCode.length < 5; i++) if (this.toggleCounts[i] === 2) primeCode.push(i);
+        return `
+            <h2>The Queen's Locker Puzzle</h2>
+            <p>100 relatives, 100 lockers. Person <b>k</b> toggles every k-th locker. Which lockers stay open at the end — and can Khoisnam predict it before the process even starts?</p>
+            <div class="badge ${done ? 'success' : 'info'}">${done ? 'Simulation complete' : `Person ${this.person} of 100`}</div>
+            <div class="btn-grid three">
+                <button class="action-btn" onclick="app.activeModule.stepOnce()" ${done ? 'disabled' : ''}>Step »</button>
+                <button class="action-btn ${this.playing ? '' : 'primary'}" onclick="app.activeModule.playPause()" ${done ? 'disabled' : ''}>${this.playing ? '⏸ Pause' : '▶ Play'}</button>
+                <button class="action-btn" onclick="app.activeModule.jumpToEnd()" ${done ? 'disabled' : ''}>Jump to end</button>
+            </div>
+            <button class="action-btn wide" onclick="app.activeModule.reset()">↻ Reset all lockers</button>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Why squares stay open</div>
+                <p style="margin:0;">A locker is toggled once per <b>factor</b> of its number. Most factors arrive in pairs (like 2 &amp; 3 for locker 6), so they cancel out. Only <b>square numbers</b> have one factor left unpaired (like 6×6 for 36) — an odd number of toggles, so they end up open.</p>
+            </div>
+            ${done ? `
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Open lockers (${openList.length})</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.82rem;line-height:1.8;">${openList.join(', ')}</div>
+            </div>
+            <div class="data-panel" style="border-left:4px solid var(--brass);">
+                <div style="font-weight:700;margin-bottom:6px;">Passcode: lockers touched exactly twice</div>
+                <p style="margin:0 0 6px 0;">Toggled exactly twice means only 1 and the number itself are factors — that's the definition of a <b>prime number</b>.</p>
+                <div class="badge violet" style="margin-bottom:0;">${primeCode.join(' - ')}</div>
+            </div>` : ''}
+        `;
+    }
+    renderStage() {
+        let html = '<div class="locker-grid">';
+        for (let i = 1; i <= this.total; i++) {
+            const isOpen = this.lockers[i];
+            const isSquare = MathUtils.isPerfectSquare(i);
+            const isPrimeDone = this.person >= this.total && this.toggleCounts[i] === 2;
+            html += `<div class="locker-cell ${isOpen ? 'open' : ''} ${isSquare && this.person >= this.total ? 'square' : ''} ${isPrimeDone ? 'prime-flag' : ''}">${i}</div>`;
+        }
+        html += '</div>';
+        return { type: 'html', html };
+    }
+}
 
-                    <div class="proof-box">
-                        <strong>The Gnomon Pattern:</strong><br><br>
-                        Notice the pink L-shaped boundary? To grow from $(N-1)^2$ to $N^2$, we add exactly $(2N - 1)$ blocks.<br><br>
-                        This proves mathematically that adding consecutive odd numbers always creates a perfect square!
-                    </div>
-                `;
-            }
-
-            renderSidebarMath() {
-                const el = document.getElementById('mathPanel');
-                if(!el) return;
-                document.getElementById('nLabel').innerText = this.N;
-
-                let oddSumStr = "";
-                let sum = 0;
-                for(let i=1; i<=this.N; i++) {
-                    let odd = 2*i - 1;
-                    oddSumStr += odd + (i < this.N ? " + " : "");
-                    sum += odd;
-                }
-
-                el.innerHTML = `
-                    <div class="math-sub">Area of Square (N × N)</div>
-                    <div class="math-eq">${this.N} × ${this.N} = ${this.N * this.N}</div>
-                    
-                    <div style="margin-top: 20px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
-                        <div class="math-sub" style="color:var(--accent-3); font-weight:bold;">Sum of first ${this.N} odd numbers</div>
-                        <div style="font-family:'IBM Plex Mono', monospace; font-size:0.9rem; text-align:center; margin-top:10px; color:#334155; word-wrap:break-word;">
-                            ${oddSumStr} <br><br> <strong style="font-size:1.2rem; color:var(--blueprint-md);">= ${sum}</strong>
-                        </div>
-                    </div>
-                `;
-            }
-
-            renderSVG() {
-                let html = '';
-                const cellSize = Math.min(400 / this.maxN, 35); // Dynamic scaling
-                const totalSize = this.N * cellSize;
-                const startX = (VB.w - totalSize) / 2;
-                const startY = (VB.h - totalSize) / 2;
-
-                // Draw N x N Grid
-                for(let row = 0; row < this.N; row++) {
-                    for(let col = 0; col < this.N; col++) {
-                        const x = startX + col * cellSize;
-                        const y = startY + row * cellSize;
-                        
-                        // Highlight the outermost layer (Gnomon) for the current N
-                        let isGnomon = (row === this.N - 1 || col === this.N - 1);
-                        let cls = isGnomon ? 'grid-cell gnomon' : 'grid-cell base';
-                        
-                        // If N=1, base is also gnomon visually
-                        if(this.N === 1) cls = 'grid-cell gnomon';
-
-                        html += `<rect x="${x}" y="${y}" width="${cellSize}" height="${cellSize}" class="${cls}" />`;
-                    }
-                }
-
-                // Add Dimension Labels
-                html += `<text x="${startX + totalSize/2}" y="${startY - 15}" class="svg-text" text-anchor="middle" font-size="18">N = ${this.N}</text>`;
-                html += `<text x="${startX - 20}" y="${startY + totalSize/2}" class="svg-text" text-anchor="middle" dominant-baseline="middle" font-size="18">N = ${this.N}</text>`;
-
-                return html;
+// =========================================================================
+// 3. MODULE 2 — SQUARE NUMBER BUILDER  (§1.1)
+// =========================================================================
+class SquareBuilderModule {
+    constructor() { this.n = 5; this.showGnomon = true; }
+    setN(v) { this.n = parseInt(v); app.render(); }
+    toggleGnomon() { this.showGnomon = !this.showGnomon; app.render(); }
+    updatePoint() {}
+    oddSumString(n) {
+        const odds = [];
+        for (let i = 1; i <= n; i++) odds.push(2 * i - 1);
+        return odds.join(' + ');
+    }
+    getSidebarHTML() {
+        const n = this.n;
+        const sq = n * n;
+        const prevSq = (n - 1) >= 1 ? (n - 1) * (n - 1) : 0;
+        const diff = sq - prevSq;
+        return `
+            <h2>Square Number Builder</h2>
+            <p><b>§1.1</b> · A square number is the area of a square grid — n rows of n unit cells. Drag the slider and watch the grid, and the coloured "L-shaped" shells (gnomons), grow.</p>
+            <div class="badge success">${n} × ${n} = ${sq}</div>
+            <div class="data-panel">
+                <div class="range-row" style="margin-bottom:0;">
+                    <label>Side length n — ${n}</label>
+                    <input type="range" min="1" max="15" value="${n}" oninput="app.activeModule.setN(this.value)">
+                </div>
+            </div>
+            <div class="data-panel" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="app.activeModule.toggleGnomon()">
+                <strong>Show odd-number gnomon shells</strong>${toggleSwitch(this.showGnomon)}
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Sum of first ${n} odd numbers</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.8rem;line-height:1.6;word-break:break-word;">${this.oddSumString(n)} = <b>${sq}</b></div>
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Successive difference</div>
+                <div class="data-row"><span>${n}² − ${n - 1 >= 0 ? (n - 1) : 0}²</span><span>${diff}</span></div>
+                <div class="data-row"><span>Expected (2n − 1)</span><span>${2 * n - 1}</span></div>
+            </div>
+            <div class="proof-box">Each new gnomon shell wraps the previous square and always adds an <b>odd</b> number of new unit cells — that's why consecutive squares always differ by an odd number, and why n² is always the sum of the first n odd numbers.</div>
+        `;
+    }
+    renderStage() {
+        const n = this.n;
+        const VB = 500;
+        const size = 400 / n;
+        const offset = (VB - 400) / 2 + 40;
+        let html = `<rect x="0" y="0" width="${VB}" height="${VB}" fill="none"/>`;
+        for (let r = 0; r < n; r++) {
+            for (let c = 0; c < n; c++) {
+                const layer = Math.max(r, c);
+                const hue = this.showGnomon ? (layer * 47) % 360 : 205;
+                const fill = this.showGnomon ? `hsl(${hue},60%,50%)` : 'rgba(47,117,172,0.5)';
+                const x = offset + c * size, y = offset + r * size;
+                html += `<rect x="${x}" y="${y}" width="${size}" height="${size}" fill="${fill}" stroke="rgba(6,28,48,0.7)" stroke-width="1.5" opacity="0.92"/>`;
             }
         }
+        html += `<rect x="${offset}" y="${offset}" width="${400}" height="${400}" fill="none" stroke="#fff" stroke-width="2.5"/>`;
+        html += `<text x="${VB/2}" y="${offset - 15}" text-anchor="middle" class="svg-label" style="font-size:16px;">side = ${n}</text>`;
+        html += `<text x="${VB/2}" y="${offset + 400 + 30}" text-anchor="middle" class="svg-label" style="font-size:18px;">area = ${n}² = ${n*n}</text>`;
+        return { type: 'svg', html };
+    }
+}
 
-        // ==========================================
-        // MODULE 2: PERFECT CUBES (3D ISOMETRIC)
-        // ==========================================
-        class CubeModule {
-            constructor() {
-                this.N = 3;
-                this.maxN = 8; // Kept lower to prevent SVG overload and maintain visual clarity
-            }
+// =========================================================================
+// 4. MODULE 3 — SQUARE ROOTS LAB  (§1.1, three methods)
+// =========================================================================
+class SquareRootsModule {
+    constructor() {
+        this.N = 324;
+        this.subMode = 'factor';
+        this.resetSubtract();
+    }
+    setN(v) {
+        this.N = Math.max(0, Math.min(9999, parseInt(v) || 0));
+        this.resetSubtract();
+        app.render();
+    }
+    setSubMode(m) { this.subMode = m; app.render(); }
+    resetSubtract() {
+        this.subSteps = [];
+        this.subCurrent = this.N;
+        this.subOddIdx = 1;
+        this.subDone = false;
+        this.subIsSquare = false;
+    }
+    stepSubtract() {
+        if (this.subDone) return;
+        const odd = 2 * this.subOddIdx - 1;
+        const next = this.subCurrent - odd;
+        this.subSteps.push(`${this.subCurrent} − ${odd} = ${next}`);
+        this.subCurrent = next;
+        this.subOddIdx++;
+        if (next === 0) { this.subDone = true; this.subIsSquare = true; }
+        else if (next < 0) { this.subDone = true; this.subIsSquare = false; }
+        app.render();
+    }
+    autoSubtract() {
+        let guard = 0;
+        while (!this.subDone && guard < 500) { this.stepSubtractSilent(); guard++; }
+        app.render();
+    }
+    stepSubtractSilent() {
+        if (this.subDone) return;
+        const odd = 2 * this.subOddIdx - 1;
+        const next = this.subCurrent - odd;
+        this.subSteps.push(`${this.subCurrent} − ${odd} = ${next}`);
+        this.subCurrent = next;
+        this.subOddIdx++;
+        if (next === 0) { this.subDone = true; this.subIsSquare = true; }
+        else if (next < 0) { this.subDone = true; this.subIsSquare = false; }
+    }
+    updatePoint() {}
 
-            setN(val) {
-                this.N = parseInt(val);
-                app.renderSVG();
-                app.renderSidebarMath();
-            }
-
-            getSidebarHTML() {
-                return `
-                    <h2>Perfect Cubes (N³)</h2>
-                    <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px;">Visualize how multiplying a number three times creates a 3D volume.</p>
-                    
-                    <div class="slider-container">
-                        <div class="slider-label"><span>Value of N:</span> <span id="nLabel2" style="color:var(--accent-2)">${this.N}</span></div>
-                        <input type="range" min="1" max="${this.maxN}" value="${this.N}" oninput="app.activeModule.setN(this.value)">
-                    </div>
-
-                    <div class="data-panel" id="mathPanel">
-                        <!-- Populated by renderSidebarMath -->
-                    </div>
-
-                    <div class="proof-box">
-                        <strong>Volume vs Area:</strong><br><br>
-                        Unlike a square which grows in 2 dimensions, a cube grows in 3 dimensions (Length × Width × Height). <br><br>
-                        Notice how rapidly the total number of blocks increases as N grows!
-                    </div>
-                `;
-            }
-
-            renderSidebarMath() {
-                const el = document.getElementById('mathPanel');
-                if(!el) return;
-                document.getElementById('nLabel2').innerText = this.N;
-
-                const cubeVal = this.N * this.N * this.N;
-
-                el.innerHTML = `
-                    <div class="math-sub">Volume of Cube (N × N × N)</div>
-                    <div class="math-eq">${this.N} × ${this.N} × ${this.N}</div>
-                    <div class="math-eq" style="color:var(--accent-2); font-size:2.2rem;">= ${cubeVal}</div>
-                `;
-            }
-
-            // Isometric Projection Math
-            iso(x, y, z, scale, centerX, centerY) {
-                // Standard isometric projection angles
-                const isoX = (x - y) * Math.cos(Math.PI / 6);
-                const isoY = (x + y) * Math.sin(Math.PI / 6) - z;
-                return { 
-                    x: centerX + isoX * scale, 
-                    y: centerY + isoY * scale 
-                };
-            }
-
-            renderSVG() {
-                let html = '';
-                const scale = Math.min(250 / this.maxN, 45); // Size of 1 unit block
-                const cx = VB.w / 2;
-                const cy = VB.h / 2 + (this.N * scale * 0.5); // Center visually
-
-                // Draw a large cube subdivided into N grids (Much faster than 1000 individual cubes)
-                // We draw the 3 visible faces: Top (z=N), Left (y=N), Right (x=N)
-
-                // 1. TOP FACE (Grid on XY plane at Z=N)
-                for(let x=0; x<this.N; x++) {
-                    for(let y=0; y<this.N; y++) {
-                        let p1 = this.iso(x, y, this.N, scale, cx, cy);
-                        let p2 = this.iso(x+1, y, this.N, scale, cx, cy);
-                        let p3 = this.iso(x+1, y+1, this.N, scale, cx, cy);
-                        let p4 = this.iso(x, y+1, this.N, scale, cx, cy);
-                        html += `<polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y} ${p4.x},${p4.y}" class="iso-face-top" />`;
-                    }
-                }
-
-                // 2. LEFT FACE (Grid on XZ plane at Y=N)
-                for(let x=0; x<this.N; x++) {
-                    for(let z=0; z<this.N; z++) {
-                        let p1 = this.iso(x, this.N, z, scale, cx, cy);
-                        let p2 = this.iso(x+1, this.N, z, scale, cx, cy);
-                        let p3 = this.iso(x+1, this.N, z+1, scale, cx, cy);
-                        let p4 = this.iso(x, this.N, z+1, scale, cx, cy);
-                        html += `<polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y} ${p4.x},${p4.y}" class="iso-face-left" />`;
-                    }
-                }
-
-                // 3. RIGHT FACE (Grid on YZ plane at X=N)
-                for(let y=0; y<this.N; y++) {
-                    for(let z=0; z<this.N; z++) {
-                        let p1 = this.iso(this.N, y, z, scale, cx, cy);
-                        let p2 = this.iso(this.N, y+1, z, scale, cx, cy);
-                        let p3 = this.iso(this.N, y+1, z+1, scale, cx, cy);
-                        let p4 = this.iso(this.N, y, z+1, scale, cx, cy);
-                        html += `<polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y} ${p4.x},${p4.y}" class="iso-face-right" />`;
-                    }
-                }
-
-                // Overall Outline for sharpness
-                let o1 = this.iso(0, this.N, 0, scale, cx, cy); // Bottom left
-                let o2 = this.iso(this.N, this.N, 0, scale, cx, cy); // Bottom center
-                let o3 = this.iso(this.N, 0, 0, scale, cx, cy); // Bottom right
-                let o4 = this.iso(this.N, 0, this.N, scale, cx, cy); // Mid right
-                let o5 = this.iso(0, 0, this.N, scale, cx, cy); // Top center
-                let o6 = this.iso(0, this.N, this.N, scale, cx, cy); // Mid left
-                
-                html += `<polygon points="${o1.x},${o1.y} ${o2.x},${o2.y} ${o3.x},${o3.y} ${o4.x},${o4.y} ${o5.x},${o5.y} ${o6.x},${o6.y}" class="iso-outline" />`;
-                
-                // Inner Y outline
-                let center = this.iso(this.N, this.N, this.N, scale, cx, cy);
-                html += `<polyline points="${o2.x},${o2.y} ${center.x},${center.y} ${o6.x},${o6.y}" class="iso-outline" />`;
-                html += `<line x1="${center.x}" y1="${center.y}" x2="${o4.x}" y2="${o4.y}" class="iso-outline" />`;
-
-                // Dimension Labels
-                html += `<text x="${o1.x - 30}" y="${o1.y - (o1.y - o6.y)/2}" class="svg-text" font-size="18">N=${this.N}</text>`;
-                html += `<text x="${o2.x + 10}" y="${o2.y + 25}" class="svg-text" font-size="18">N=${this.N}</text>`;
-
-                return html;
-            }
+    // ---- Method A: prime factorisation
+    factorAnalysis() {
+        const N = this.N;
+        if (N < 1) return null;
+        const factors = MathUtils.primeFactorize(N).sort((a, b) => a - b);
+        const grouped = MathUtils.groupFactors(factors);
+        let isSquare = true;
+        let rootParts = [];
+        Object.keys(grouped).forEach(p => {
+            if (grouped[p] % 2 !== 0) isSquare = false;
+            rootParts.push(`${p}^${Math.floor(grouped[p] / 2)}`);
+        });
+        let root = null;
+        if (isSquare) {
+            root = 1;
+            Object.keys(grouped).forEach(p => { root *= Math.pow(parseInt(p), grouped[p] / 2); });
         }
+        return { factors, grouped, isSquare, root };
+    }
 
-        // ==========================================
-        // MAIN APP CONTROLLER
-        // ==========================================
-        const app = {
-            modules: {
-                'squares': new SquareModule(),
-                'cubes': new CubeModule(),
-            },
-            activeTab: 'squares',
-            activeModule: null,
+    // ---- Method C: estimation (tens-bracket -> units-digit hint -> midpoint refine -> exact search)
+    estimateSteps() {
+        const N = this.N;
+        if (N < 1) return { steps: ['Enter a positive number to estimate its square root.'], approx: 0, exact: false };
+        let low = 0, high = 10;
+        for (let k = 1; k <= 100; k++) {
+            if (10 * k * (10 * k) > N) { low = 10 * (k - 1); high = 10 * k; break; }
+            low = 10 * k; high = 10 * (k + 1);
+        }
+        const steps = [];
+        steps.push(`${N} lies between ${low}² = ${low*low} and ${high}² = ${high*high}, so ${low} ≤ √${N} ≤ ${high}.`);
+        const lastDigit = N % 10;
+        const digitMap = { 0: [0], 1: [1, 9], 4: [2, 8], 5: [5], 6: [4, 6], 9: [3, 7] };
+        const options = digitMap[lastDigit];
+        if (!options) {
+            steps.push(`${N} ends in ${lastDigit} — no perfect square ever ends in 2, 3, 7 or 8, so ${N} is definitely not a perfect square.`);
+        } else {
+            steps.push(`The units digit of ${N} is ${lastDigit} — if ${N} were a perfect square, its root would have to end in ${options.join(' or ')}.`);
+        }
+        const mid = low + 5, midSq = mid * mid;
+        steps.push(`Check the midpoint: ${mid}² = (${low}+5)² = ${low}² + 2×${low}×5 + 25 = ${midSq}.`);
+        let subLow = low, subHigh = high;
+        if (midSq > N) { subHigh = mid; steps.push(`${midSq} > ${N}, so √${N} lies between ${low} and ${mid}.`); }
+        else { subLow = mid; steps.push(`${midSq} ≤ ${N}, so √${N} lies between ${mid} and ${high}.`); }
+        // Narrow down to the exact integer (or the closest one) by direct comparison — never
+        // more than a handful of checks once bracketed to a window of ten.
+        let k = subLow;
+        while ((k + 1) * (k + 1) <= N) k++;
+        const exact = k * k === N;
+        let approx = k;
+        if (!exact) {
+            const d1 = N - k * k, d2 = (k + 1) * (k + 1) - N;
+            approx = d2 < d1 ? k + 1 : k;
+        }
+        steps.push(`Comparing consecutive whole numbers near ${mid}: ${k}² = ${k*k}${exact ? ` = ${N} ✓` : ` and ${k+1}² = ${(k+1)*(k+1)}`}.`);
+        if (exact) steps.push(`So √${N} = ${k} exactly.`);
+        else steps.push(`${N} is not a perfect square. The closest whole-number estimate is √${N} ≈ ${approx} (actual value ≈ ${Math.sqrt(N).toFixed(2)}).`);
+        return { steps, approx, exact };
+    }
 
-            init() {
-                this.renderTabs();
-                this.switchTab('squares');
-            },
-
-            renderTabs() {
-                const tabs = [
-                    { id: 'squares', name: '1. Perfect Squares (2D)' },
-                    { id: 'cubes', name: '2. Perfect Cubes (3D)' }
-                ];
-                let html = '';
-                tabs.forEach(t => {
-                    html += `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`;
+    tabsHTML() {
+        return `<div class="pill-row">
+            <div class="pill-btn ${this.subMode === 'factor' ? 'active' : ''}" onclick="app.activeModule.setSubMode('factor')">Factor Tree</div>
+            <div class="pill-btn ${this.subMode === 'subtract' ? 'active' : ''}" onclick="app.activeModule.setSubMode('subtract')">Odd Subtraction</div>
+            <div class="pill-btn ${this.subMode === 'estimate' ? 'active' : ''}" onclick="app.activeModule.setSubMode('estimate')">Estimation</div>
+        </div>`;
+    }
+    numberInputHTML() {
+        return `<div class="data-panel">
+            <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Number to test</label>
+            <input class="num-input" type="number" min="0" max="9999" value="${this.N}" onchange="app.activeModule.setN(this.value)">
+        </div>`;
+    }
+    getSidebarHTML() {
+        if (this.subMode === 'factor') return this.factorSidebar();
+        if (this.subMode === 'subtract') return this.subtractSidebar();
+        return this.estimateSidebar();
+    }
+    factorSidebar() {
+        const r = this.factorAnalysis();
+        return `
+            <h2>Square Roots Lab</h2>
+            ${this.tabsHTML()}
+            <p><b>Method 1</b> · Prime-factorise the number. If every prime can be split into two identical groups, it's a perfect square — multiply one group to get the root.</p>
+            ${this.numberInputHTML()}
+            ${!r ? '<div class="proof-box">Enter a number greater than 0.</div>' : `
+            <div class="badge ${r.isSquare ? 'success' : 'danger'}">${r.isSquare ? `√${this.N} = ${r.root}` : `${this.N} is not a perfect square`}</div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Prime factorisation</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.85rem;">${this.N} = ${MathUtils.formatFactorization(r.factors) || '—'}</div>
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Grouped pairs</div>
+                ${Object.keys(r.grouped).map(p => `<div class="data-row"><span>Prime ${p}</span><span>appears ${r.grouped[p]}× ${r.grouped[p] % 2 === 0 ? '✓ pairs up' : '✕ leftover'}</span></div>`).join('')}
+            </div>
+            <div class="proof-box">${r.isSquare ? `Every prime factor pairs up completely, so ${this.N} is a perfect square. Take one factor from each pair and multiply: √${this.N} = ${r.root}.` : `At least one prime factor is left without a partner, so ${this.N} cannot be written as n × n.`}</div>
+            `}
+        `;
+    }
+    subtractSidebar() {
+        return `
+            <h2>Square Roots Lab</h2>
+            ${this.tabsHTML()}
+            <p><b>Method 2</b> · Every square is a sum of consecutive odd numbers starting from 1. Subtract 1, 3, 5, … If you land exactly on 0, it's a perfect square — the count of steps is the root.</p>
+            ${this.numberInputHTML()}
+            <div class="btn-grid">
+                <button class="action-btn" onclick="app.activeModule.stepSubtract()" ${this.subDone ? 'disabled' : ''}>Subtract next odd »</button>
+                <button class="action-btn primary" onclick="app.activeModule.autoSubtract()" ${this.subDone ? 'disabled' : ''}>Run to end</button>
+            </div>
+            <button class="action-btn wide" onclick="app.activeModule.resetSubtract(); app.render();">↻ Restart</button>
+            <div class="data-panel" style="max-height:220px;overflow-y:auto;">
+                <div style="font-weight:700;margin-bottom:6px;">Steps (${this.subSteps.length})</div>
+                ${this.subSteps.length === 0 ? '<p style="margin:0;">No steps yet — click "Subtract next odd".</p>' :
+                    this.subSteps.map(s => `<div class="data-row"><span>${s}</span></div>`).join('')}
+            </div>
+            ${this.subDone ? `<div class="badge ${this.subIsSquare ? 'success' : 'danger'}">${this.subIsSquare ? `${this.N} is a perfect square — √${this.N} = ${this.subOddIdx - 1}` : `${this.N} is NOT a perfect square (went past 0)`}</div>` : ''}
+        `;
+    }
+    estimateSidebar() {
+        const e = this.estimateSteps();
+        return `
+            <h2>Square Roots Lab</h2>
+            ${this.tabsHTML()}
+            <p><b>Method 3</b> · Bracket the number between two multiples of ten, use the units digit to shortlist candidates, then verify by squaring.</p>
+            ${this.numberInputHTML()}
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Worked estimation</div>
+                ${e.steps.map((s, i) => `<div class="data-row" style="align-items:flex-start;"><span style="color:var(--brass);font-weight:700;">${i + 1}.</span><span style="text-align:left;flex:1;">${s}</span></div>`).join('')}
+            </div>
+            <div class="badge ${e.exact ? 'success' : 'info'}">${e.exact ? `√${this.N} = ${e.approx} exactly` : `√${this.N} ≈ ${e.approx}`}</div>
+        `;
+    }
+    renderStage() {
+        if (this.subMode === 'factor') {
+            const r = this.factorAnalysis();
+            let html = `<h3>Prime Factor Chips — ${this.N}</h3>`;
+            if (!r || r.factors.length === 0) {
+                html += `<p>Enter a number ≥ 2.</p>`;
+            } else {
+                const grouped = r.grouped;
+                const colors = ['#38bdf8', '#fbbf24', '#2f8a5b', '#e08a6a', '#8b6fc9', '#e35a8f'];
+                let ci = 0;
+                html += `<div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:20px;">`;
+                Object.keys(grouped).forEach(p => {
+                    const count = grouped[p];
+                    const color = colors[ci % colors.length]; ci++;
+                    const pairs = Math.floor(count / 2);
+                    const leftover = count % 2;
+                    html += `<div style="background:rgba(255,255,255,0.06);border:1px solid ${color};border-radius:12px;padding:14px 18px;text-align:center;min-width:120px;">
+                        <div style="font-family:'IBM Plex Mono',monospace;font-size:1.4rem;color:${color};font-weight:700;">${p}</div>
+                        <div style="font-size:0.72rem;color:var(--text-mid);margin-top:6px;">${'●'.repeat(count)}</div>
+                        <div style="font-size:0.72rem;margin-top:6px;">${pairs} pair${pairs !== 1 ? 's' : ''}${leftover ? ' + 1 leftover' : ''}</div>
+                    </div>`;
                 });
-                document.getElementById('tabsBar').innerHTML = html;
-            },
-
-            switchTab(tabId) {
-                if(!this.modules[tabId]) return;
-                this.activeTab = tabId;
-                this.activeModule = this.modules[tabId];
-                this.renderTabs();
-                
-                // Inject Sidebar HTML and immediately call math renderer
-                document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
-                this.activeModule.renderSidebarMath();
-                
-                this.renderSVG();
-            },
-
-            renderSVG() {
-                svg.innerHTML = this.activeModule.renderSVG();
-            },
-
-            toggleSidebar() {
-                document.getElementById('sidebar').classList.toggle('collapsed');
+                html += `</div>`;
+                html += `<div style="text-align:center;margin-top:26px;font-family:'IBM Plex Mono',monospace;font-size:1rem;">${this.N} = ${MathUtils.formatFactorization(r.factors)}</div>`;
+                if (r.isSquare) html += `<div style="text-align:center;margin-top:14px;font-size:1.3rem;color:var(--success);font-weight:700;">√${this.N} = ${r.root}</div>`;
+                else html += `<div style="text-align:center;margin-top:14px;font-size:1rem;color:var(--danger);">Not a perfect square</div>`;
             }
-        };
+            return { type: 'html', html };
+        }
+        if (this.subMode === 'subtract') {
+            let html = `<h3>Successive Subtraction</h3><div style="max-width:480px;margin:0 auto;">`;
+            html += `<div style="font-size:2.2rem;text-align:center;font-family:'IBM Plex Mono',monospace;margin:20px 0;color:var(--brass-lt);">${this.subDone ? (this.subIsSquare ? '0' : this.subCurrent) : this.subCurrent}</div>`;
+            html += `<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">`;
+            this.subSteps.forEach((s, i) => {
+                html += `<div style="background:rgba(56,189,248,0.12);border:1px solid var(--blueprint-lt);border-radius:8px;padding:6px 10px;font-family:'IBM Plex Mono',monospace;font-size:0.78rem;">${s}</div>`;
+            });
+            html += `</div></div>`;
+            return { type: 'html', html };
+        }
+        // estimate
+        const e = this.estimateSteps();
+        let html = `<h3>Estimating √${this.N}</h3><div style="max-width:520px;margin:0 auto;">`;
+        html += `<div style="font-size:2rem;text-align:center;font-family:'IBM Plex Mono',monospace;margin:16px 0;color:var(--brass-lt);">√${this.N} ${e.exact ? '=' : '≈'} ${e.approx}</div>`;
+        html += `<ol style="line-height:1.9;font-size:0.9rem;">${e.steps.map(s => `<li style="margin-bottom:6px;">${s}</li>`).join('')}</ol>`;
+        html += `</div>`;
+        return { type: 'html', html };
+    }
+}
 
-        // Boot Application
-        window.onload = () => app.init();
-    </script>
+// =========================================================================
+// 5. MODULE 4 — CUBE BUILDER (isometric)  (§1.2)
+// =========================================================================
+class CubeBuilderModule {
+    constructor() { this.n = 3; }
+    setN(v) { this.n = parseInt(v); app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        const n = this.n;
+        const cube = n * n * n;
+        return `
+            <h2>Cube Number Builder</h2>
+            <p><b>§1.2</b> · A cube number counts the unit cubes needed to build an n×n×n solid — n layers, each layer an n×n square of unit cubes.</p>
+            <div class="badge success">${n} × ${n} × ${n} = ${cube}</div>
+            <div class="data-panel">
+                <div class="range-row" style="margin-bottom:0;">
+                    <label>Edge length n — ${n}</label>
+                    <input type="range" min="1" max="6" value="${n}" oninput="app.activeModule.setN(this.value)">
+                </div>
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Layer-by-layer count</div>
+                <div class="data-row"><span>Unit cubes per layer</span><span>${n} × ${n} = ${n*n}</span></div>
+                <div class="data-row"><span>Number of layers</span><span>${n}</span></div>
+                <div class="data-row"><span>Total unit cubes</span><span>${n*n} × ${n} = ${cube}</span></div>
+            </div>
+            <div class="proof-box">Stack ${n} identical ${n}×${n} layers on top of each other and you get an ${n}×${n}×${n} cube containing <b>${cube}</b> unit cubes — that's why we write it as n³, "n cubed".</div>
+        `;
+    }
+    renderStage() {
+        const n = this.n;
+        const s = Math.min(38, 210 / n);
+        const cos30 = Math.cos(Math.PI / 6), sin30 = Math.sin(Math.PI / 6);
+        const dR = { x: s * cos30, y: -s * sin30 };
+        const dL = { x: -s * cos30, y: -s * sin30 };
+        const dU = { x: 0, y: -s };
+        const add = (p, v, k) => ({ x: p.x + v.x * k, y: p.y + v.y * k });
+        const cx = 400, cy = 470;
+        const origin = { x: cx, y: cy };
+        const top = add(origin, dU, n);
+
+        const pts = (p) => `${p.x},${p.y}`;
+        let html = '';
+        // Front-left face
+        const flPts = [origin, add(origin, dL, n), add(add(origin, dL, n), dU, n), add(origin, dU, n)];
+        html += `<polygon points="${flPts.map(pts).join(' ')}" fill="#0c3559" stroke="#2f75ac" stroke-width="1"/>`;
+        // Front-right face
+        const frPts = [origin, add(origin, dR, n), add(add(origin, dR, n), dU, n), add(origin, dU, n)];
+        html += `<polygon points="${frPts.map(pts).join(' ')}" fill="#164a78" stroke="#2f75ac" stroke-width="1"/>`;
+        // Top face
+        const topPts = [top, add(top, dL, n), add(add(top, dL, n), dR, n), add(top, dR, n)];
+        html += `<polygon points="${topPts.map(pts).join(' ')}" fill="#2f75ac" stroke="#5aa3d6" stroke-width="1"/>`;
+
+        // grid lines - front-left
+        for (let i = 0; i <= n; i++) {
+            const a = add(origin, dU, i), b = add(a, dL, n);
+            html += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>`;
+        }
+        for (let j = 0; j <= n; j++) {
+            const a = add(origin, dL, j), b = add(a, dU, n);
+            html += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>`;
+        }
+        // grid lines - front-right
+        for (let i = 0; i <= n; i++) {
+            const a = add(origin, dU, i), b = add(a, dR, n);
+            html += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>`;
+        }
+        for (let j = 0; j <= n; j++) {
+            const a = add(origin, dR, j), b = add(a, dU, n);
+            html += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>`;
+        }
+        // grid lines - top
+        for (let i = 0; i <= n; i++) {
+            const a = add(top, dL, i), b = add(a, dR, n);
+            html += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="rgba(6,28,48,0.4)" stroke-width="1"/>`;
+        }
+        for (let j = 0; j <= n; j++) {
+            const a = add(top, dR, j), b = add(a, dL, n);
+            html += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="rgba(6,28,48,0.4)" stroke-width="1"/>`;
+        }
+        // outline
+        html += `<polygon points="${flPts.map(pts).join(' ')}" fill="none" stroke="#fff" stroke-width="2"/>`;
+        html += `<polygon points="${frPts.map(pts).join(' ')}" fill="none" stroke="#fff" stroke-width="2"/>`;
+        html += `<polygon points="${topPts.map(pts).join(' ')}" fill="none" stroke="#fff" stroke-width="2"/>`;
+
+        html += `<text x="400" y="40" text-anchor="middle" class="svg-label" style="font-size:16px;">edge = ${n} · volume = ${n}³ = ${n*n*n} unit cubes</text>`;
+        return { type: 'svg', html };
+    }
+}
+
+// =========================================================================
+// 6. MODULE 5 — CUBE ROOTS & TAXICAB NUMBERS  (§1.2, §1.3)
+// =========================================================================
+class CubeRootsModule {
+    constructor() { this.M = 3375; this.subMode = 'factor'; this.revealed = {}; }
+    setM(v) { this.M = Math.max(0, Math.min(99999, parseInt(v) || 0)); app.render(); }
+    setSubMode(m) { this.subMode = m; app.render(); }
+    reveal(key) { this.revealed[key] = true; app.render(); }
+    updatePoint() {}
+    factorAnalysis() {
+        const M = this.M;
+        if (M < 1) return null;
+        const factors = MathUtils.primeFactorize(M).sort((a, b) => a - b);
+        const grouped = MathUtils.groupFactors(factors);
+        let isCube = true;
+        Object.keys(grouped).forEach(p => { if (grouped[p] % 3 !== 0) isCube = false; });
+        let root = null;
+        if (isCube) {
+            root = 1;
+            Object.keys(grouped).forEach(p => { root *= Math.pow(parseInt(p), grouped[p] / 3); });
+        }
+        return { factors, grouped, isCube, root };
+    }
+    tabsHTML() {
+        return `<div class="pill-row">
+            <div class="pill-btn ${this.subMode === 'factor' ? 'active' : ''}" onclick="app.activeModule.setSubMode('factor')">Factor Triplets</div>
+            <div class="pill-btn ${this.subMode === 'story' ? 'active' : ''}" onclick="app.activeModule.setSubMode('story')">Taxicab Numbers</div>
+        </div>`;
+    }
+    getSidebarHTML() {
+        if (this.subMode === 'factor') return this.factorSidebar();
+        return this.storySidebar();
+    }
+    factorSidebar() {
+        const r = this.factorAnalysis();
+        return `
+            <h2>Cube Roots &amp; Taxicabs</h2>
+            ${this.tabsHTML()}
+            <p><b>Method</b> · A number is a perfect cube only if its prime factors can be split into complete groups of <b>three</b>.</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Number to test</label>
+                <input class="num-input" type="number" min="0" max="99999" value="${this.M}" onchange="app.activeModule.setM(this.value)">
+            </div>
+            ${!r ? '<div class="proof-box">Enter a number greater than 0.</div>' : `
+            <div class="badge ${r.isCube ? 'success' : 'danger'}">${r.isCube ? `∛${this.M} = ${r.root}` : `${this.M} is not a perfect cube`}</div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Prime factorisation</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.85rem;">${this.M} = ${MathUtils.formatFactorization(r.factors) || '—'}</div>
+            </div>
+            <div class="data-panel">
+                ${Object.keys(r.grouped).map(p => `<div class="data-row"><span>Prime ${p}</span><span>appears ${r.grouped[p]}× ${r.grouped[p] % 3 === 0 ? '✓ groups of 3' : '✕ incomplete'}</span></div>`).join('')}
+            </div>
+            <div class="proof-box">${r.isCube ? `Every prime factor groups into complete triples, so ${this.M} is a perfect cube. Take one factor from each triple: ∛${this.M} = ${r.root}.` : `Some prime factor can't form a full group of three, so ${this.M} cannot be written as n × n × n.`}</div>
+            `}
+        `;
+    }
+    storySidebar() {
+        return `
+            <h2>Cube Roots &amp; Taxicabs</h2>
+            ${this.tabsHTML()}
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">The Hardy–Ramanujan story</div>
+                <p style="margin:0;">The mathematician G. H. Hardy once visited Srinivasa Ramanujan and mentioned he'd arrived in taxi number 1729, calling it a rather dull number. Ramanujan disagreed at once — 1729, he said, is the smallest number that can be written as a sum of two cubes in two completely different ways.</p>
+            </div>
+            <div class="badge violet">1729 = 1³ + 12³ = 9³ + 10³</div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:8px;">Explore the next two taxicab numbers</div>
+                <div class="data-row"><span>4104</span>${this.revealed['4104'] ? '<span>2³+16³ = 9³+15³</span>' : `<button class="action-btn" onclick="app.activeModule.reveal('4104')">Reveal</button>`}</div>
+                <div class="data-row"><span>13832</span>${this.revealed['13832'] ? '<span>2³+24³ = 18³+20³</span>' : `<button class="action-btn" onclick="app.activeModule.reveal('13832')">Reveal</button>`}</div>
+            </div>
+            <div class="proof-box">Numbers expressible as a sum of two positive cubes in more than one way are called <b>taxicab numbers</b>, named after this very anecdote. Ramanujan was famous for spotting deep patterns like this instantly — his friend John Littlewood once joked that every whole number was personally known to him.</div>
+        `;
+    }
+    renderStage() {
+        if (this.subMode === 'factor') {
+            const r = this.factorAnalysis();
+            let html = `<h3>Prime Factor Triplets — ${this.M}</h3>`;
+            if (!r || r.factors.length === 0) {
+                html += `<p>Enter a number ≥ 2.</p>`;
+            } else {
+                const colors = ['#38bdf8', '#fbbf24', '#2f8a5b', '#e08a6a', '#8b6fc9', '#e35a8f'];
+                let ci = 0;
+                html += `<div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:20px;">`;
+                Object.keys(r.grouped).forEach(p => {
+                    const count = r.grouped[p];
+                    const color = colors[ci % colors.length]; ci++;
+                    const triples = Math.floor(count / 3);
+                    const leftover = count % 3;
+                    html += `<div style="background:rgba(255,255,255,0.06);border:1px solid ${color};border-radius:12px;padding:14px 18px;text-align:center;min-width:120px;">
+                        <div style="font-family:'IBM Plex Mono',monospace;font-size:1.4rem;color:${color};font-weight:700;">${p}</div>
+                        <div style="font-size:0.72rem;color:var(--text-mid);margin-top:6px;">${'▲'.repeat(count)}</div>
+                        <div style="font-size:0.72rem;margin-top:6px;">${triples} triple${triples !== 1 ? 's' : ''}${leftover ? ` + ${leftover} leftover` : ''}</div>
+                    </div>`;
+                });
+                html += `</div>`;
+                html += `<div style="text-align:center;margin-top:26px;font-family:'IBM Plex Mono',monospace;font-size:1rem;">${this.M} = ${MathUtils.formatFactorization(r.factors)}</div>`;
+                if (r.isCube) html += `<div style="text-align:center;margin-top:14px;font-size:1.3rem;color:var(--success);font-weight:700;">∛${this.M} = ${r.root}</div>`;
+                else html += `<div style="text-align:center;margin-top:14px;font-size:1rem;color:var(--danger);">Not a perfect cube</div>`;
+            }
+            return { type: 'html', html };
+        }
+        let html = `<h3>Sum of Two Cubes — Two Ways</h3>
+        <div style="max-width:520px;margin:20px auto;display:flex;flex-direction:column;gap:14px;">
+            <div style="background:rgba(139,111,201,0.15);border:1px solid var(--violet);border-radius:12px;padding:16px;text-align:center;font-family:'IBM Plex Mono',monospace;">
+                <div style="font-size:1.3rem;color:var(--brass-lt);margin-bottom:6px;">1729</div>
+                1³ + 12³ = 1 + 1728 = 1729<br>9³ + 10³ = 729 + 1000 = 1729
+            </div>
+            ${this.revealed['4104'] ? `<div style="background:rgba(56,189,248,0.12);border:1px solid var(--blueprint-lt);border-radius:12px;padding:16px;text-align:center;font-family:'IBM Plex Mono',monospace;">
+                <div style="font-size:1.3rem;color:var(--brass-lt);margin-bottom:6px;">4104</div>
+                2³ + 16³ = 8 + 4096 = 4104<br>9³ + 15³ = 729 + 3375 = 4104
+            </div>` : ''}
+            ${this.revealed['13832'] ? `<div style="background:rgba(47,138,91,0.15);border:1px solid var(--success);border-radius:12px;padding:16px;text-align:center;font-family:'IBM Plex Mono',monospace;">
+                <div style="font-size:1.3rem;color:var(--brass-lt);margin-bottom:6px;">13832</div>
+                2³ + 24³ = 8 + 13824 = 13832<br>18³ + 20³ = 5832 + 8000 = 13832
+            </div>` : ''}
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 7. MODULE 6 — REFERENCE TABLE
+// =========================================================================
+class ReferenceTableModule {
+    constructor() { this.rangeStart = 1; this.rangeEnd = 20; this.query = ''; }
+    setRange(a, b) { this.rangeStart = a; this.rangeEnd = b; app.render(); }
+    setQuery(v) { this.query = v.trim(); app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Squares &amp; Cubes Table</h2>
+            <p>A quick-reference sheet for n, n², and n³ from 1 to 50 — handy for spotting patterns in the last digit, number of digits, and prime factorisation.</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Search a number (matches n, n² or n³)</label>
+                <input class="num-input" type="text" placeholder="e.g. 169" oninput="app.activeModule.setQuery(this.value)">
+            </div>
+            <div class="pill-row">
+                <div class="pill-btn ${this.rangeStart===1&&this.rangeEnd===10?'active':''}" onclick="app.activeModule.setRange(1,10)">1–10</div>
+                <div class="pill-btn ${this.rangeStart===11&&this.rangeEnd===20?'active':''}" onclick="app.activeModule.setRange(11,20)">11–20</div>
+                <div class="pill-btn ${this.rangeStart===21&&this.rangeEnd===30?'active':''}" onclick="app.activeModule.setRange(21,30)">21–30</div>
+            </div>
+            <div class="pill-row">
+                <div class="pill-btn ${this.rangeStart===31&&this.rangeEnd===40?'active':''}" onclick="app.activeModule.setRange(31,40)">31–40</div>
+                <div class="pill-btn ${this.rangeStart===41&&this.rangeEnd===50?'active':''}" onclick="app.activeModule.setRange(41,50)">41–50</div>
+                <div class="pill-btn ${this.rangeStart===1&&this.rangeEnd===50?'active':''}" onclick="app.activeModule.setRange(1,50)">All</div>
+            </div>
+            <div class="proof-box">Reminder: perfect squares only ever end in 0, 1, 4, 5, 6 or 9. Perfect cubes can end in any digit — but the ending digit still tells you the ending digit of the cube root (see the Quick Tricks tab).</div>
+        `;
+    }
+    renderStage() {
+        let rows = '';
+        const q = this.query;
+        for (let n = this.rangeStart; n <= this.rangeEnd; n++) {
+            const sq = n * n, cb = n * n * n;
+            const matches = q === '' || String(n).includes(q) || String(sq).includes(q) || String(cb).includes(q);
+            if (!matches) continue;
+            const factors = MathUtils.primeFactorize(n);
+            rows += `<tr class="${q !== '' ? 'hl' : ''}"><td>${n}</td><td>${sq}</td><td>${cb}</td><td>${MathUtils.formatFactorization(factors) || '1'}</td></tr>`;
+        }
+        const html = `<h3>n, n² and n³ (${this.rangeStart}–${this.rangeEnd})</h3>
+        <div class="ref-table-wrap">
+        <table class="ref-table">
+            <thead><tr><th>n</th><th>n²</th><th>n³</th><th>Prime factors of n</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="4">No matches</td></tr>'}</tbody>
+        </table>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 8. MODULE 7 — QUICK TRICKS
+// =========================================================================
+class TricksModule {
+    constructor() {
+        this.tricks = [
+            { title: 'Spot a non-square instantly', body: 'No perfect square ever ends in 2, 3, 7 or 8. If a number ends in one of those digits, you can reject it as a square in zero time.', example: '2032 → ends in 2 → NOT a perfect square.\n1027 → ends in 7 → NOT a perfect square.' },
+            { title: 'Zeros always travel in pairs', body: 'A perfect square can only end in an even number of zeros (0, 2, 4, …). A number ending in an odd number of zeros can never be a perfect square.', example: '900 = 30² ✓ (2 zeros)\n9000 has 3 zeros → cannot be a perfect square.' },
+            { title: 'Parity is preserved', body: 'An odd number squared is always odd; an even number squared is always even. This is a fast sanity check.', example: '7 is odd → 7² = 49 is odd.\n8 is even → 8² = 64 is even.' },
+            { title: 'Square a number ending in 5 instantly', body: 'For a number "a5" (tens digit a, units digit 5): multiply a by (a+1), then stick 25 on the end.', example: '45² → a = 4 → 4×5 = 20 → answer 2025.\n65² → a = 6 → 6×7 = 42 → answer 4225.' },
+            { title: 'Estimate a root by bracketing', body: 'Find the two multiples of ten whose squares straddle your number, then use the units digit to narrow the last digit of the root, then verify by squaring the midpoint.', example: '1936 is between 40² = 1600 and 50² = 2500.\nUnits digit 6 → root ends in 4 or 6.\n45² = 2025 > 1936, so root is in 40–45 → root = 44.' },
+            { title: 'Cubes and their last digits', body: 'Unlike squares, every digit 0–9 can appear at the end of a perfect cube — and each maps to exactly one possible last digit for the cube root, so you can read off the root\'s last digit immediately.', example: '…1↔1  …8↔2  …7↔3  …4↔4  …5↔5  …6↔6  …3↔7  …2↔8  …9↔9  …0↔0\n2197 ends in 7 → cube root ends in 3 → ∛2197 = 13.' },
+            { title: 'Build squares from odd numbers', body: 'The sum of the first n odd numbers is always n². Useful for building up squares mentally, one odd "shell" at a time.', example: '1+3+5+7 = 16 = 4²\n1+3+5+7+9 = 25 = 5²' },
+            { title: 'Perfect cubes need complete triples', body: 'Prime-factorise the number. If every prime\'s count is a multiple of 3, it\'s a perfect cube — group the primes in threes and pick one from each group for the root.', example: '3375 = 3×3×3×5×5×5 = 3³×5³ → ∛3375 = 3×5 = 15.\n500 = 2×2×5×5×5 → 2 appears only twice → not a perfect cube.' }
+        ];
+        this.selected = 0;
+    }
+    select(i) { this.selected = i; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Quick Tricks</h2>
+            <p>Eight fast mental-math shortcuts from this chapter — click any trick to see the full explanation and worked example on the right.</p>
+            ${this.tricks.map((t, i) => `<div class="data-panel" style="cursor:pointer;${i === this.selected ? 'border-color:var(--brass);border-width:2px;' : ''}" onclick="app.activeModule.select(${i})">
+                <div style="font-weight:700;font-size:0.85rem;">${i + 1}. ${t.title}</div>
+            </div>`).join('')}
+        `;
+    }
+    renderStage() {
+        const t = this.tricks[this.selected];
+        const html = `<div class="trick-card-lg">
+            <h4>${this.selected + 1}. ${t.title}</h4>
+            <p style="line-height:1.6;color:var(--text-mid);">${t.body}</p>
+            <div class="ex">${t.example.replace(/\n/g, '<br>')}</div>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 9. MODULE 8 — QUIZ ARENA
+// =========================================================================
+class QuizModule {
+    constructor() {
+        this.range = 20;
+        this.total = 10;
+        this.started = false;
+        this.questions = [];
+        this.index = 0;
+        this.score = 0;
+        this.answered = false;
+        this.lastCorrect = null;
+        this.userVal = '';
+        this.tfBank = [
+            { stmt: 'Every perfect square ends in 0, 1, 4, 5, 6 or 9.', a: true },
+            { stmt: 'A perfect square can end with an odd number of zeros.', a: false },
+            { stmt: 'The square of an odd number is always odd.', a: true },
+            { stmt: 'Every perfect cube\'s prime factorisation has each prime appearing a multiple of 3 times.', a: true },
+            { stmt: '1729 can be written as the sum of two positive cubes in two different ways.', a: true },
+            { stmt: 'The cube of a negative number is always negative.', a: true },
+            { stmt: 'A number ending in 6 must always be a perfect square.', a: false },
+            { stmt: 'Between two consecutive perfect squares n² and (n+1)², there are always exactly 2n numbers.', a: true }
+        ];
+    }
+    setRange(r) { this.range = r; app.render(); }
+    setTotal(n) { this.total = n; app.render(); }
+    start() {
+        this.questions = this.generateQuestions(this.range, this.total);
+        this.index = 0; this.score = 0; this.answered = false; this.lastCorrect = null; this.userVal = '';
+        this.started = true;
+        app.render();
+    }
+    restart() { this.started = false; app.render(); }
+    generateQuestions(range, count) {
+        const arr = [];
+        for (let i = 0; i < count; i++) {
+            const roll = Math.random();
+            if (roll < 0.22) {
+                const n = MathUtils.randInt(1, range);
+                arr.push({ type: 'numeric', prompt: `What is ${n}²?`, answer: n * n });
+            } else if (roll < 0.44) {
+                const n = MathUtils.randInt(1, range);
+                arr.push({ type: 'numeric', prompt: `What is √${n * n}?`, answer: n });
+            } else if (roll < 0.62) {
+                const n = MathUtils.randInt(1, Math.min(range, 15));
+                arr.push({ type: 'numeric', prompt: `What is ${n}³?`, answer: n * n * n });
+            } else if (roll < 0.8) {
+                const n = MathUtils.randInt(1, Math.min(range, 15));
+                arr.push({ type: 'numeric', prompt: `What is ∛${n * n * n}?`, answer: n });
+            } else if (roll < 0.9) {
+                const m = MathUtils.randInt(1, range * range);
+                arr.push({ type: 'tf', prompt: `Is ${m} a perfect square?`, answer: MathUtils.isPerfectSquare(m) });
+            } else {
+                const bank = this.tfBank[MathUtils.randInt(0, this.tfBank.length - 1)];
+                arr.push({ type: 'tf', prompt: bank.stmt, answer: bank.a });
+            }
+        }
+        return arr;
+    }
+    setUserVal(v) { this.userVal = v; }
+    submitNumeric() {
+        if (this.answered) return;
+        const q = this.questions[this.index];
+        const val = parseInt(this.userVal);
+        this.answered = true;
+        this.lastCorrect = (val === q.answer);
+        if (this.lastCorrect) this.score++;
+        app.render();
+    }
+    submitTF(bool) {
+        if (this.answered) return;
+        const q = this.questions[this.index];
+        this.answered = true;
+        this.lastCorrect = (bool === q.answer);
+        if (this.lastCorrect) this.score++;
+        app.render();
+    }
+    next() {
+        this.index++;
+        this.answered = false; this.lastCorrect = null; this.userVal = '';
+        app.render();
+    }
+    updatePoint() {}
+    getSidebarHTML() {
+        if (!this.started) {
+            return `
+                <h2>Quiz Arena</h2>
+                <p>Test yourself on squares and cubes. Pick a number range and question count, then start — questions are drawn randomly each time.</p>
+                <div class="data-panel">
+                    <div style="font-weight:700;margin-bottom:8px;">Number range</div>
+                    <div class="pill-row">
+                        <div class="pill-btn ${this.range===10?'active':''}" onclick="app.activeModule.setRange(10)">1–10</div>
+                        <div class="pill-btn ${this.range===20?'active':''}" onclick="app.activeModule.setRange(20)">1–20</div>
+                        <div class="pill-btn ${this.range===50?'active':''}" onclick="app.activeModule.setRange(50)">1–50</div>
+                    </div>
+                </div>
+                <div class="data-panel">
+                    <div style="font-weight:700;margin-bottom:8px;">Number of questions</div>
+                    <div class="pill-row">
+                        <div class="pill-btn ${this.total===5?'active':''}" onclick="app.activeModule.setTotal(5)">5</div>
+                        <div class="pill-btn ${this.total===10?'active':''}" onclick="app.activeModule.setTotal(10)">10</div>
+                        <div class="pill-btn ${this.total===15?'active':''}" onclick="app.activeModule.setTotal(15)">15</div>
+                    </div>
+                </div>
+                <button class="action-btn primary wide" onclick="app.activeModule.start()">▶ Start Quiz</button>
+                <div class="proof-box">Questions cover square values, square roots, cube values, cube roots, and true/false concept checks — all pulled from numbers 1–${this.range}.</div>
+            `;
+        }
+        if (this.index >= this.questions.length) {
+            return `
+                <h2>Quiz Arena</h2>
+                <div class="badge success">Final score: ${this.score} / ${this.questions.length}</div>
+                <p>Nice work! Play again with a different range for more practice.</p>
+                <button class="action-btn primary wide" onclick="app.activeModule.restart()">↻ New Quiz</button>
+            `;
+        }
+        return `
+            <h2>Quiz Arena</h2>
+            <div class="badge info">Question ${this.index + 1} / ${this.questions.length} · Score ${this.score}</div>
+            <p>Range 1–${this.range}. Answer on the right, then move to the next question.</p>
+            <button class="action-btn wide" onclick="app.activeModule.restart()">← Back to setup</button>
+        `;
+    }
+    renderStage() {
+        if (!this.started) {
+            return { type: 'html', html: `<div class="quiz-wrap"><h3>Ready when you are</h3><p style="color:var(--text-mid);">Set your range and question count on the left, then hit Start Quiz.</p></div>` };
+        }
+        if (this.index >= this.questions.length) {
+            const pct = Math.round(100 * this.score / this.questions.length);
+            return { type: 'html', html: `<div class="quiz-wrap">
+                <h3>Quiz complete!</h3>
+                <div style="font-size:3rem;font-family:'IBM Plex Mono',monospace;color:var(--brass-lt);margin:20px 0;">${this.score}/${this.questions.length}</div>
+                <p style="color:var(--text-mid);">${pct >= 80 ? 'Excellent work! 🌟' : pct >= 50 ? 'Good effort — keep practising!' : 'Review the chapter and try again!'}</p>
+            </div>` };
+        }
+        const q = this.questions[this.index];
+        let body = `<div class="quiz-wrap">
+            <div class="quiz-progress">QUESTION ${this.index + 1} OF ${this.questions.length}</div>
+            <div class="quiz-prompt">${q.prompt}</div>`;
+        if (!this.answered) {
+            if (q.type === 'numeric') {
+                body += `<div class="quiz-input-row">
+                    <input type="number" id="quizNumInput" value="${this.userVal}" oninput="app.activeModule.setUserVal(this.value)" onkeypress="if(event.key==='Enter'){app.activeModule.submitNumeric();}">
+                    <button class="quiz-btn" onclick="app.activeModule.submitNumeric()">Submit</button>
+                </div>`;
+            } else {
+                body += `<div class="quiz-tf-row">
+                    <button class="true-btn" onclick="app.activeModule.submitTF(true)">TRUE</button>
+                    <button class="false-btn" onclick="app.activeModule.submitTF(false)">FALSE</button>
+                </div>`;
+            }
+        } else {
+            body += `<div class="quiz-feedback ${this.lastCorrect ? 'correct' : 'wrong'}">
+                ${this.lastCorrect ? '✓ Correct!' : `✕ Not quite — the answer is ${q.type === 'numeric' ? q.answer : (q.answer ? 'TRUE' : 'FALSE')}`}
+            </div>
+            <button class="quiz-btn" onclick="app.activeModule.next()">${this.index + 1 < this.questions.length ? 'Next question →' : 'See results →'}</button>`;
+        }
+        body += `</div>`;
+        return { type: 'html', html: body };
+    }
+}
+
+// =========================================================================
+// 10. MAIN APP CONTROLLER
+// =========================================================================
+const app = {
+    modules: {
+        'locker': new LockerModule(),
+        'square-builder': new SquareBuilderModule(),
+        'square-roots': new SquareRootsModule(),
+        'cube-builder': new CubeBuilderModule(),
+        'cube-roots': new CubeRootsModule(),
+        'reference-table': new ReferenceTableModule(),
+        'tricks': new TricksModule(),
+        'quiz': new QuizModule(),
+    },
+    tabDefs: [
+        { id: 'locker', name: '1 · Locker Puzzle' },
+        { id: 'square-builder', name: '2 · Square Numbers' },
+        { id: 'square-roots', name: '3 · Square Roots' },
+        { id: 'cube-builder', name: '4 · Cube Numbers' },
+        { id: 'cube-roots', name: '5 · Cube Roots' },
+        { id: 'reference-table', name: '6 · Reference Table' },
+        { id: 'tricks', name: '7 · Quick Tricks' },
+        { id: 'quiz', name: '8 · Quiz Arena' },
+    ],
+    activeTab: 'locker',
+    activeModule: null,
+
+    init() {
+        this.activeModule = this.modules[this.activeTab];
+        this.renderTabs();
+        this.render();
+    },
+    renderTabs() {
+        document.getElementById('tabsBar').innerHTML = this.tabDefs.map(t =>
+            `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`
+        ).join('');
+    },
+    switchTab(id) {
+        if (!this.modules[id]) return;
+        this.activeTab = id;
+        this.activeModule = this.modules[id];
+        this.renderTabs();
+        this.render();
+    },
+    render() {
+        document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
+        const stageObj = this.activeModule.renderStage();
+        const container = document.getElementById('stageContainer');
+        if (stageObj.type === 'svg') {
+            container.innerHTML = `<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">${stageObj.html}</svg>`;
+        } else {
+            container.innerHTML = `<div class="html-stage">${stageObj.html}</div>`;
+        }
+    }
+};
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+window.onload = () => app.init();
+</script>
 </body>
 </html>
