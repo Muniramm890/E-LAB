@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disclaimer | Digital Math E-Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a192f;
+            --card-bg: rgba(16, 37, 66, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-gold: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(56, 189, 248, 0.2);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%), 
+                              radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-glow);
+            background: rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--accent-gold);
+        }
+
+        /* Content Container */
+        .content-container {
+            max-width: 900px;
+            margin: 3rem auto;
+            padding: 2.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--radius);
+            backdrop-filter: blur(8px);
+        }
+
+        .content-container h2 {
+            font-family: 'Fraunces', serif;
+            color: var(--accent-gold);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .content-container h2:first-child {
+            margin-top: 0;
+        }
+
+        .content-container p, .content-container ul {
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        .content-container ul {
+            padding-left: 1.5rem;
+        }
+
+        .content-container li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .highlight-text {
+            color: var(--text-main);
+            font-weight: 600;
+            background: rgba(251, 191, 36, 0.1); /* Gold tint for emphasis */
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .uppercase-bold {
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .last-updated {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-align: right;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-glow);
+            padding: 2rem 1.5rem;
+            text-align: center;
+            background: rgba(10, 25, 47, 0.9);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .back-btn {
+                position: static;
+                transform: none;
+                justify-content: center;
+                margin-bottom: 1rem;
+            }
+            .content-container {
+                margin: 1.5rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-btn">← Back to Home</a>
+        <h1>General Disclaimer</h1>
+    </header>
+
+    <main class="content-container">
+        <span class="last-updated">Effective Date: August 15, 2026</span>
+
+        <p class="uppercase-bold">By accessing and utilizing the Digital Math E-Lab, you acknowledge that you have read, understood, and agreed to the terms outlined in this comprehensive disclaimer.</p>
+
+        <h2>1. Educational Purpose & Non-Binding Nature</h2>
+        <p>The information, visualizations, and drafting models provided on the Digital Math E-Lab are intended for general educational and demonstrative purposes only. While every effort has been made to align this platform with the NCERT curriculum, the content herein does not constitute binding academic advice, official examination guidelines, or a substitute for standardized pedagogical instruction.</p>
+
+        <h2>2. Mathematical & Computational Approximations</h2>
+        <p>This platform utilizes browser-based JavaScript, Canvas API, and WebGL rendering engines to generate mathematical graphs, geometry, and equations in real-time. Users must be aware that:</p>
+        <ul>
+            <li><strong>Floating-Point Inaccuracies:</strong> Digital computational environments are subject to inherent floating-point arithmetic errors. Values may be rounded off, leading to microscopic or macroscopic inaccuracies in geometric displays or plotted roots.</li>
+            <li><strong>Visual Scaling:</strong> Cartesian planes, graphs, and polygons are scaled for visual comprehension on varying screen sizes. They are not to scale for real-world engineering, architectural, or rigorous scientific applications.</li>
+            <li><strong>Bugs & Glitches:</strong> As an experimental software prototype, unexpected rendering glitches, logic failures, or state-management errors may occur without warning.</li>
+        </ul>
+        <p>Consequently, <span class="highlight-text">you must independently verify all formulas, angle measurements, proofs, and algebraic outcomes</span> using standard, officially sanctioned NCERT textbooks before applying them in any formal academic setting.</p>
+
+        <h2>3. Complete Institutional Immunity</h2>
+        <p>This software initiative was conceptualized under a PAC Programme project affiliated with the Regional Institute of Education (RIE), Ajmer. However, it is fundamentally a digital experiment and a work-in-progress.</p>
+        <p><strong>NCERT (National Council of Educational Research and Training), RIE Ajmer, their respective faculty members, the Ministry of Education, and the independent developers of this software hereby disclaim ANY and ALL legal, financial, academic, and operational liability.</strong> The institutional entities do not officially endorse, warrant, or assume responsibility for the continuous functionality or the absolute mathematical integrity of this specific web application.</p>
+
+        <h2>4. No Academic Guarantee (The "Grades" Clause)</h2>
+        <p>The use of the Digital Math E-Lab does not guarantee any improvement in academic performance, comprehension, or examination results. The creators and affiliated institutions cannot be held liable for any loss of academic marks, failure in standardized tests, or misunderstanding of mathematical concepts arising directly or indirectly from the use of this interactive tool.</p>
+
+        <h2>5. Technical Reliability & Hardware Risk</h2>
+        <p>The rendering of complex mathematical simulations (such as dynamic parabolas or 3D volume scaling) requires client-side processing power. The developers assume no responsibility for any technical issues that may arise on your personal devices, including but not limited to:</p>
+        <ul>
+            <li>Browser crashes or freezing due to heavy script execution.</li>
+            <li>Battery drain or device overheating on mobile and desktop platforms.</li>
+            <li>Data loss or disruption of other background applications.</li>
+        </ul>
+        <p>The platform is accessed and operated entirely at the user’s own technical risk.</p>
+
+        <h2>6. External Links and Third-Party Resources</h2>
+        <p>The E-Lab may occasionally contain links to external websites, mathematical libraries, or third-party resources. Such links are provided for convenience only. We do not have control over the content, privacy policies, or security practices of any third-party websites and assume no responsibility for them.</p>
+
+        <h2>7. Final Provisions</h2>
+        <p>If any provision of this disclaimer is found to be unenforceable or invalid under applicable law, such unenforceability or invalidity shall not render this disclaimer unenforceable or invalid as a whole. This document serves as a complete shield of liability to the maximum extent permissible by law.</p>
+
+    </main>
+
+    <footer>
+        <p>Digital Math E-Lab System · NCERT Curriculum Aligned</p>
+    </footer>
+</body>
+</html>
