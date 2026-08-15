@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Credits | Digital Math E-Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a192f; --card-bg: rgba(16, 37, 66, 0.7); --accent-blue: #38bdf8; --accent-gold: #fbbf24;
+            --text-main: #f8fafc; --text-muted: #94a3b8; --border-glow: rgba(56, 189, 248, 0.2); --radius: 16px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'IBM Plex Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%); line-height: 1.6; }
+        header { padding: 2rem 1.5rem; text-align: center; border-bottom: 1px solid var(--border-glow); background: rgba(10, 25, 47, 0.8); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 10; }
+        header h1 { font-family: 'Fraunces', serif; font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--text-main); font-weight: 700; }
+        .back-btn { position: absolute; left: 2rem; top: 50%; transform: translateY(-50%); color: var(--accent-blue); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: color 0.3s ease; }
+        .back-btn:hover { color: var(--accent-gold); }
+        .content-container { max-width: 800px; margin: 3rem auto; padding: 2.5rem; background: var(--card-bg); border: 1px solid var(--border-glow); border-radius: var(--radius); backdrop-filter: blur(8px); }
+        
+        .section-box { border: 1px solid rgba(56, 189, 248, 0.3); background: rgba(10, 25, 47, 0.5); padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; }
+        .section-box h2 { font-family: 'Fraunces', serif; color: var(--accent-gold); margin-bottom: 1rem; font-size: 1.4rem; border-bottom: 1px dashed var(--border-glow); padding-bottom: 0.5rem; }
+        .section-box p { color: var(--text-muted); margin-bottom: 0.8rem; font-size: 1rem; }
+        .highlight-name { color: var(--text-main); font-size: 1.1rem; font-weight: 600; }
+        
+        .contact-info { display: flex; flex-direction: column; gap: 10px; margin-top: 1rem; }
+        .contact-row { display: flex; align-items: center; gap: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; }
+        .contact-label { color: var(--accent-blue); font-weight: 600; width: 80px; }
+        
+        footer { border-top: 1px solid var(--border-glow); padding: 2rem 1.5rem; text-align: center; background: rgba(10, 25, 47, 0.9); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--text-muted); margin-top: auto; }
+        @media (max-width: 768px) { .back-btn { position: static; transform: none; justify-content: center; margin-bottom: 1rem; } .content-container { margin: 1.5rem; padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-btn">← Back to Home</a>
+        <h1>Contact & Credits</h1>
+    </header>
+
+    <main class="content-container">
+
+        <!-- Project Guidance Section -->
+        <div class="section-box">
+            <h2>Project Supervision</h2>
+            <p>This Digital Math E-Lab platform has been conceptualized and developed under the academic guidance of:</p>
+            <p class="highlight-name">Dr. Himani Dem</p>
+            <p style="font-size: 0.9rem;">PAC Programme<br>Regional Institute of Education (NCERT), Ajmer, Rajasthan.</p>
+        </div>
+
+        <!-- Developer & Copyright Section -->
+        <div class="section-box" style="border-color: rgba(251, 191, 36, 0.4);">
+            <h2 style="color: var(--accent-blue);">Developer & Intellectual Property</h2>
+            <p>The entire source code, user interface (UI/UX), logic models, and graphical interactive simulations of this platform are independently programmed and designed by:</p>
+            <p class="highlight-name" style="color: var(--accent-gold); font-size: 1.3rem;">Muni Ram Meena</p>
+            <p style="margin-top: 1rem;"><strong>&copy; 2026 Muni Ram Meena. All Rights Reserved.</strong></p>
+            <p style="font-size: 0.9rem; text-align: justify; margin-top: 0.5rem;">
+                No part of this web application's HTML, CSS, JavaScript, or underlying rendering logic may be copied, reproduced, distributed, or commercialized without the explicit, written permission of the developer. While the project serves the educational initiatives of RIE Ajmer, the technical intellectual property belongs strictly to the developer.
+            </p>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="section-box">
+            <h2>Get in Touch</h2>
+            <p>For technical queries, bug reports regarding the mathematical simulations, or academic collaboration inquiries, please reach out via:</p>
+            
+            <div class="contact-info">
+                <div class="contact-row">
+                    <span class="contact-label">Email:</span>
+                    <span style="color: var(--text-main);">[Your Email Address Here]</span>
+                </div>
+                <div class="contact-row">
+                    <span class="contact-label">GitHub:</span>
+                    <span style="color: var(--text-main);">[Your GitHub Profile Link]</span>
+                </div>
+                <div class="contact-row">
+                    <span class="contact-label">Location:</span>
+                    <span style="color: var(--text-main);">Ajmer, Rajasthan</span>
+                </div>
+            </div>
+            
+            <p style="font-size: 0.85rem; margin-top: 1.5rem; font-style: italic;">Note: Please read our Disclaimer and Terms & Conditions before sending queries regarding mathematical data accuracy.</p>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Digital Math E-Lab System · NCERT Curriculum Aligned</p>
+    </footer>
+</body>
+</html>
