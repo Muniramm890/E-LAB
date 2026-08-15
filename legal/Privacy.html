@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Digital Math E-Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ... Same CSS as previously provided ... */
+        :root {
+            --bg-dark: #0a192f; --card-bg: rgba(16, 37, 66, 0.7); --accent-blue: #38bdf8; --accent-gold: #fbbf24;
+            --text-main: #f8fafc; --text-muted: #94a3b8; --border-glow: rgba(56, 189, 248, 0.2); --radius: 16px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'IBM Plex Sans', sans-serif; background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; background-image: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%); line-height: 1.6; }
+        header { padding: 2rem 1.5rem; text-align: center; border-bottom: 1px solid var(--border-glow); background: rgba(10, 25, 47, 0.8); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 10; }
+        header h1 { font-family: 'Fraunces', serif; font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--text-main); font-weight: 700; }
+        .back-btn { position: absolute; left: 2rem; top: 50%; transform: translateY(-50%); color: var(--accent-blue); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; transition: color 0.3s ease; }
+        .back-btn:hover { color: var(--accent-gold); }
+        .content-container { max-width: 900px; margin: 3rem auto; padding: 2.5rem; background: var(--card-bg); border: 1px solid var(--border-glow); border-radius: var(--radius); backdrop-filter: blur(8px); }
+        .content-container h2 { font-family: 'Fraunces', serif; color: var(--accent-gold); margin-top: 2.5rem; margin-bottom: 1rem; font-size: 1.4rem; }
+        .content-container h2:first-child { margin-top: 0; }
+        .content-container p, .content-container ul { color: var(--text-muted); margin-bottom: 1.2rem; font-size: 1rem; text-align: justify; }
+        .content-container ul { padding-left: 1.5rem; }
+        .content-container li { margin-bottom: 0.5rem; }
+        .highlight-text { color: var(--text-main); font-weight: 600; background: rgba(56, 189, 248, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .uppercase-bold { text-transform: uppercase; font-weight: 700; color: var(--text-main); }
+        .last-updated { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-muted); text-align: right; margin-bottom: 2rem; display: block; }
+        footer { border-top: 1px solid var(--border-glow); padding: 2rem 1.5rem; text-align: center; background: rgba(10, 25, 47, 0.9); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--text-muted); margin-top: auto; }
+        @media (max-width: 768px) { .back-btn { position: static; transform: none; justify-content: center; margin-bottom: 1rem; } .content-container { margin: 1.5rem; padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-btn">← Back to Home</a>
+        <h1>Privacy Policy</h1>
+    </header>
+
+    <main class="content-container">
+        <span class="last-updated">Effective Date: August 15, 2026</span>
+
+        <p class="uppercase-bold">THIS PLATFORM IS A STATIC WEB APPLICATION. WE DO NOT ACTIVELY COLLECT, STORE, OR SELL YOUR PERSONAL DATA. HOWEVER, BY USING THIS PLATFORM, YOU ACCEPT THE DATA PRACTICES OF OUR HOSTING PROVIDERS.</p>
+
+        <h2>1. Zero Active Data Collection</h2>
+        <p>The Digital Math E-Lab is constructed using static HTML, CSS, and Client-Side JavaScript. The developers, RIE Ajmer, and NCERT do not operate any backend databases for this specific project. We do not require account registration, and we do not actively collect personal identifiers such as names, email addresses, or phone numbers.</p>
+
+        <h2>2. Third-Party Hosting and Infrastructure Logging</h2>
+        <p>This platform is hosted on external, third-party infrastructure (such as GitHub Pages or Cloudflare). You acknowledge that these hosting providers automatically collect standard web server logs when you access the site. This may include:</p>
+        <ul>
+            <li>Your Internet Protocol (IP) address.</li>
+            <li>Browser type, operating system, and device identifiers.</li>
+            <li>Time and date of access, and pages visited.</li>
+        </ul>
+        <p><strong>Disclaimer of Liability:</strong> We have no control over, and explicitly assume absolutely no responsibility for, the data collection, retention, or privacy practices of these third-party hosting services. Any data breach occurring at the infrastructure level is solely the responsibility of the hosting provider.</p>
+
+        <h2>3. Local Storage and Browser Data</h2>
+        <p>Certain interactive simulations may utilize your browser's LocalStorage or SessionStorage to temporarily save the state of a graph or a plotting board. This data remains on your personal device and is never transmitted back to our servers. We are not liable for any data loss, or if unauthorized individuals access the data stored locally on your physical device.</p>
+
+        <h2>4. No Protection for User-Generated Input</h2>
+        <p>If you input mathematical equations, notes, or specific coordinates into the visualizer tools, do not input sensitive, personal, or confidential information. We do not encrypt or secure client-side inputs beyond standard browser capabilities, and we accept no liability if such data is exposed via browser extensions, malware on your device, or third-party interception.</p>
+
+        <h2>5. Changes to the Privacy Protocol</h2>
+        <p>As the project evolves, we may implement new features (such as analytics to track usage statistics). We reserve the right to update this Privacy Policy at any time without notice. Your continued usage signifies your acceptance of the policy as it stands at the moment of access.</p>
+
+    </main>
+
+    <footer>
+        <p>Digital Math E-Lab System · NCERT Curriculum Aligned</p>
+    </footer>
+</body>
+</html>
+   
