@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Policy & Acceptable Use | Digital Math E-Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ... Same CSS as previously provided for terms.html and disclaimer.html ... */
+        :root {
+            --bg-dark: #0a192f;
+            --card-bg: rgba(16, 37, 66, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-gold: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(56, 189, 248, 0.2);
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%), 
+                              radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.05) 0%, transparent 40%);
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 2rem 1.5rem; text-align: center; border-bottom: 1px solid var(--border-glow);
+            background: rgba(10, 25, 47, 0.8); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 10;
+        }
+
+        header h1 { font-family: 'Fraunces', serif; font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--text-main); font-weight: 700; }
+
+        .back-btn {
+            position: absolute; left: 2rem; top: 50%; transform: translateY(-50%);
+            color: var(--accent-blue); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 8px; transition: color 0.3s ease;
+        }
+        .back-btn:hover { color: var(--accent-gold); }
+
+        .content-container {
+            max-width: 900px; margin: 3rem auto; padding: 2.5rem; background: var(--card-bg);
+            border: 1px solid var(--border-glow); border-radius: var(--radius); backdrop-filter: blur(8px);
+        }
+
+        .content-container h2 { font-family: 'Fraunces', serif; color: var(--accent-gold); margin-top: 2.5rem; margin-bottom: 1rem; font-size: 1.4rem; }
+        .content-container h2:first-child { margin-top: 0; }
+        .content-container p, .content-container ul { color: var(--text-muted); margin-bottom: 1.2rem; font-size: 1rem; text-align: justify; }
+        .content-container ul { padding-left: 1.5rem; }
+        .content-container li { margin-bottom: 0.5rem; }
+        .highlight-text { color: var(--text-main); font-weight: 600; background: rgba(251, 191, 36, 0.1); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(251, 191, 36, 0.3); }
+        .uppercase-bold { text-transform: uppercase; font-weight: 700; color: var(--text-main); }
+        .last-updated { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; color: var(--text-muted); text-align: right; margin-bottom: 2rem; display: block; }
+
+        footer {
+            border-top: 1px solid var(--border-glow); padding: 2rem 1.5rem; text-align: center;
+            background: rgba(10, 25, 47, 0.9); font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--text-muted); margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .back-btn { position: static; transform: none; justify-content: center; margin-bottom: 1rem; }
+            .content-container { margin: 1.5rem; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-btn">← Back to Home</a>
+        <h1>User Policy & Acceptable Use</h1>
+    </header>
+
+    <main class="content-container">
+        <span class="last-updated">Effective Date: August 15, 2026</span>
+
+        <p class="uppercase-bold">THIS USER POLICY GOVERNS YOUR INTERACTION WITH THE PLATFORM. VIOLATION OF THESE TERMS RESULTS IN IMMEDIATE REVOCATION OF ACCESS, WITH ZERO LIABILITY ON THE PART OF THE PROVIDERS.</p>
+
+        <h2>1. Strict Limitation of Use</h2>
+        <p>The Digital Math E-Lab is provided solely as a supplementary visual aid for mathematical concepts. You are granted a limited, non-exclusive, non-transferable, and revocable right to access the platform. This right is strictly bound to personal, non-commercial educational use.</p>
+
+        <h2>2. Prohibited Conduct</h2>
+        <p>Users are strictly forbidden from engaging in the following activities. The platform administrators bear no responsibility for any legal consequences arising from a user's failure to adhere to these prohibitions:</p>
+        <ul>
+            <li><strong>Commercial Exploitation:</strong> You may not sell, lease, sub-license, or incorporate this platform or any of its simulations into a paid educational course, coaching center curriculum, or commercial application.</li>
+            <li><strong>Technical Interference:</strong> Attempting to hack, inject malicious code, run heavy automated scrapers, or intentionally overload the server/GitHub Pages infrastructure is strictly prohibited.</li>
+            <li><strong>Misrepresentation:</strong> You may not represent the outputs of this E-Lab as official, legally binding, or formally certified data.</li>
+            <li><strong>Source Code Appropriation:</strong> Copying the HTML, CSS, JavaScript, or specific logic models to create a competing product or claiming authorship is a violation of intellectual property.</li>
+        </ul>
+
+        <h2>3. Zero Responsibility for Misuse</h2>
+        <p>The developers, along with <span class="highlight-text">RIE Ajmer and NCERT</span>, explicitly renounce all responsibility for how you utilize the platform. If a user utilizes the platform in a manner that violates local laws, institutional policies, or academic integrity codes (e.g., using it to cheat on assignments where visualizers are prohibited), the user bears 100% of the liability.</p>
+
+        <h2>4. Termination of Access</h2>
+        <p>We reserve the absolute right to block access to the platform from specific IP addresses, regions, or networks at our sole discretion, without prior notice or justification. The platform may be discontinued, archived, or permanently deleted at any time. We hold no obligation to maintain this service or provide access to past simulations.</p>
+    </main>
+
+    <footer>
+        <p>Digital Math E-Lab System · NCERT Curriculum Aligned</p>
+    </footer>
+</body>
+</html>
