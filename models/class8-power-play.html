@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Class 8: Power Play | Digital E-Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --blueprint-dk: #061c30;
+        --blueprint-md: #0c3559;
+        --blueprint-lt: #2f75ac;
+        --grid-line: rgba(210, 232, 255, 0.1);
+        --grid-line-strong: rgba(210, 232, 255, 0.25);
+        --brass: #c98a3e;
+        --brass-lt: #e3ac6a;
+        --brass-glow: rgba(201, 138, 62, 0.4);
+        --paper-bg: #f5f0e1;
+        --paper-text: #1a2a3a;
+        --paper-line: #d1c7b1;
+        --text-hi: #ffffff;
+        --text-mid: #a8c4df;
+        --success: #2f8a5b;
+        --danger: #c1452f;
+        --violet: #8b6fc9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+        font-family: 'IBM Plex Sans', sans-serif;
+        background-color: var(--blueprint-dk);
+        color: var(--text-hi);
+        height: 100vh; height: 100dvh;
+        display: flex; flex-direction: column; overflow: hidden;
+    }
+    header {
+        padding: 12px 20px;
+        background: linear-gradient(180deg, #041220 0%, var(--blueprint-md) 100%);
+        border-bottom: 1px solid var(--grid-line-strong);
+        display: flex; align-items: center; justify-content: space-between;
+        z-index: 10; flex-wrap: wrap; gap: 10px; flex: none;
+    }
+    .brand-area { display: flex; align-items: center; gap: 15px; }
+    .back-btn {
+        color: var(--brass-lt); text-decoration: none; font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.8rem; border: 1px solid var(--brass); padding: 5px 12px;
+        border-radius: 20px; transition: 0.2s; white-space: nowrap;
+    }
+    .back-btn:hover { background: var(--brass); color: var(--blueprint-dk); box-shadow: 0 0 10px var(--brass-glow); }
+    .module-title h1 { font-family: 'Fraunces', serif; font-size: 1.2rem; margin-bottom: 2px; }
+    .module-title p { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); letter-spacing: 1px; }
+
+    .tabs-bar {
+        display: flex; gap: 8px; padding: 10px 20px; background: rgba(0,0,0,0.3);
+        border-bottom: 1px solid var(--grid-line-strong); overflow-x: auto; flex: none;
+    }
+    .tab-btn {
+        background: transparent; border: 1px solid var(--blueprint-lt); color: var(--text-mid);
+        padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+        border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex: none;
+    }
+    .tab-btn:hover { border-color: var(--brass-lt); color: var(--text-hi); }
+    .tab-btn.active { background: var(--brass); color: var(--blueprint-dk); border-color: var(--brass); font-weight: 700; box-shadow: 0 0 15px rgba(201,138,62,0.3); }
+
+    .workspace {
+        display: flex; flex: 1; min-height: 0; position: relative; overflow: hidden;
+        background-image:
+            linear-gradient(var(--grid-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+        background-size: 25px 25px;
+    }
+    .sidebar {
+        width: 370px; background: var(--paper-bg); color: var(--paper-text);
+        border-right: 4px solid var(--brass); display: flex; flex-direction: column;
+        transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+        flex: none; min-height: 0;
+    }
+    .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
+    .toggle-btn {
+        position: absolute; top: 20px; right: -40px; width: 40px; height: 50px;
+        background: var(--brass); border: none; border-radius: 0 8px 8px 0;
+        color: var(--blueprint-dk); font-size: 1.2rem; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 4px 0 10px rgba(0,0,0,0.2); transition: 0.2s; z-index: 6;
+    }
+    .toggle-btn:hover { background: var(--brass-lt); width: 45px; right: -45px;}
+    .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; }
+    .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.3rem; color: var(--blueprint-dk); margin-bottom: 5px; }
+    .sidebar-content p { font-size: 0.87rem; line-height: 1.5; color: #4a5a6a; margin-bottom: 14px; }
+
+    .data-panel { background: #ffffff; border: 1px solid var(--paper-line); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+    .data-row { display: flex; justify-content: space-between; align-items:center; font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; padding: 5px 0; border-bottom: 1px dashed #eee; gap:10px; }
+    .data-row:last-child { border-bottom: none; }
+
+    .badge { display: block; text-align: center; padding: 10px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 1rem; margin-bottom: 14px; }
+    .badge.success { background: #e4f3ea; color: var(--success); border: 1px solid var(--success); }
+    .badge.info { background: #e3f2fd; color: #0277bd; border: 1px solid #0277bd; }
+    .badge.danger { background: #fbe9e5; color: var(--danger); border: 1px solid var(--danger); }
+    .badge.violet { background: #efe9fb; color: var(--violet); border: 1px solid var(--violet); }
+
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .btn-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    .action-btn { padding: 9px; border: 1px solid var(--blueprint-md); background: white; border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; transition: 0.2s; }
+    .action-btn:hover { background: var(--blueprint-md); color: white; }
+    .action-btn.primary { background: var(--brass); border-color: var(--brass); color: white; font-weight: 700; }
+    .action-btn.primary:hover { background: var(--brass-lt); }
+    .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .action-btn.wide { width: 100%; margin-bottom: 12px; }
+
+    .proof-box { background: rgba(47, 117, 172, 0.1); border-left: 4px solid var(--blueprint-lt); padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.83rem; line-height:1.55; margin-bottom: 4px; }
+
+    .pill-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .pill-btn { flex: 1; padding: 9px 6px; border: 1px solid var(--blueprint-md); background: white; border-radius: 20px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; text-align: center; transition: 0.2s; min-width: 70px; }
+    .pill-btn.active { background: var(--blueprint-md); color: white; font-weight: 700; }
+
+    .range-row { margin-bottom: 12px; }
+    .range-row label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; }
+    .range-row input[type=range] { width: 100%; accent-color: var(--brass); height: 22px; cursor: pointer; }
+    .num-input {
+        width: 100%; padding: 9px 12px; border: 1px solid var(--blueprint-md); border-radius: 6px;
+        font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; margin-bottom: 12px; background: white;
+    }
+    .check-item { display: inline-flex; align-items: center; }
+    .dot { width: 18px; height: 18px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800; color: white; }
+
+    .stage { flex: 1; min-width: 0; position: relative; display: flex; align-items: center; justify-content: center; padding: 20px;}
+    .canvas-container {
+        width: 100%; max-width: 900px; height: 100%; max-height: 620px;
+        background: rgba(4, 18, 32, 0.6); border: 1px solid var(--grid-line-strong);
+        border-radius: 12px; box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.3);
+        position: relative; overflow: hidden; display:flex;
+    }
+    #stageContainer { width:100%; height:100%; min-height:0; }
+    .axis { stroke: rgba(255,255,255,0.15); stroke-width: 1; }
+    .svg-label { font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 14px; fill: white; pointer-events: none; }
+    .svg-text-bg { paint-order: stroke; stroke: var(--blueprint-dk); stroke-width: 4; }
+
+    .html-stage { width: 100%; height: 100%; min-height: 0; overflow-y: auto; padding: 22px; color: var(--text-hi); -webkit-overflow-scrolling: touch; }
+    .html-stage h3 { font-family:'Fraunces',serif; font-size:1.3rem; margin-bottom:10px; color: var(--brass-lt); }
+
+    .ref-table-wrap { max-width: 720px; margin: 0 auto; }
+    table.ref-table { width: 100%; border-collapse: collapse; font-family:'IBM Plex Mono',monospace; font-size: 0.8rem; }
+    table.ref-table th { background: var(--blueprint-md); color: var(--brass-lt); padding: 8px 6px; position: sticky; top:0; text-align:center; }
+    table.ref-table td { padding: 7px 6px; text-align:center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    table.ref-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+
+    .trick-card-lg { max-width: 620px; margin: 0 auto; background: rgba(255,255,255,0.05); border: 1px solid var(--grid-line-strong); border-radius: 12px; padding: 22px; }
+    .trick-card-lg h4 { font-family:'Fraunces',serif; font-size: 1.15rem; color: var(--brass-lt); margin-bottom: 10px; }
+    .trick-card-lg .ex { background: rgba(56,189,248,0.1); border-left: 3px solid var(--blueprint-lt); padding: 12px; border-radius: 0 8px 8px 0; margin-top: 12px; font-family:'IBM Plex Mono',monospace; font-size: 0.85rem; }
+
+    .quiz-wrap { max-width: 560px; margin: 0 auto; text-align: center; }
+    .quiz-progress { font-family:'IBM Plex Mono',monospace; color: var(--text-mid); margin-bottom: 14px; font-size:0.82rem; }
+    .quiz-prompt { font-family:'Fraunces',serif; font-size: 1.5rem; margin-bottom: 22px; line-height:1.4; }
+    .quiz-input-row { display:flex; gap:10px; justify-content:center; margin-bottom: 16px; }
+    .quiz-input-row input { width: 180px; padding: 12px; font-size:1.05rem; border-radius:8px; border:none; font-family:'IBM Plex Mono',monospace; text-align:center; }
+    .quiz-btn { padding: 12px 22px; border-radius: 8px; border:none; background: var(--brass); color: white; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; }
+    .quiz-btn:hover { background: var(--brass-lt); }
+    .quiz-tf-row { display:flex; gap:14px; justify-content:center; margin-bottom:16px; }
+    .quiz-tf-row button { flex:1; max-width:150px; padding:14px; border-radius:8px; border:none; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:0.95rem; }
+    .quiz-tf-row button.true-btn { background: var(--success); color:white; }
+    .quiz-tf-row button.false-btn { background: var(--danger); color:white; }
+    .quiz-feedback { padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem; }
+    .quiz-feedback.correct { background: rgba(47,138,91,0.2); border:1px solid var(--success); }
+    .quiz-feedback.wrong { background: rgba(193,69,47,0.2); border:1px solid var(--danger); }
+
+    .expo-display { font-family:'IBM Plex Mono',monospace; text-align:center; }
+    .expo-display .base { font-size: 2.6rem; color: var(--brass-lt); }
+    .expo-display .exp { font-size: 1.5rem; color: var(--brass-lt); vertical-align: super; }
+
+    @media (max-width: 860px) {
+        .sidebar { width: 86vw; }
+        .module-title h1 { font-size: 1rem; }
+        .toggle-btn { top: auto; bottom: 18px; right: -46px; width: 46px; height: 46px; border-radius: 50%; }
+    }
+    .sidebar-content::-webkit-scrollbar, .html-stage::-webkit-scrollbar { width: 8px; }
+    .sidebar-content::-webkit-scrollbar-thumb, .html-stage::-webkit-scrollbar-thumb { background: var(--paper-line); border-radius: 6px; }
+    .html-stage::-webkit-scrollbar-thumb { background: var(--blueprint-lt); }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="brand-area">
+        <a href="../index.html" class="back-btn">← E-Lab</a>
+        <div class="module-title">
+            <h1>Power Play</h1>
+            <p>CLASS 8 · CHAPTER 02 · GANITA PRAKASH · PART 1 · INTERACTIVE ENGINE</p>
+        </div>
+    </div>
+</header>
+
+<div class="tabs-bar" id="tabsBar"></div>
+
+<div class="workspace">
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()" title="Show/hide panel">☰</button>
+        <div class="sidebar-content" id="sidebarContent"></div>
+    </aside>
+    <main class="stage">
+        <div class="canvas-container">
+            <div id="stageContainer"></div>
+        </div>
+    </main>
+</div>
+
+<script>
+// =========================================================================
+// 1. MATH UTILITIES
+// =========================================================================
+const MathUtils = {
+    primeFactorize(n) {
+        let x = Math.abs(Math.trunc(n));
+        const factors = [];
+        if (x < 2) return factors;
+        let d = 2;
+        while (d * d <= x) {
+            while (x % d === 0) { factors.push(d); x /= d; }
+            d++;
+        }
+        if (x > 1) factors.push(x);
+        return factors;
+    },
+    groupFactors(factors) {
+        const map = {};
+        factors.forEach(f => map[f] = (map[f] || 0) + 1);
+        return map;
+    },
+    formatFactorization(factors) { return factors.join(' × '); },
+    exponentForm(grouped) {
+        return Object.keys(grouped).map(p => grouped[p] === 1 ? p : `${p}<sup>${grouped[p]}</sup>`).join(' × ');
+    },
+    randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; },
+    toScientific(num) {
+        if (num === 0) return { x: 0, y: 0 };
+        const sign = num < 0 ? -1 : 1;
+        num = Math.abs(num);
+        let y = Math.floor(Math.log10(num));
+        let x = num / Math.pow(10, y);
+        // Round to a sane display precision before the boundary check, so values
+        // like 999999999 (x = 9.99999999...) don't display as "10.0 x 10^y".
+        x = Math.round(x * 1e6) / 1e6;
+        if (x >= 10) { x /= 10; y += 1; }
+        if (x < 1) { x *= 10; y -= 1; }
+        return { x: sign * x, y };
+    },
+    formatBig(num) {
+        if (Math.abs(num) < 1e6) return num.toLocaleString();
+        const s = this.toScientific(num);
+        return `${(Math.round(s.x * 1000) / 1000)} × 10<sup>${s.y}</sup>`;
+    },
+    unitDigitCycle(base) {
+        const b = ((base % 10) + 10) % 10;
+        const cycles = {
+            0: [0], 1: [1], 5: [5], 6: [6],
+            4: [4, 6], 9: [9, 1],
+            2: [2, 4, 8, 6], 3: [3, 9, 7, 1], 7: [7, 9, 3, 1], 8: [8, 4, 2, 6]
+        };
+        return cycles[b];
+    }
+};
+
+function toggleSwitch(checked) {
+    return `<div style="width:40px;height:20px;background:${checked ? 'var(--brass)' : '#ccc'};border-radius:10px;position:relative;flex:none;">
+        <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;left:${checked ? '22px' : '2px'};transition:.2s;"></div>
+    </div>`;
+}
+function checkDot(ok) {
+    return `<span class="check-item"><span class="dot" style="background:${ok ? 'var(--success)' : '#c7bda0'}">${ok ? '✓' : '✕'}</span></span>`;
+}
+
+// =========================================================================
+// 2. MODULE 1 — PAPER FOLDING SIMULATOR  (§2.1)
+// =========================================================================
+class PaperFoldModule {
+    constructor() {
+        this.folds = 0;
+        this.baseCm = 0.001;
+        this.landmarks = [
+            { label: 'A matchbox on its side', cm: 3 },
+            { label: 'A stack of textbooks', cm: 30 },
+            { label: 'A study table', cm: 75 },
+            { label: 'An average adult', cm: 170 },
+            { label: 'A 3-storey building', cm: 1000 },
+            { label: 'Burj Khalifa, the tallest building on Earth', cm: 83000 },
+            { label: "A typical passenger plane's cruising altitude", cm: 1070000 },
+            { label: 'Depth of the Mariana Trench', cm: 1100000 },
+            { label: 'Distance to the Moon', cm: 38440000000 }
+        ];
+    }
+    fold(n) { this.folds = Math.max(0, Math.min(60, this.folds + n)); app.render(); }
+    reset() { this.folds = 0; app.render(); }
+    thicknessCm() { return this.baseCm * Math.pow(2, this.folds); }
+    formatCm(cm) {
+        if (cm < 100) {
+            const decimals = cm < 1 ? 4 : cm < 10 ? 3 : 2;
+            return `${cm.toFixed(decimals)} cm`;
+        }
+        if (cm < 100000) {
+            const m = cm / 100;
+            return `${m.toLocaleString(undefined, { maximumFractionDigits: m < 10 ? 2 : 1 })} m`;
+        }
+        const km = cm / 100000;
+        if (km < 1e7) return `${km.toLocaleString(undefined, { maximumFractionDigits: 2 })} km`;
+        return `${km.toExponential(2)} km`;
+    }
+    crossedLandmark() {
+        const cm = this.thicknessCm();
+        let last = null;
+        for (const l of this.landmarks) if (cm >= l.cm) last = l; else break;
+        return last;
+    }
+    nextLandmark() {
+        const cm = this.thicknessCm();
+        for (const l of this.landmarks) if (cm < l.cm) return l;
+        return null;
+    }
+    foldsNeededFor(landmarkCm) { return Math.ceil(Math.log2(landmarkCm / this.baseCm)); }
+    updatePoint() {}
+    getSidebarHTML() {
+        const cm = this.thicknessCm();
+        const crossed = this.crossedLandmark();
+        const next = this.nextLandmark();
+        return `
+            <h2>Fold the Paper</h2>
+            <p><b>§2.1</b> · Each fold doubles the thickness. It sounds harmless — until you realise how fast doubling adds up.</p>
+            <div class="badge success">Fold ${this.folds}: thickness = ${this.formatCm(cm)}</div>
+            <div class="data-panel">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:0.85rem;text-align:center;">0.001 cm × 2<sup>${this.folds}</sup> = ${this.formatCm(cm)}</div>
+            </div>
+            <div class="btn-grid three">
+                <button class="action-btn" onclick="app.activeModule.fold(1)">+1 fold</button>
+                <button class="action-btn" onclick="app.activeModule.fold(5)">+5 folds</button>
+                <button class="action-btn" onclick="app.activeModule.fold(10)">+10 folds</button>
+            </div>
+            <button class="action-btn wide" onclick="app.activeModule.reset()">↻ Reset to 0 folds</button>
+            ${crossed ? `<div class="data-panel"><div style="font-weight:700;margin-bottom:4px;">You've surpassed:</div><p style="margin:0;">${crossed.label}</p></div>` : ''}
+            ${next ? `<div class="data-panel"><div style="font-weight:700;margin-bottom:4px;">Next landmark:</div><p style="margin:0;">${next.label} — reached at fold ${this.foldsNeededFor(next.cm)}</p></div>` : ''}
+            <div class="proof-box">Folding is <b>multiplicative growth</b>: each fold multiplies the thickness by 2, so after n folds it's 0.001 × 2ⁿ. Just 46 folds is enough to reach the Moon — far faster than any linear, step-by-step increase could manage.</div>
+        `;
+    }
+    renderStage() {
+        const VBw = 800, VBh = 600;
+        const minLog = -3, maxLog = 11;
+        const cm = this.thicknessCm();
+        const curLog = Math.max(minLog, Math.min(maxLog, Math.log10(Math.max(cm, 1e-4))));
+        const chartTop = 40, chartBottom = 560, chartLeft = 260, chartRight = 720;
+        const yFor = (logv) => chartBottom - (logv - minLog) / (maxLog - minLog) * (chartBottom - chartTop);
+        let html = '';
+        // bar
+        const barY = yFor(curLog);
+        html += `<rect x="${chartLeft}" y="${barY}" width="${chartRight-chartLeft}" height="${chartBottom-barY}" fill="rgba(201,138,62,0.35)" stroke="var(--brass)" stroke-width="2"/>`;
+        // landmark lines
+        this.landmarks.forEach(l => {
+            const ly = yFor(Math.log10(l.cm));
+            const crossed = cm >= l.cm;
+            html += `<line x1="${chartLeft-10}" y1="${ly}" x2="${chartRight+10}" y2="${ly}" stroke="${crossed ? '#2f8a5b' : 'rgba(255,255,255,0.3)'}" stroke-width="1.5" stroke-dasharray="${crossed?'0':'6 4'}"/>`;
+            html += `<text x="${chartLeft-20}" y="${ly-4}" text-anchor="end" class="svg-label" style="font-size:11px;fill:${crossed?'#5fd39a':'#a8c4df'};">${l.label}</text>`;
+        });
+        html += `<text x="${(chartLeft+chartRight)/2}" y="${barY-14}" text-anchor="middle" class="svg-label" style="font-size:16px;">fold ${this.folds} · ${this.formatCm(cm)}</text>`;
+        html += `<line x1="${chartLeft}" y1="${chartTop}" x2="${chartLeft}" y2="${chartBottom}" class="axis"/>`;
+        return { type: 'svg', html };
+    }
+}
+
+// =========================================================================
+// 3. MODULE 2 — EXPONENTIAL NOTATION BUILDER  (§2.2)
+// =========================================================================
+class ExponentBuilderModule {
+    constructor() { this.base = 2; this.exp = 5; this.factorNum = 32400; }
+    setBase(v) { this.base = parseInt(v); app.render(); }
+    setExp(v) { this.exp = parseInt(v); app.render(); }
+    setFactorNum(v) { this.factorNum = Math.max(1, Math.min(999999, parseInt(v) || 1)); app.render(); }
+    updatePoint() {}
+    value() { return Math.pow(this.base, this.exp); }
+    getSidebarHTML() {
+        const v = this.value();
+        const grouped = this.factorNum >= 2 ? MathUtils.groupFactors(MathUtils.primeFactorize(this.factorNum)) : {};
+        return `
+            <h2>Exponential Notation</h2>
+            <p><b>§2.2</b> · n<sup>a</sup> means n multiplied by itself a times. Build any power below and watch it expand.</p>
+            <div class="data-panel">
+                <div class="range-row"><label>Base — ${this.base}</label>
+                <input type="range" min="-10" max="10" value="${this.base}" oninput="app.activeModule.setBase(this.value)"></div>
+                <div class="range-row" style="margin-bottom:0;"><label>Exponent — ${this.exp}</label>
+                <input type="range" min="0" max="12" value="${this.exp}" oninput="app.activeModule.setExp(this.value)"></div>
+            </div>
+            <div class="badge success">${this.base}<sup>${this.exp}</sup> = ${MathUtils.formatBig(v)}</div>
+            <div class="proof-box">Read as "<b>${this.base} raised to the power ${this.exp}</b>" — the <b>${this.exp}</b> is the exponent/power, and <b>${this.base}</b> is the base.</div>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Prime-factorise a number into exponential form</label>
+                <input class="num-input" type="number" min="2" max="999999" value="${this.factorNum}" onchange="app.activeModule.setFactorNum(this.value)">
+                ${Object.keys(grouped).length ? `<div style="font-family:'IBM Plex Mono',monospace;font-size:0.85rem;text-align:center;">${this.factorNum} = ${MathUtils.exponentForm(grouped)}</div>` : '<p style="margin:0;">Enter a number ≥ 2.</p>'}
+            </div>
+        `;
+    }
+    renderStage() {
+        const chain = this.exp === 0 ? '(empty product)' : Array(this.exp).fill(this.base).join(' × ');
+        const v = this.value();
+        let html = `<div class="expo-display" style="max-width:640px;margin:0 auto;">
+            <div style="margin-bottom:24px;"><span class="base">${this.base}</span><span class="exp">${this.exp}</span></div>
+            <div style="font-size:1.1rem;color:var(--text-mid);word-break:break-word;margin-bottom:18px;">${chain}</div>
+            <div style="font-size:2rem;color:var(--brass-lt);">= ${MathUtils.formatBig(v)}</div>
+        </div>`;
+        if (this.factorNum >= 2) {
+            const factors = MathUtils.primeFactorize(this.factorNum);
+            const grouped = MathUtils.groupFactors(factors);
+            const colors = ['#38bdf8', '#fbbf24', '#2f8a5b', '#e08a6a', '#8b6fc9', '#e35a8f'];
+            let ci = 0;
+            html += `<div style="display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:30px;">`;
+            Object.keys(grouped).forEach(p => {
+                const color = colors[ci % colors.length]; ci++;
+                html += `<div style="background:rgba(255,255,255,0.06);border:1px solid ${color};border-radius:12px;padding:14px 18px;text-align:center;min-width:100px;">
+                    <div style="font-family:'IBM Plex Mono',monospace;font-size:1.3rem;color:${color};font-weight:700;">${p}<sup>${grouped[p]}</sup></div>
+                    <div style="font-size:0.72rem;color:var(--text-mid);margin-top:6px;">appears ${grouped[p]}×</div>
+                </div>`;
+            });
+            html += `</div>`;
+        }
+        return { type: 'html', html: `<div class="html-stage-inner" style="text-align:center;">${html}</div>` };
+    }
+}
+
+// =========================================================================
+// 4. MODULE 3 — LAWS OF EXPONENTS EXPLORER  (§2.2, §2.3)
+// =========================================================================
+class LawsModule {
+    constructor() {
+        this.sub = 'product';
+        this.p = { n: 2, a: 3, b: 2 };
+        this.pw = { n: 2, a: 3, b: 2 };
+        this.q = { n: 2, a: 6, b: 2 };
+        this.se = { m: 2, n: 3, a: 4 };
+        this.z = { n: 5 };
+        this.neg = { n: 2, a: 3 };
+    }
+    setSub(s) { this.sub = s; app.render(); }
+    setP(k, v) { this.p[k] = parseInt(v); app.render(); }
+    setPw(k, v) { this.pw[k] = parseInt(v); app.render(); }
+    setQ(k, v) {
+        this.q[k] = parseInt(v);
+        if (this.q.b >= this.q.a) this.q.b = this.q.a - 1;
+        app.render();
+    }
+    setSe(k, v) { this.se[k] = parseInt(v); app.render(); }
+    setZ(k, v) { this.z[k] = parseInt(v); app.render(); }
+    setNeg(k, v) { this.neg[k] = parseInt(v); app.render(); }
+    updatePoint() {}
+    tabsHTML() {
+        const items = [
+            ['product', 'nᵃ×nᵇ'], ['power', '(nᵃ)ᵇ'], ['quotient', 'nᵃ÷nᵇ'],
+            ['same-exp', 'nᵃ×mᵃ'], ['zero', 'n⁰'], ['negative', 'n⁻ᵃ']
+        ];
+        return `<div class="pill-row">${items.map(([id, label]) =>
+            `<div class="pill-btn ${this.sub === id ? 'active' : ''}" onclick="app.activeModule.setSub('${id}')">${label}</div>`
+        ).join('')}</div>`;
+    }
+    getSidebarHTML() {
+        const map = {
+            product: () => this.productSidebar(), power: () => this.powerSidebar(),
+            quotient: () => this.quotientSidebar(), 'same-exp': () => this.sameExpSidebar(),
+            zero: () => this.zeroSidebar(), negative: () => this.negativeSidebar()
+        };
+        return map[this.sub]();
+    }
+    productSidebar() {
+        const { n, a, b } = this.p;
+        const lhs = Math.pow(n, a) * Math.pow(n, b), rhs = Math.pow(n, a + b);
+        return `<h2>Laws of Exponents</h2>${this.tabsHTML()}
+        <p><b>Product law</b> · n<sup>a</sup> × n<sup>b</sup> = n<sup>a+b</sup></p>
+        <div class="data-panel">
+            <div class="range-row"><label>Base n — ${n}</label><input type="range" min="2" max="9" value="${n}" oninput="app.activeModule.setP('n',this.value)"></div>
+            <div class="range-row"><label>Exponent a — ${a}</label><input type="range" min="1" max="6" value="${a}" oninput="app.activeModule.setP('a',this.value)"></div>
+            <div class="range-row" style="margin-bottom:0;"><label>Exponent b — ${b}</label><input type="range" min="1" max="6" value="${b}" oninput="app.activeModule.setP('b',this.value)"></div>
+        </div>
+        <div class="badge ${lhs===rhs?'success':'danger'}">${n}<sup>${a}</sup> × ${n}<sup>${b}</sup> = ${n}<sup>${a+b}</sup> = ${MathUtils.formatBig(rhs)}</div>
+        <div class="proof-box">${n}<sup>${a}</sup> is ${n} multiplied ${a} times; ${n}<sup>${b}</sup> is ${n} multiplied ${b} times. Multiply them together and you get ${n} multiplied ${a}+${b} = ${a+b} times.</div>`;
+    }
+    powerSidebar() {
+        const { n, a, b } = this.pw;
+        const lhs = Math.pow(Math.pow(n, a), b), rhs = Math.pow(n, a * b);
+        return `<h2>Laws of Exponents</h2>${this.tabsHTML()}
+        <p><b>Power of a power</b> · (n<sup>a</sup>)<sup>b</sup> = n<sup>a×b</sup></p>
+        <div class="data-panel">
+            <div class="range-row"><label>Base n — ${n}</label><input type="range" min="2" max="9" value="${n}" oninput="app.activeModule.setPw('n',this.value)"></div>
+            <div class="range-row"><label>Exponent a — ${a}</label><input type="range" min="1" max="4" value="${a}" oninput="app.activeModule.setPw('a',this.value)"></div>
+            <div class="range-row" style="margin-bottom:0;"><label>Exponent b — ${b}</label><input type="range" min="1" max="4" value="${b}" oninput="app.activeModule.setPw('b',this.value)"></div>
+        </div>
+        <div class="badge ${lhs===rhs?'success':'danger'}">(${n}<sup>${a}</sup>)<sup>${b}</sup> = ${n}<sup>${a*b}</sup> = ${MathUtils.formatBig(rhs)}</div>
+        <div class="proof-box">(${n}<sup>${a}</sup>)<sup>${b}</sup> means "${n}<sup>${a}</sup>, multiplied by itself ${b} times." That's ${n} appearing ${a}×${b} = ${a*b} times in total — the exponents multiply.</div>`;
+    }
+    quotientSidebar() {
+        const { n, a, b } = this.q;
+        const lhs = Math.pow(n, a) / Math.pow(n, b), rhs = Math.pow(n, a - b);
+        return `<h2>Laws of Exponents</h2>${this.tabsHTML()}
+        <p><b>Quotient law</b> · n<sup>a</sup> ÷ n<sup>b</sup> = n<sup>a−b</sup> (a &gt; b)</p>
+        <div class="data-panel">
+            <div class="range-row"><label>Base n — ${n}</label><input type="range" min="2" max="9" value="${n}" oninput="app.activeModule.setQ('n',this.value)"></div>
+            <div class="range-row"><label>Exponent a — ${a}</label><input type="range" min="2" max="10" value="${a}" oninput="app.activeModule.setQ('a',this.value)"></div>
+            <div class="range-row" style="margin-bottom:0;"><label>Exponent b — ${b}</label><input type="range" min="1" max="${a-1}" value="${b}" oninput="app.activeModule.setQ('b',this.value)"></div>
+        </div>
+        <div class="badge ${lhs===rhs?'success':'danger'}">${n}<sup>${a}</sup> ÷ ${n}<sup>${b}</sup> = ${n}<sup>${a-b}</sup> = ${MathUtils.formatBig(rhs)}</div>
+        <div class="proof-box">Dividing cancels ${b} of the ${a} copies of ${n} in the numerator, leaving ${a}−${b} = ${a-b} copies behind.</div>`;
+    }
+    sameExpSidebar() {
+        const { m, n, a } = this.se;
+        const lhs = Math.pow(m, a) * Math.pow(n, a), rhs = Math.pow(m * n, a);
+        return `<h2>Laws of Exponents</h2>${this.tabsHTML()}
+        <p><b>Same-exponent product</b> · m<sup>a</sup> × n<sup>a</sup> = (m×n)<sup>a</sup></p>
+        <div class="data-panel">
+            <div class="range-row"><label>Base m — ${m}</label><input type="range" min="2" max="8" value="${m}" oninput="app.activeModule.setSe('m',this.value)"></div>
+            <div class="range-row"><label>Base n — ${n}</label><input type="range" min="2" max="8" value="${n}" oninput="app.activeModule.setSe('n',this.value)"></div>
+            <div class="range-row" style="margin-bottom:0;"><label>Exponent a — ${a}</label><input type="range" min="1" max="5" value="${a}" oninput="app.activeModule.setSe('a',this.value)"></div>
+        </div>
+        <div class="badge ${lhs===rhs?'success':'danger'}">${m}<sup>${a}</sup> × ${n}<sup>${a}</sup> = (${m}×${n})<sup>${a}</sup> = ${MathUtils.formatBig(rhs)}</div>
+        <div class="proof-box">Pair up one ${m} with one ${n}, ${a} times over: (${m}×${n}) × (${m}×${n}) × ... — regrouping the same multiplication gives (${m*n})<sup>${a}</sup>.</div>`;
+    }
+    zeroSidebar() {
+        const { n } = this.z;
+        return `<h2>Laws of Exponents</h2>${this.tabsHTML()}
+        <p><b>Zero exponent</b> · n⁰ = 1 (n ≠ 0)</p>
+        <div class="data-panel">
+            <div class="range-row" style="margin-bottom:0;"><label>Base n — ${n}</label><input type="range" min="2" max="12" value="${n}" oninput="app.activeModule.setZ('n',this.value)"></div>
+        </div>
+        <div class="badge success">${n}<sup>0</sup> = 1</div>
+        <div class="data-panel">
+            <div class="data-row"><span>${n}<sup>4</sup> ÷ ${n}<sup>4</sup></span><span>= ${n}<sup>4-4</sup> = ${n}<sup>0</sup></span></div>
+            <div class="data-row"><span>Any number ÷ itself</span><span>= 1</span></div>
+        </div>
+        <div class="proof-box">We <i>define</i> n⁰ this way precisely so the quotient law n<sup>a</sup>÷n<sup>b</sup>=n<sup>a−b</sup> keeps working even when a = b — since anything divided by itself is 1.</div>`;
+    }
+    negativeSidebar() {
+        const { n, a } = this.neg;
+        const val = Math.pow(n, a);
+        return `<h2>Laws of Exponents</h2>${this.tabsHTML()}
+        <p><b>Negative exponent</b> · n<sup>−a</sup> = 1 / n<sup>a</sup></p>
+        <div class="data-panel">
+            <div class="range-row"><label>Base n — ${n}</label><input type="range" min="2" max="9" value="${n}" oninput="app.activeModule.setNeg('n',this.value)"></div>
+            <div class="range-row" style="margin-bottom:0;"><label>Exponent a — ${a}</label><input type="range" min="1" max="8" value="${a}" oninput="app.activeModule.setNeg('a',this.value)"></div>
+        </div>
+        <div class="badge success">${n}<sup>−${a}</sup> = 1/${n}<sup>${a}</sup> = 1/${val}</div>
+        <div class="proof-box">Think of it as continuing to divide by ${n} past the point where the exponent hits 0 — each further division pushes the exponent one more negative, and the value into the denominator.</div>`;
+    }
+    renderStage() {
+        const cards = {
+            product: () => { const { n, a, b } = this.p; return [`${n}<sup>${a}</sup> × ${n}<sup>${b}</sup>`, `${n}<sup>${a+b}</sup>`, Math.pow(n,a+b)]; },
+            power: () => { const { n, a, b } = this.pw; return [`(${n}<sup>${a}</sup>)<sup>${b}</sup>`, `${n}<sup>${a*b}</sup>`, Math.pow(n,a*b)]; },
+            quotient: () => { const { n, a, b } = this.q; return [`${n}<sup>${a}</sup> ÷ ${n}<sup>${b}</sup>`, `${n}<sup>${a-b}</sup>`, Math.pow(n,a-b)]; },
+            'same-exp': () => { const { m, n, a } = this.se; return [`${m}<sup>${a}</sup> × ${n}<sup>${a}</sup>`, `(${m*n})<sup>${a}</sup>`, Math.pow(m*n,a)]; },
+            zero: () => { const { n } = this.z; return [`${n}<sup>0</sup>`, `1`, 1]; },
+            negative: () => { const { n, a } = this.neg; return [`${n}<sup>−${a}</sup>`, `1/${Math.pow(n,a)}`, 1/Math.pow(n,a)]; }
+        };
+        const [lhsStr, rhsStr, val] = cards[this.sub]();
+        const html = `<div style="text-align:center;max-width:600px;margin:0 auto;">
+            <div style="font-size:2rem;font-family:'IBM Plex Mono',monospace;color:var(--text-mid);margin-bottom:20px;">${lhsStr}</div>
+            <div style="font-size:1.8rem;color:var(--brass-lt);margin-bottom:10px;">=</div>
+            <div style="font-size:2.2rem;font-family:'IBM Plex Mono',monospace;color:var(--success);margin-bottom:24px;">${rhsStr}</div>
+            <div style="font-size:1.2rem;color:var(--text-mid);">numeric value ≈ ${typeof val === 'number' ? MathUtils.formatBig(val) : val}</div>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 5. MODULE 4 — SCIENTIFIC NOTATION  (§2.4)
+// =========================================================================
+class ScientificNotationModule {
+    constructor() { this.number = 308100000; }
+    setNumber(v) { this.number = parseFloat(v) || 0; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        const s = MathUtils.toScientific(this.number);
+        const digitsMoved = Math.abs(s.y);
+        return `
+            <h2>Scientific Notation</h2>
+            <p><b>§2.4</b> · Any number can be written as x × 10<sup>y</sup>, where 1 ≤ x &lt; 10. This keeps very large (or very small) numbers easy to read and compare.</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Number to convert</label>
+                <input class="num-input" type="number" value="${this.number}" onchange="app.activeModule.setNumber(this.value)">
+            </div>
+            <div class="badge success">${this.number.toLocaleString()} = ${(Math.round(s.x*10000)/10000)} × 10<sup>${s.y}</sup></div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">How to get there</div>
+                <div class="data-row"><span>Move the decimal point</span><span>${digitsMoved} places</span></div>
+                <div class="data-row"><span>Direction</span><span>${s.y >= 0 ? 'left (number ≥ 1)' : 'right (number < 1)'}</span></div>
+                <div class="data-row"><span>Exponent y</span><span>${s.y}</span></div>
+            </div>
+            <div class="proof-box">The exponent y is the important part — it tells you the scale (how many digits). Changing y by 1 means a 10× jump; changing the leading digit x barely moves the number at all.</div>
+        `;
+    }
+    renderStage() {
+        // Sun-Earth-Saturn number line example from the chapter, log-scaled
+        const sunSaturn = 1.4335e12, sunEarth = 1.496e11;
+        const minLog = 10, maxLog = 12.2;
+        const xFor = (val) => {
+            const l = Math.log10(val);
+            return 80 + (l - minLog) / (maxLog - minLog) * 640;
+        };
+        const s = MathUtils.toScientific(this.number);
+        let html = `<h3>Sun · Earth · Saturn (log-scaled distances)</h3>
+        <svg viewBox="0 0 800 220" style="width:100%;max-width:760px;display:block;margin:10px auto;">
+            <line x1="80" y1="110" x2="720" y2="110" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+            <circle cx="${xFor(1)}" cy="110" r="8" fill="#fbbf24"/>
+            <text x="${xFor(1)}" y="90" text-anchor="middle" class="svg-label">Sun</text>
+            <circle cx="${xFor(sunEarth)}" cy="110" r="6" fill="#38bdf8"/>
+            <text x="${xFor(sunEarth)}" y="140" text-anchor="middle" class="svg-label" style="font-size:12px;">Earth · 1.496×10¹¹ m</text>
+            <circle cx="${xFor(sunSaturn)}" cy="110" r="7" fill="#e3ac6a"/>
+            <text x="${xFor(sunSaturn)}" y="90" text-anchor="middle" class="svg-label" style="font-size:12px;">Saturn · 1.4335×10¹² m</text>
+        </svg>
+        <p style="text-align:center;color:var(--text-mid);max-width:560px;margin:14px auto 0;">Even though the two distances look "close" as raw numbers, the exponent shows Saturn is roughly 10× further from the Sun than Earth is.</p>
+        <div style="text-align:center;margin-top:30px;font-family:'IBM Plex Mono',monospace;font-size:1.6rem;color:var(--brass-lt);">${this.number.toLocaleString()} = ${(Math.round(s.x*10000)/10000)} × 10<sup>${s.y}</sup></div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 6. MODULE 5 — POWERS OF TEN: A SENSE OF SCALE  (§2.5)
+// =========================================================================
+class ScaleModule {
+    constructor() {
+        this.exp = 9;
+        this.facts = [
+            { exp: 0, label: 'Northern white rhinos left in the wild', value: '2 — both female, protected in Kenya' },
+            { exp: 1, label: 'Hainan gibbon population', value: '≈ 42' },
+            { exp: 2, label: 'Kakapo parrots alive', value: '≈ 242' },
+            { exp: 3, label: 'Komodo dragons worldwide', value: '< 3,000, all in Indonesia' },
+            { exp: 4, label: 'Maned wolf population', value: '> 17,000, mostly in Brazil' },
+            { exp: 5, label: 'African elephants', value: '≈ 4.15 lakh' },
+            { exp: 6, label: 'American alligators', value: '≈ 50 lakh' },
+            { exp: 7, label: 'Camels worldwide', value: '≈ 3.5 crore' },
+            { exp: 8, label: 'Water buffaloes worldwide', value: '≈ 20 crore, mostly in Asia' },
+            { exp: 9, label: 'Global human population', value: '≈ 8.2 billion' },
+            { exp: 10, label: 'Chickens alive at any moment', value: '≈ 33 billion' },
+            { exp: 12, label: 'Trees on Earth', value: '≈ 3 trillion' },
+            { exp: 14, label: 'Mosquitoes worldwide', value: '≈ 110 trillion' },
+            { exp: 15, label: 'Beetles worldwide (also earthworms)', value: '≈ 1 quadrillion' },
+            { exp: 16, label: 'Ants worldwide', value: '≈ 20 quadrillion — outweighing all wild birds and mammals combined' },
+            { exp: 21, label: 'Grains of sand on Earth', value: 'an estimated total across every beach and desert' },
+            { exp: 23, label: 'Stars in the observable universe', value: 'an estimated total' },
+            { exp: 25, label: 'Drops of water on Earth', value: 'an estimated total' }
+        ];
+        this.naming = [
+            { indian: 'Lakh', iexp: 5, intl: '—', yexp: null },
+            { indian: 'Crore', iexp: 7, intl: 'Million', yexp: 6 },
+            { indian: 'Arab', iexp: 9, intl: 'Billion', yexp: 9 },
+            { indian: 'Kharab', iexp: 11, intl: 'Trillion', yexp: 12 },
+            { indian: 'Neel', iexp: 13, intl: 'Quadrillion', yexp: 15 },
+            { indian: 'Padma', iexp: 15, intl: '—', yexp: null },
+            { indian: 'Shankh', iexp: 17, intl: '—', yexp: null }
+        ];
+    }
+    setExp(v) { this.exp = parseInt(v); app.render(); }
+    updatePoint() {}
+    currentFact() {
+        let best = this.facts[0];
+        for (const f of this.facts) if (f.exp <= this.exp) best = f; else break;
+        return best;
+    }
+    getSidebarHTML() {
+        const f = this.currentFact();
+        return `
+            <h2>A Sense of Scale</h2>
+            <p><b>§2.5</b> · Slide through powers of ten and meet a real-world quantity at roughly that scale.</p>
+            <div class="data-panel">
+                <div class="range-row" style="margin-bottom:0;"><label>10<sup>${this.exp}</sup></label>
+                <input type="range" min="0" max="25" value="${this.exp}" oninput="app.activeModule.setExp(this.value)"></div>
+            </div>
+            <div class="badge violet">≈ 10<sup>${f.exp}</sup></div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">${f.label}</div>
+                <p style="margin:0;">${f.value}</p>
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Indian vs international naming</div>
+                ${this.naming.map(n => `<div class="data-row"><span>${n.indian} = 10<sup>${n.iexp}</sup></span><span>${n.intl !== '—' ? `${n.intl} = 10<sup>${n.yexp}</sup>` : '—'}</span></div>`).join('')}
+            </div>
+        `;
+    }
+    renderStage() {
+        const f = this.currentFact();
+        let html = `<div style="text-align:center;max-width:600px;margin:0 auto;">
+            <div style="font-size:3rem;font-family:'IBM Plex Mono',monospace;color:var(--brass-lt);margin-bottom:10px;">10<sup>${this.exp}</sup></div>
+            <div style="font-size:1rem;color:var(--text-mid);margin-bottom:26px;">nearest known reference: 10<sup>${f.exp}</sup></div>
+            <div style="background:rgba(255,255,255,0.06);border:1px solid var(--grid-line-strong);border-radius:14px;padding:26px;">
+                <div style="font-family:'Fraunces',serif;font-size:1.4rem;color:var(--brass-lt);margin-bottom:10px;">${f.label}</div>
+                <div style="font-size:1.05rem;color:var(--text-mid);">${f.value}</div>
+            </div>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 7. MODULE 6 — COMBINATIONS & PASSWORDS  (§2.1 sidebar / "How Many Combinations")
+// =========================================================================
+class CombinationsModule {
+    constructor() {
+        this.sub = 'outfits';
+        this.outfit = { dresses: 4, caps: 3, useShoes: false, shoes: 3 };
+        this.pw = { length: 5, charset: 10 };
+    }
+    setSub(s) { this.sub = s; app.render(); }
+    setOutfit(k, v) {
+        if (k === 'useShoes') this.outfit.useShoes = !this.outfit.useShoes;
+        else this.outfit[k] = parseInt(v);
+        app.render();
+    }
+    setPw(k, v) { this.pw[k] = parseInt(v); app.render(); }
+    updatePoint() {}
+    tabsHTML() {
+        return `<div class="pill-row">
+            <div class="pill-btn ${this.sub === 'outfits' ? 'active' : ''}" onclick="app.activeModule.setSub('outfits')">Outfits</div>
+            <div class="pill-btn ${this.sub === 'passwords' ? 'active' : ''}" onclick="app.activeModule.setSub('passwords')">Passwords</div>
+        </div>`;
+    }
+    getSidebarHTML() { return this.sub === 'outfits' ? this.outfitSidebar() : this.pwSidebar(); }
+    outfitSidebar() {
+        const { dresses, caps, useShoes, shoes } = this.outfit;
+        const total = dresses * caps * (useShoes ? shoes : 1);
+        return `<h2>Counting Combinations</h2>${this.tabsHTML()}
+        <p>Every dress can pair with every cap (and, if worn, every pair of shoes). The counts simply multiply.</p>
+        <div class="data-panel">
+            <div class="range-row"><label>Dresses — ${dresses}</label><input type="range" min="1" max="10" value="${dresses}" oninput="app.activeModule.setOutfit('dresses',this.value)"></div>
+            <div class="range-row" style="margin-bottom:${useShoes?'12px':'0'};"><label>Caps — ${caps}</label><input type="range" min="1" max="10" value="${caps}" oninput="app.activeModule.setOutfit('caps',this.value)"></div>
+            ${useShoes ? `<div class="range-row" style="margin-bottom:0;"><label>Pairs of shoes — ${shoes}</label><input type="range" min="1" max="10" value="${shoes}" oninput="app.activeModule.setOutfit('shoes',this.value)"></div>` : ''}
+        </div>
+        <div class="data-panel" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="app.activeModule.setOutfit('useShoes')">
+            <strong>Include shoes</strong>${toggleSwitch(useShoes)}
+        </div>
+        <div class="badge success">${dresses} × ${caps}${useShoes?` × ${shoes}`:''} = ${total} outfits</div>
+        <div class="proof-box">For each of the ${dresses} dresses there are ${caps}${useShoes?` × ${shoes}`:''} choices to go with it, so the totals multiply rather than add.</div>`;
+    }
+    pwSidebar() {
+        const { length, charset } = this.pw;
+        const total = Math.pow(charset, length);
+        const charsetLabel = charset === 10 ? 'digits 0–9' : charset === 26 ? 'letters A–Z' : 'digits + letters (36 chars)';
+        return `<h2>Counting Combinations</h2>${this.tabsHTML()}
+        <p>A lock with more slots — or more symbols per slot — grows the number of possible codes <b>exponentially</b>, not just a little.</p>
+        <div class="data-panel">
+            <div class="range-row"><label>Code length — ${length}</label><input type="range" min="1" max="8" value="${length}" oninput="app.activeModule.setPw('length',this.value)"></div>
+        </div>
+        <div class="pill-row">
+            <div class="pill-btn ${charset===10?'active':''}" onclick="app.activeModule.setPw('charset',10)">0–9</div>
+            <div class="pill-btn ${charset===26?'active':''}" onclick="app.activeModule.setPw('charset',26)">A–Z</div>
+            <div class="pill-btn ${charset===36?'active':''}" onclick="app.activeModule.setPw('charset',36)">A–Z + 0–9</div>
+        </div>
+        <div class="badge success">${charset}<sup>${length}</sup> = ${MathUtils.formatBig(total)} codes</div>
+        <div class="proof-box">Each of the ${length} slots independently has ${charset} choices (${charsetLabel}), so the total is ${charset} multiplied by itself ${length} times — exactly ${charset}<sup>${length}</sup>.</div>`;
+    }
+    renderStage() {
+        if (this.sub === 'outfits') {
+            const { dresses, caps, useShoes, shoes } = this.outfit;
+            const total = dresses * caps * (useShoes ? shoes : 1);
+            let html = `<div style="text-align:center;">
+                <div style="font-size:1.1rem;color:var(--text-mid);margin-bottom:10px;">${dresses} dresses × ${caps} caps${useShoes?` × ${shoes} shoes`:''}</div>
+                <div style="font-size:2.6rem;font-family:'IBM Plex Mono',monospace;color:var(--brass-lt);">${total}</div>
+                <div style="font-size:1rem;color:var(--text-mid);">total outfits</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:6px;max-width:600px;margin:26px auto 0;">
+                ${Array.from({length: Math.min(total, 400)}).map(() => `<div style="aspect-ratio:1;background:rgba(56,189,248,0.25);border:1px solid var(--blueprint-lt);border-radius:4px;"></div>`).join('')}
+            </div>
+            ${total > 400 ? `<p style="text-align:center;color:var(--text-mid);margin-top:10px;">(showing first 400 of ${total})</p>` : ''}`;
+            return { type: 'html', html };
+        }
+        const { length, charset } = this.pw;
+        const total = Math.pow(charset, length);
+        const html = `<div style="text-align:center;">
+            <div style="font-size:1.1rem;color:var(--text-mid);margin-bottom:10px;">${charset} choices per slot × ${length} slots</div>
+            <div style="font-size:2.6rem;font-family:'IBM Plex Mono',monospace;color:var(--brass-lt);">${charset}<sup>${length}</sup></div>
+            <div style="font-size:1.4rem;color:var(--success);margin-top:10px;">= ${MathUtils.formatBig(total)}</div>
+            <div style="font-size:1rem;color:var(--text-mid);margin-top:4px;">possible codes</div>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 8. MODULE 7 — QUICK TRICKS
+// =========================================================================
+class TricksModule {
+    constructor() {
+        this.tricks = [
+            { title: 'Unit-digit cycles', body: 'The units digit of powers repeats in a short cycle: 0,1,5,6 never change; 4 and 9 alternate every 2 steps; 2,3,7,8 cycle every 4 steps. Use the remainder of the exponent ÷ cycle-length to jump straight to the answer.', example: '7¹=7, 7²=49, 7³=343, 7⁴=2401, 7⁵=...7 again.\nSo the units digit of 7²⁵ matches 7¹ (25 mod 4 = 1) → units digit 7.' },
+            { title: 'na × nb = na+b — don\'t add the base', body: 'A common mistake is adding the bases instead of the exponents. Only the exponents add; the base stays the same.', example: '2³ × 2⁴ = 2⁷ = 128, NOT 4⁷.' },
+            { title: 'Zero and negative exponents', body: 'n⁰ is always 1 (for n ≠ 0), no matter how big n is. A negative exponent flips the number into a fraction: n⁻ᵃ = 1/nᵃ.', example: '99⁰ = 1\n2⁻³ = 1/2³ = 1/8' },
+            { title: 'Same-exponent trick: mᵃ × nᵃ = (mn)ᵃ', body: 'When two powers share the same exponent (not the same base), you can combine the bases instead.', example: '2⁵ × 5⁵ = (2×5)⁵ = 10⁵ = 100000 — much faster than multiplying 32 × 3125.' },
+            { title: 'Comparing towers of exponents', body: 'For numbers bigger than 1, a larger exponent usually wins by far more than a larger base — exponent growth outpaces base growth.', example: '100² = 10,000, but 2¹⁰⁰ has 31 digits — utterly dwarfing 100².' },
+            { title: 'Scientific notation at a glance', body: 'For a whole number, the exponent in scientific notation is just (number of digits − 1).', example: '308100000 has 9 digits → exponent = 8 → 3.081 × 10⁸.' },
+            { title: 'Squares that are also cubes', body: 'A number is both a perfect square and a perfect cube exactly when it\'s a 6th power — the least common multiple of the exponents 2 and 3 is 6.', example: '64 = 8² = 4³ = 2⁶. Next one: 729 = 27² = 9³ = 3⁶.' },
+            { title: 'Doubling vs adding — exponential beats linear', body: 'Repeated multiplication (exponential growth) eventually overtakes repeated addition (linear growth) no matter how big the fixed addition step is.', example: '46 paper folds (×2 each time) beat 1,92,20,00,000 steps of 20 cm (linear) to cover the same Earth–Moon distance.' }
+        ];
+        this.selected = 0;
+    }
+    select(i) { this.selected = i; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Quick Tricks</h2>
+            <p>Eight fast ways to think about powers and exponents — click any card to see the full explanation.</p>
+            ${this.tricks.map((t, i) => `<div class="data-panel" style="cursor:pointer;${i === this.selected ? 'border-color:var(--brass);border-width:2px;' : ''}" onclick="app.activeModule.select(${i})">
+                <div style="font-weight:700;font-size:0.85rem;">${i + 1}. ${t.title}</div>
+            </div>`).join('')}
+        `;
+    }
+    renderStage() {
+        const t = this.tricks[this.selected];
+        const html = `<div class="trick-card-lg">
+            <h4>${this.selected + 1}. ${t.title}</h4>
+            <p style="line-height:1.6;color:var(--text-mid);">${t.body}</p>
+            <div class="ex">${t.example.replace(/\n/g, '<br>')}</div>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 9. MODULE 8 — QUIZ ARENA
+// =========================================================================
+class QuizModule {
+    constructor() {
+        this.level = 'easy';
+        this.total = 10;
+        this.started = false;
+        this.questions = [];
+        this.index = 0;
+        this.score = 0;
+        this.answered = false;
+        this.lastCorrect = null;
+        this.userVal = '';
+        this.tfBank = [
+            { stmt: 'Cube numbers are always square numbers too.', a: false },
+            { stmt: 'Fourth powers are always square numbers.', a: true },
+            { stmt: 'The fifth power of a number is always divisible by the cube of that number.', a: true },
+            { stmt: 'The product of two perfect-cube numbers is always a perfect cube.', a: true },
+            { stmt: 'n⁰ equals 0 for every non-zero number n.', a: false },
+            { stmt: 'nᵃ × nᵇ equals n raised to the power (a × b).', a: false },
+            { stmt: '(nᵃ)ᵇ equals n raised to the power (a × b).', a: true },
+            { stmt: 'A negative exponent always makes the value negative.', a: false }
+        ];
+    }
+    setLevel(l) { this.level = l; app.render(); }
+    setTotal(n) { this.total = n; app.render(); }
+    start() {
+        this.questions = this.generateQuestions(this.level, this.total);
+        this.index = 0; this.score = 0; this.answered = false; this.lastCorrect = null; this.userVal = '';
+        this.started = true;
+        app.render();
+    }
+    restart() { this.started = false; app.render(); }
+    ranges() {
+        if (this.level === 'easy') return { base: [2, 6], exp: [1, 4] };
+        if (this.level === 'medium') return { base: [2, 9], exp: [1, 8] };
+        return { base: [2, 12], exp: [1, 12] };
+    }
+    generateQuestions(level, count) {
+        const { base, exp } = this.ranges();
+        const arr = [];
+        for (let i = 0; i < count; i++) {
+            const roll = Math.random();
+            if (roll < 0.3) {
+                const n = MathUtils.randInt(base[0], base[1]), a = MathUtils.randInt(exp[0], Math.min(exp[1], 6));
+                arr.push({ type: 'numeric', prompt: `What is ${n}<sup>${a}</sup>?`, answer: Math.pow(n, a) });
+            } else if (roll < 0.55) {
+                const n = MathUtils.randInt(base[0], base[1]), a = MathUtils.randInt(1, 5), b = MathUtils.randInt(1, 5);
+                arr.push({ type: 'numeric', prompt: `Simplify ${n}<sup>${a}</sup> × ${n}<sup>${b}</sup>. Give the exponent of the answer (base ${n}).`, answer: a + b });
+            } else if (roll < 0.75) {
+                const n = MathUtils.randInt(base[0], base[1]), a = MathUtils.randInt(2, 8), b = MathUtils.randInt(1, a - 1);
+                arr.push({ type: 'numeric', prompt: `Simplify ${n}<sup>${a}</sup> ÷ ${n}<sup>${b}</sup>. Give the exponent of the answer (base ${n}).`, answer: a - b });
+            } else if (roll < 0.88) {
+                const num = MathUtils.randInt(1000, 999999999);
+                const s = MathUtils.toScientific(num);
+                arr.push({ type: 'numeric', prompt: `In scientific notation ${(Math.round(s.x*100)/100)} × 10<sup>y</sup>, what is y for the number ${num.toLocaleString()}?`, answer: s.y });
+            } else {
+                const bank = this.tfBank[MathUtils.randInt(0, this.tfBank.length - 1)];
+                arr.push({ type: 'tf', prompt: bank.stmt, answer: bank.a });
+            }
+        }
+        return arr;
+    }
+    setUserVal(v) { this.userVal = v; }
+    submitNumeric() {
+        if (this.answered) return;
+        const q = this.questions[this.index];
+        const val = parseFloat(this.userVal);
+        this.answered = true;
+        this.lastCorrect = (val === q.answer);
+        if (this.lastCorrect) this.score++;
+        app.render();
+    }
+    submitTF(bool) {
+        if (this.answered) return;
+        const q = this.questions[this.index];
+        this.answered = true;
+        this.lastCorrect = (bool === q.answer);
+        if (this.lastCorrect) this.score++;
+        app.render();
+    }
+    next() { this.index++; this.answered = false; this.lastCorrect = null; this.userVal = ''; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        if (!this.started) {
+            return `
+                <h2>Quiz Arena</h2>
+                <p>Practice evaluating powers, applying the laws of exponents, and reading scientific notation.</p>
+                <div class="data-panel">
+                    <div style="font-weight:700;margin-bottom:8px;">Difficulty</div>
+                    <div class="pill-row">
+                        <div class="pill-btn ${this.level==='easy'?'active':''}" onclick="app.activeModule.setLevel('easy')">Easy</div>
+                        <div class="pill-btn ${this.level==='medium'?'active':''}" onclick="app.activeModule.setLevel('medium')">Medium</div>
+                        <div class="pill-btn ${this.level==='hard'?'active':''}" onclick="app.activeModule.setLevel('hard')">Hard</div>
+                    </div>
+                </div>
+                <div class="data-panel">
+                    <div style="font-weight:700;margin-bottom:8px;">Number of questions</div>
+                    <div class="pill-row">
+                        <div class="pill-btn ${this.total===5?'active':''}" onclick="app.activeModule.setTotal(5)">5</div>
+                        <div class="pill-btn ${this.total===10?'active':''}" onclick="app.activeModule.setTotal(10)">10</div>
+                        <div class="pill-btn ${this.total===15?'active':''}" onclick="app.activeModule.setTotal(15)">15</div>
+                    </div>
+                </div>
+                <button class="action-btn primary wide" onclick="app.activeModule.start()">▶ Start Quiz</button>
+                <div class="proof-box">Questions mix direct evaluation, the product/quotient laws, scientific-notation exponents, and true/false concept checks.</div>
+            `;
+        }
+        if (this.index >= this.questions.length) {
+            return `
+                <h2>Quiz Arena</h2>
+                <div class="badge success">Final score: ${this.score} / ${this.questions.length}</div>
+                <p>Well played! Try a harder difficulty for more of a challenge.</p>
+                <button class="action-btn primary wide" onclick="app.activeModule.restart()">↻ New Quiz</button>
+            `;
+        }
+        return `
+            <h2>Quiz Arena</h2>
+            <div class="badge info">Question ${this.index + 1} / ${this.questions.length} · Score ${this.score}</div>
+            <p>Difficulty: ${this.level}. Answer on the right.</p>
+            <button class="action-btn wide" onclick="app.activeModule.restart()">← Back to setup</button>
+        `;
+    }
+    renderStage() {
+        if (!this.started) {
+            return { type: 'html', html: `<div class="quiz-wrap"><h3>Ready when you are</h3><p style="color:var(--text-mid);">Choose a difficulty and question count, then hit Start Quiz.</p></div>` };
+        }
+        if (this.index >= this.questions.length) {
+            const pct = Math.round(100 * this.score / this.questions.length);
+            return { type: 'html', html: `<div class="quiz-wrap">
+                <h3>Quiz complete!</h3>
+                <div style="font-size:3rem;font-family:'IBM Plex Mono',monospace;color:var(--brass-lt);margin:20px 0;">${this.score}/${this.questions.length}</div>
+                <p style="color:var(--text-mid);">${pct >= 80 ? 'Excellent work! 🌟' : pct >= 50 ? 'Good effort — keep practising!' : 'Review the chapter and try again!'}</p>
+            </div>` };
+        }
+        const q = this.questions[this.index];
+        let body = `<div class="quiz-wrap">
+            <div class="quiz-progress">QUESTION ${this.index + 1} OF ${this.questions.length}</div>
+            <div class="quiz-prompt">${q.prompt}</div>`;
+        if (!this.answered) {
+            if (q.type === 'numeric') {
+                body += `<div class="quiz-input-row">
+                    <input type="number" value="${this.userVal}" oninput="app.activeModule.setUserVal(this.value)" onkeypress="if(event.key==='Enter'){app.activeModule.submitNumeric();}">
+                    <button class="quiz-btn" onclick="app.activeModule.submitNumeric()">Submit</button>
+                </div>`;
+            } else {
+                body += `<div class="quiz-tf-row">
+                    <button class="true-btn" onclick="app.activeModule.submitTF(true)">TRUE</button>
+                    <button class="false-btn" onclick="app.activeModule.submitTF(false)">FALSE</button>
+                </div>`;
+            }
+        } else {
+            body += `<div class="quiz-feedback ${this.lastCorrect ? 'correct' : 'wrong'}">
+                ${this.lastCorrect ? '✓ Correct!' : `✕ Not quite — the answer is ${q.type === 'numeric' ? q.answer : (q.answer ? 'TRUE' : 'FALSE')}`}
+            </div>
+            <button class="quiz-btn" onclick="app.activeModule.next()">${this.index + 1 < this.questions.length ? 'Next question →' : 'See results →'}</button>`;
+        }
+        body += `</div>`;
+        return { type: 'html', html: body };
+    }
+}
+
+// =========================================================================
+// 10. MAIN APP CONTROLLER
+// =========================================================================
+const app = {
+    modules: {
+        'fold': new PaperFoldModule(),
+        'notation': new ExponentBuilderModule(),
+        'laws': new LawsModule(),
+        'scientific': new ScientificNotationModule(),
+        'scale': new ScaleModule(),
+        'combinations': new CombinationsModule(),
+        'tricks': new TricksModule(),
+        'quiz': new QuizModule(),
+    },
+    tabDefs: [
+        { id: 'fold', name: '1 · Paper Folding' },
+        { id: 'notation', name: '2 · Exponential Notation' },
+        { id: 'laws', name: '3 · Laws of Exponents' },
+        { id: 'scientific', name: '4 · Scientific Notation' },
+        { id: 'scale', name: '5 · Sense of Scale' },
+        { id: 'combinations', name: '6 · Combinations' },
+        { id: 'tricks', name: '7 · Quick Tricks' },
+        { id: 'quiz', name: '8 · Quiz Arena' },
+    ],
+    activeTab: 'fold',
+    activeModule: null,
+
+    init() {
+        this.activeModule = this.modules[this.activeTab];
+        this.renderTabs();
+        this.render();
+    },
+    renderTabs() {
+        document.getElementById('tabsBar').innerHTML = this.tabDefs.map(t =>
+            `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`
+        ).join('');
+    },
+    switchTab(id) {
+        if (!this.modules[id]) return;
+        this.activeTab = id;
+        this.activeModule = this.modules[id];
+        this.renderTabs();
+        this.render();
+    },
+    render() {
+        document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
+        const stageObj = this.activeModule.renderStage();
+        const container = document.getElementById('stageContainer');
+        if (stageObj.type === 'svg') {
+            container.innerHTML = `<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">${stageObj.html}</svg>`;
+        } else {
+            container.innerHTML = `<div class="html-stage">${stageObj.html}</div>`;
+        }
+    }
+};
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+window.onload = () => app.init();
+</script>
+</body>
+</html>
