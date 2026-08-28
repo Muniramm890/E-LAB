@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Virtual Models — feadback | RIE Ajmer</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0E1526; --bg-panel:#16203A; --bg-panel-2:#1D2A4A;
+    --gold:#F2B705; --teal:#2FD1B0; --text:#EDF1FA; --muted:#8B96B8;
+    --border:rgba(237,241,250,0.09); --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg-deep);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 80px;}
+  header{text-align:center;margin-bottom:28px;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--teal);text-transform:uppercase;}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:1.9rem;margin:8px 0 6px;}
+  .sub{color:var(--muted);font-size:14px;max-width:520px;margin:0 auto;}
+
+  .card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+  .section-title{
+    font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin:0 0 14px;
+    padding-bottom:10px;border-bottom:1px solid var(--border);color:var(--gold);
+  }
+  .field{margin-bottom:18px;}
+  .field:last-child{margin-bottom:0;}
+  .field label.q{display:block;font-size:14px;font-weight:500;margin-bottom:8px;line-height:1.45;}
+  .req{color:var(--teal);}
+
+  input[type=text], input[type=number], textarea, select{
+    width:100%;padding:10px 12px;border-radius:8px;background:var(--bg-panel-2);
+    border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;
+  }
+  input:focus, textarea:focus, select:focus{border-color:var(--gold);}
+  textarea{min-height:70px;resize:vertical;}
+
+  .radio-group, .checkbox-group{display:flex;flex-direction:column;gap:8px;}
+  .radio-group label, .checkbox-group label{
+    display:flex;align-items:flex-start;gap:9px;font-size:13.5px;font-weight:400;
+    background:var(--bg-panel-2);padding:9px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;
+  }
+  .radio-group input, .checkbox-group input{margin-top:2px;accent-color:var(--gold);flex-shrink:0;}
+  .radio-group label:has(input:checked), .checkbox-group label:has(input:checked){border-color:var(--gold);}
+
+  .likert-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+  .likert-opt{
+    display:flex;flex-direction:column;align-items:center;gap:5px;
+    background:var(--bg-panel-2);border:1px solid transparent;border-radius:8px;padding:8px 4px;cursor:pointer;
+  }
+  .likert-opt:has(input:checked){border-color:var(--gold);background:rgba(242,183,5,0.1);}
+  .likert-opt input{accent-color:var(--gold);}
+  .likert-opt span{font-size:9.5px;color:var(--muted);text-align:center;line-height:1.2;}
+
+  .category-card{display:flex;flex-direction:column;gap:10px;}
+  .category-card label{
+    display:flex;gap:12px;align-items:flex-start;background:var(--bg-panel-2);
+    border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;
+  }
+  .category-card label:has(input:checked){border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,183,5,0.12);}
+  .category-card input{margin-top:3px;accent-color:var(--gold);}
+  .category-card .clabel{font-weight:600;font-size:14px;}
+  .category-card .cdesc{font-size:12.5px;color:var(--muted);margin-top:2px;}
+
+  .hidden{display:none !important;}
+
+  .submit-btn{
+    width:100%;padding:14px;border-radius:10px;background:var(--gold);color:#1a1200;
+    font-weight:700;font-size:15px;border:none;cursor:pointer;margin-top:6px;
+  }
+  .submit-btn:hover{filter:brightness(1.07);}
+  .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .note{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;}
+
+  .success{
+    text-align:center;padding:40px 20px;background:var(--bg-panel);border-radius:var(--radius);border:1px solid var(--teal);
+  }
+  .success h2{font-family:'Fraunces',serif;color:var(--teal);}
+  .error-banner{
+    background:rgba(220,60,60,0.15);border:1px solid #dc3c3c;color:#ffb3b3;
+    padding:12px 14px;border-radius:8px;margin-bottom:16px;font-size:13px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">RIE Ajmer · Vertual </div>
+    <h1>Virtual Models —  Feedback</h1>
+    <p class="sub">This questionnaire will automatically show the relevant question set based on your category. Please answer honestly — this data will be used for upgrade  in models</p>
+  </header>
+
+  <div id="errorBanner" class="error-banner hidden"></div>
+
+  <form id="surveyForm">
+    <div class="card">
+      <div class="section-title">Basic Details</div>
+      <div id="commonFields"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Which category do you fall into? <span class="req">*</span></div>
+      <div class="category-card" id="categoryField"></div>
+    </div>
+
+    <div id="setUser" class="hidden"></div>
+    <div id="setOccasional" class="hidden"></div>
+    <div id="setNonuser" class="hidden"></div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">Submit Response</button>
+    <p class="note">Your response will be securely recorded for the RIE Ajmer and e-lab  services.</p>
+  </form>
+
+  <div id="successMsg" class="success hidden">
+    <h2>✓ Response Submitted</h2>
+    <p>Thank you! Your feedback has been recorded.</p>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   IMPORTANT — set this to your deployed Google Apps Script Web App URL
+   (Extensions > Apps Script > Deploy > New deployment > Web app)
+   ===================================================================== */
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwZiX3VSpqetoMVm1kGM7_k44FLsp-XJH2NKFNzmr8WP5h27jukr_4DAYe7HudMPLSXgQ/exec";
+
+/* ---------------- Question data ---------------- */
+const LIKERT = ["Strongly Disagree","Disagree","Neutral","Agree","Strongly Agree"];
+
+const q = {
+  text: (id,label)=>({id,type:'text',label}),
+  textarea: (id,label)=>({id,type:'textarea',label}),
+  number: (id,label)=>({id,type:'number',label}),
+  radio: (id,label,options)=>({id,type:'radio',label,options}),
+  checkbox: (id,label,options)=>({id,type:'checkbox',label,options}),
+  likert: (id,label)=>({id,type:'likert',label}),
+};
+
+const commonFields = [
+  q.text('c_name','Intern Name / ID'),
+  q.text('c_school','JNV School Name'),
+  q.radio('c_class','Class taught during internship', ['Class 6','Class 7','Class 8','Class 9','Class 10']),
+  q.text('c_chapter','Chapter/topic taught (for which the virtual model was relevant)'),
+];
+
+const categoryOptions = [
+  {value:'user', clabel:'Regular User', cdesc:'I used the virtual models multiple times (3+) during my internship'},
+  {value:'occasional', clabel:'Occasional User', cdesc:'I used them only once or twice, or occasionally'},
+  {value:'nonuser', clabel:'Non-User', cdesc:'I did not use the virtual models at all'},
+];
+
+/* ---- SET A: Regular User ---- */
+const userSections = [
+  { title:'Usage Pattern', items:[
+    q.textarea('u_models','Which model(s)/chapter(s) did you use?'),
+    q.number('u_timesUsed','Total number of times used during internship'),
+    q.number('u_duration','Average duration per session (minutes)'),
+    q.number('u_classSize','Average class size (number of students)'),
+    q.radio('u_mode','How did you use the model?', ['Whole-class demonstration','Small group activity','Individual student use','Mix of methods']),
+  ]},
+  { title:'Perceived Usefulness', items:[
+    q.likert('u_pu1','Using the model made it easier for students to understand the concept'),
+    q.likert('u_pu2','Using the model made my lesson more effective'),
+    q.likert('u_pu3','Students connected the concept better to real life'),
+    q.likert('u_pu4','For this topic, the virtual model was better than traditional blackboard teaching'),
+    q.likert('u_pu5','The model made it easier for me to explain the topic'),
+  ]},
+  { title:'Perceived Ease of Use', items:[
+    q.likert('u_peou1','The model was easy for me to use'),
+    q.likert('u_peou2','The interface/instructions were simple to understand'),
+    q.likert('u_peou3','There were no issues with technical setup (loading/device)'),
+    q.likert('u_peou4','I needed extra training/help to use it'),
+  ]},
+  { title:'Student Engagement (Your Observation)', items:[
+    q.likert('u_eng1','Students stayed attentive during the lesson (behavioral)'),
+    q.likert('u_eng2','Students showed interest in operating the model themselves (behavioral)'),
+    q.likert('u_eng3','Students appeared excited/happy while using the model (emotional)'),
+    q.likert('u_eng4','Students showed boredom or disinterest (emotional)'),
+    q.likert('u_eng5','Students asked questions related to the concept (cognitive)'),
+    q.likert('u_eng6','Students discussed the concept among themselves (cognitive)'),
+    q.likert('u_eng7','Students explored the model on their own without being prompted (agentic)'),
+  ]},
+  { title:'Learning Outcome', items:[
+    q.radio('u_testDone','Did you conduct a pre-test/post-test for this topic?', ['Yes','No']),
+    q.number('u_preScore','Average pre-test score (%) — if conducted'),
+    q.number('u_postScore','Average post-test score (%) — if conducted'),
+    q.number('u_pctUnderstood','In your observation, what % of students clearly understood the concept? (0-100)'),
+  ]},
+  { title:'Comparison with Physical/Traditional TLM', items:[
+    q.radio('u_usedPhysical','Have you ever used a physical/traditional teaching aid for this same topic?', ['Yes','No']),
+    q.radio('u_comparison','If yes, which was more effective?', ['Virtual better','Physical better','Both equally effective','Not sure / not applicable']),
+    q.textarea('u_comparisonWhy','Why? (please explain your reasoning)'),
+  ]},
+  { title:'Technical & Practical Challenges', items:[
+    q.radio('u_internetIssue','Did you face an internet connectivity issue?', ['Yes','No']),
+    q.radio('u_deviceIssue','Did you face a device availability issue (computer/projector/tablet)?', ['Yes','No']),
+    q.radio('u_screenIssue','Was there a screen visibility issue in the classroom (no projector)?', ['Yes','No']),
+    q.textarea('u_otherTech','Any other technical/practical issue (if any)'),
+  ]},
+  { title:'Teaching Confidence', items:[
+    q.radio('u_confidence','After using this model, how did your confidence in teaching this topic traditionally change?', ['Decreased','No change','Increased']),
+  ]},
+  { title:'Open-Ended Feedback', items:[
+    q.textarea('u_benefit','What was the biggest benefit you noticed?'),
+    q.textarea('u_challenge','What was the biggest challenge/problem?'),
+    q.textarea('u_suggestion','Suggestions to improve the model'),
+    q.textarea('u_anecdote','Any specific student reaction/anecdote you would like to share?'),
+  ]},
+];
+
+/* ---- SET B: Occasional User ---- */
+const occasionalSections = [
+  { title:'Usage Pattern', items:[
+    q.radio('o_timesUsed','Approximately how many times did you use it?', ['1 time','2-3 times','4-5 times']),
+    q.textarea('o_models','Which chapter/model did you use?'),
+  ]},
+  { title:'Barriers to Regular Use', items:[
+    q.checkbox('o_barriers','Reasons for limited use (select all that apply)', [
+      'Time constraint','Syllabus pressure','Technical issues (internet/device)','Lack of training/orientation',
+      'Lack of awareness about available models','Preferred traditional teaching method',
+      'Classroom management difficulty','School infrastructure (no projector/computer)','Other'
+    ]),
+    q.textarea('o_barrierOther','If "Other" was selected, please specify'),
+  ]},
+  { title:'Partial Experience Evaluation', items:[
+    q.likert('o_helpful','Based on the times you used it, the model felt helpful'),
+    q.likert('o_easy','The model was easy to use'),
+    q.likert('o_engaged','Students appeared engaged when it was used'),
+    q.likert('o_understood','Students understood the concept better when the model was used (compared to when it was not)'),
+  ]},
+  { title:'Support & Training', items:[
+    q.radio('o_training','Did you receive adequate orientation/training to use the models?', ['Yes','No']),
+    q.radio('o_moreSupport','Would more resources/support have led you to use it more?', ['Yes','No']),
+  ]},
+  { title:'Future Intent', items:[
+    q.likert('o_futureIntent','I would like to use it more in the future, given the opportunity'),
+    q.textarea('o_blocker','What is stopping you from using it regularly?'),
+  ]},
+  { title:'Open-Ended Feedback', items:[
+    q.textarea('o_suggestion','Suggestions'),
+    q.textarea('o_other','Anything else to share'),
+  ]},
+];
+
+/* ---- SET C: Non-User ---- */
+const nonuserSections = [
+  { title:'Awareness', items:[
+    q.radio('n_aware','Were you aware that the virtual models hub was available?', ['Yes','No']),
+    q.radio('n_howKnew','If yes, how did you find out?', ['Institute orientation','Colleague/friend','Self-discovered','Did not know at all']),
+  ]},
+  { title:'Reason for Non-Use', items:[
+    q.checkbox('n_reasons','Reasons for not using it (select all that apply)', [
+      'No time','Syllabus pressure','Internet/device issue','No training received','Was not aware at all',
+      'More comfortable with traditional method','School lacks projector/computer',
+      'Mentor teacher/Principal did not allow it','Other'
+    ]),
+    q.textarea('n_reasonOther','If "Other" was selected, please specify'),
+  ]},
+  { title:'Perceived Usefulness (Without Usage)', items:[
+    q.likert('n_pu1','I believe virtual models could be useful for my subject'),
+    q.likert('n_pu2','I believe students would be more engaged if virtual models were used'),
+  ]},
+  { title:'Behavioral Intention', items:[
+    q.radio('n_futureUse','If the barriers were removed, would you use it in the future?', ['Yes','No']),
+    q.radio('n_trainingHelp','Would training increase your confidence to use it?', ['Yes','No']),
+  ]},
+  { title:'Open-Ended Feedback', items:[
+    q.textarea('n_whyNot','Why did you not try it? (please elaborate)'),
+    q.textarea('n_suggestion','Suggestions for the institute to increase adoption'),
+  ]},
+];
+
+/* ---------------- Rendering ---------------- */
+function renderField(item){
+  const div = document.createElement('div');
+  div.className = 'field';
+  const label = document.createElement('label');
+  label.className = 'q';
+  label.textContent = item.label;
+  label.setAttribute('for', item.id);
+  div.appendChild(label);
+
+  if(item.type === 'text'){
+    div.innerHTML += `<input type="text" id="${item.id}" name="${item.id}">`;
+  } else if(item.type === 'number'){
+    div.innerHTML += `<input type="number" id="${item.id}" name="${item.id}">`;
+  } else if(item.type === 'textarea'){
+    div.innerHTML += `<textarea id="${item.id}" name="${item.id}"></textarea>`;
+  } else if(item.type === 'radio'){
+    const g = document.createElement('div'); g.className = 'radio-group';
+    item.options.forEach(opt=>{
+      g.innerHTML += `<label><input type="radio" name="${item.id}" value="${opt}"> <span>${opt}</span></label>`;
+    });
+    div.appendChild(g);
+  } else if(item.type === 'checkbox'){
+    const g = document.createElement('div'); g.className = 'checkbox-group';
+    item.options.forEach(opt=>{
+      g.innerHTML += `<label><input type="checkbox" name="${item.id}" value="${opt}"> <span>${opt}</span></label>`;
+    });
+    div.appendChild(g);
+  } else if(item.type === 'likert'){
+    const g = document.createElement('div'); g.className = 'likert-row';
+    LIKERT.forEach(opt=>{
+      g.innerHTML += `<label class="likert-opt"><input type="radio" name="${item.id}" value="${opt}"><span>${opt}</span></label>`;
+    });
+    div.appendChild(g);
+  }
+  return div;
+}
+
+function renderSections(container, sections){
+  sections.forEach(sec=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const title = document.createElement('div');
+    title.className = 'section-title';
+    title.textContent = sec.title;
+    card.appendChild(title);
+    sec.items.forEach(item=> card.appendChild(renderField(item)));
+    container.appendChild(card);
+  });
+}
+
+const commonContainer = document.getElementById('commonFields');
+commonFields.forEach(item => commonContainer.appendChild(renderField(item)));
+
+const catContainer = document.getElementById('categoryField');
+categoryOptions.forEach(opt=>{
+  catContainer.innerHTML += `
+    <label>
+      <input type="radio" name="c_category" value="${opt.value}">
+      <div><div class="clabel">${opt.clabel}</div><div class="cdesc">${opt.cdesc}</div></div>
+    </label>`;
+});
+
+renderSections(document.getElementById('setUser'), userSections);
+renderSections(document.getElementById('setOccasional'), occasionalSections);
+renderSections(document.getElementById('setNonuser'), nonuserSections);
+
+document.querySelectorAll('input[name="c_category"]').forEach(radio=>{
+  radio.addEventListener('change', (e)=>{
+    document.getElementById('setUser').classList.toggle('hidden', e.target.value !== 'user');
+    document.getElementById('setOccasional').classList.toggle('hidden', e.target.value !== 'occasional');
+    document.getElementById('setNonuser').classList.toggle('hidden', e.target.value !== 'nonuser');
+  });
+});
+
+/* ---------------- Submission ---------------- */
+function collectAnswers(fieldList){
+  const out = {};
+  fieldList.forEach(item=>{
+    if(item.type === 'checkbox'){
+      const checked = Array.from(document.querySelectorAll(`input[name="${item.id}"]:checked`)).map(i=>i.value);
+      out[item.id] = checked.join('; ');
+    } else if(item.type === 'radio' || item.type === 'likert'){
+      const sel = document.querySelector(`input[name="${item.id}"]:checked`);
+      out[item.id] = sel ? sel.value : '';
+    } else {
+      const el = document.getElementById(item.id);
+      out[item.id] = el ? el.value : '';
+    }
+  });
+  return out;
+}
+
+function showError(msg){
+  const banner = document.getElementById('errorBanner');
+  banner.textContent = msg;
+  banner.classList.remove('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('surveyForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  document.getElementById('errorBanner').classList.add('hidden');
+
+  if(GAS_URL.includes('PASTE_YOUR')){
+    showError('Backend URL not configured yet — set GAS_URL in the script to your deployed Google Apps Script Web App URL.');
+    return;
+  }
+
+  const name = document.getElementById('c_name').value.trim();
+  const school = document.getElementById('c_school').value.trim();
+  const category = document.querySelector('input[name="c_category"]:checked');
+
+  if(!name || !school || !category){
+    showError('Please fill in Name, School, and select a Category before submitting.');
+    return;
+  }
+
+  const common = collectAnswers(commonFields);
+  common.c_category = category.value;
+
+  let branchFields = [];
+  if(category.value === 'user') branchFields = userSections.flatMap(s=>s.items);
+  if(category.value === 'occasional') branchFields = occasionalSections.flatMap(s=>s.items);
+  if(category.value === 'nonuser') branchFields = nonuserSections.flatMap(s=>s.items);
+  const branchAnswers = collectAnswers(branchFields);
+
+  const responseId = 'resp_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+  const record = {
+    id: responseId,
+    submittedAt: new Date().toISOString(),
+    ...common,
+    ...branchAnswers,
+  };
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+
+  try{
+    // text/plain avoids a CORS preflight against the Apps Script endpoint
+    await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(record),
+    });
+    document.getElementById('surveyForm').classList.add('hidden');
+    document.getElementById('successMsg').classList.remove('hidden');
+  }catch(err){
+    console.error(err);
+    showError('Could not reach the server. Please check your internet connection and try again.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Response';
+  }
+});
+</script>
+</body>
+</html>
