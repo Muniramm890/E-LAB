@@ -170,122 +170,127 @@ const categoryOptions = [
 /* ---- SET A: Regular User ---- */
 const userSections = [
   { title:'Section 3.1: Usage Pattern', items:[
-    q.textarea('u_models','3.1.1 Which model(s)/chapter(s) did you use?'),
-    q.number('u_timesUsed','3.1.2 Total number of times used'),
-    q.number('u_duration','3.1.3 Average duration per session (minutes)'),
-    q.number('u_classSize','3.1.4 Average class size (number of students)'),
-    q.radio('u_mode','3.1.5 How did you use the model?', ['Whole-class demonstration','Small group activity','Individual student use','Mix of methods']),
+    q.textarea('u_models','3.1.1: Which model(s)/chapter(s) did you use?'),
+    q.number('u_timesUsed','3.1.2: Total number of times used'),
+    q.number('u_duration','3.1.3: Average duration per session (minutes)'),
+    q.number('u_classSize','3.1.4: Average class size (number of students)'),
+    q.radio('u_mode','3.1.5: How did you use the model?', ['Whole-class demonstration','Small group activity','Individual student use','Mix of methods']),
   ]},
   { title:'Section 3.2: Perceived Usefulness', items:[
-    q.likert('u_pu1','3.2.1 Using the model made it easier for students to understand the concept'),
-    q.likert('u_pu2','3.2.2 Using the model made my lesson more effective'),
-    q.likert('u_pu3','3.2.3 Students connected the concept better to real life'),
-    q.likert('u_pu4','3.2.4 For this topic, the virtual model was better than traditional blackboard teaching'),
-    q.likert('u_pu5','3.2.5 The model made it easier for me to explain the topic'),
+    q.likert('u_pu1','3.2.1: Using the model made it easier for students to understand the concept'),
+    q.likert('u_pu2','3.2.2: Using the model made my lesson more effective'),
+    q.likert('u_pu3','3.2.3: Students connected the concept better to real life'),
+    q.likert('u_pu4','3.2.4: For this topic, the virtual model was better than traditional blackboard teaching'),
+    q.likert('u_pu5','3.2.5: The model made it easier for me to explain the topic'),
   ]},
   { title:'Section 3.3: Perceived Ease of Use', items:[
-    q.likert('u_peou1','3.3.1 The model was easy for me to use'),
-    q.likert('u_peou2','3.3.2 The interface/instructions were simple to understand'),
-    q.likert('u_peou3','3.3.3 There were no issues with technical setup (loading/device)'),
-    q.likert('u_peou4','3.3.4 I needed extra training/help to use it'),
+    q.likert('u_peou1','3.3.1: The model was easy for me to use'),
+    q.likert('u_peou2','3.3.2: The interface/instructions were simple to understand'),
+    q.likert('u_peou3','3.3.3: There were no issues with technical setup (loading/device)'),
+    q.likert('u_peou4','3.3.4: I needed extra training/help to use it'),
   ]},
   { title:'Section 3.4: Student Engagement (Your Observation)', items:[
-    q.likert('u_eng1','3.4.1 Students stayed attentive during the lesson (behavioral)'),
-    q.likert('u_eng2','3.4.2 Students showed interest in operating the model themselves (behavioral)'),
-    q.likert('u_eng3','3.4.3 Students appeared excited/happy while using the model (emotional)'),
-    q.likert('u_eng4','3.4.4 Students showed boredom or disinterest (emotional)'),
-    q.likert('u_eng5','3.4.5 Students asked questions related to the concept (cognitive)'),
-    q.likert('u_eng6','3.4.6 Students discussed the concept among themselves (cognitive)'),
-    q.likert('u_eng7','3.4.7 Students explored the model on their own without being prompted (agentic)'),
+    q.likert('u_eng1','3.4.1: Students stayed attentive during the lesson (behavioral)'),
+    q.likert('u_eng2','3.4.2: Students showed interest in operating the model themselves (behavioral)'),
+    q.likert('u_eng3','3.4.3: Students appeared excited/happy while using the model (emotional)'),
+    q.likert('u_eng4','3.4.4: Students showed boredom or disinterest (emotional)'),
+    q.likert('u_eng5','3.4.5: Students asked questions related to the concept (cognitive)'),
+    q.likert('u_eng6','3.4.6: Students discussed the concept among themselves (cognitive)'),
+    q.likert('u_eng7','3.4.7: Students explored the model on their own without being prompted (agentic)'),
   ]},
   { title:'Section 3.5: Learning Outcome', items:[
-    q.radio('u_testDone','3.5.1 Did you conduct a pre-test/post-test for this topic?', ['Yes','No']),
-    q.number('u_preScore','3.5.2 Average pre-test score (%) — if conducted'),
-    q.number('u_postScore','3.5.3 Average post-test score (%) — if conducted'),
-    q.number('u_pctUnderstood','3.5.4 In your observation, what % of students clearly understood the concept? (0-100)'),
+    q.radio('u_testDone','3.5.1: Did you conduct a pre-test/post-test for this topic?', ['Yes','No']),
+    q.number('u_preScore','3.5.2: Average pre-test score (%) — if conducted'),
+    q.number('u_postScore','3.5.3: Average post-test score (%) — if conducted'),
+    q.number('u_pctUnderstood','3.5.4: In your observation, what % of students clearly understood the concept? (0-100)'),
   ]},
   { title:'Section 3.6: Comparison with Physical/Traditional TLM', items:[
-    q.radio('u_usedPhysical','3.6.1 Have you ever used a physical/traditional teaching aid for this same topic?', ['Yes','No']),
-    q.radio('u_comparison','3.6.2 If yes, which was more effective?', ['Virtual better','Physical better','Both equally effective','Not sure / not applicable']),
-    q.textarea('u_comparisonWhy','3.6.3 Why? (please explain your reasoning)'),
+    q.radio('u_usedPhysical','3.6.1: Have you ever used a physical/traditional teaching aid for this same topic?', ['Yes','No']),
+    q.radio('u_comparison','3.6.2: If yes, which was more effective?', ['Virtual better','Physical better','Both equally effective','Not sure / not applicable']),
+    q.textarea('u_comparisonWhy','3.6.3: Why? (please explain your reasoning)'),
   ]},
   { title:'Section 3.7: Technical & Practical Challenges', items:[
-    q.radio('u_internetIssue','3.7.1 Did you face an internet connectivity issue?', ['Yes','No']),
-    q.radio('u_deviceIssue','3.7.2 Did you face a device availability issue (computer/projector/tablet)?', ['Yes','No']),
-    q.radio('u_screenIssue','3.7.3 Was there a screen visibility issue in the classroom (no projector)?', ['Yes','No']),
-    q.textarea('u_otherTech','3.7.4 Any other technical/practical issue (if any)'),
+    q.radio('u_internetIssue','3.7.1: Did you face an internet connectivity issue?', ['Yes','No']),
+    q.radio('u_deviceIssue','3.7.2: Did you face a device availability issue (computer/projector/tablet)?', ['Yes','No']),
+    q.radio('u_screenIssue','3.7.3: Was there a screen visibility issue in the classroom (no projector)?', ['Yes','No']),
+    q.textarea('u_otherTech','3.7.4: Any other technical/practical issue (if any)'),
   ]},
   { title:'Section 3.8: Teaching Confidence', items:[
-    q.radio('u_confidence','3.8.1 After using this model, how did your confidence in teaching this topic traditionally change?', ['Decreased','No change','Increased']),
+    q.radio('u_confidence','3.8.1: After using this model, how did your confidence in teaching this topic traditionally change?', ['Decreased','No change','Increased']),
   ]},
   { title:'Section 3.9: Open-Ended Feedback', items:[
-    q.textarea('u_benefit','3.9.1 What was the biggest benefit you noticed?'),
-    q.textarea('u_challenge','3.9.2 What was the biggest challenge/problem?'),
-    q.textarea('u_suggestion','3.9.3 Suggestions to improve the model'),
-    q.textarea('u_anecdote','3.9.4 Any specific student reaction/anecdote you would like to share?'),
+    q.textarea('u_benefit','3.9.1: What was the biggest benefit you noticed?'),
+    q.textarea('u_challenge','3.9.2: What was the biggest challenge/problem?'),
+    q.textarea('u_suggestion','3.9.3: Suggestions to improve the model'),
+    q.textarea('u_anecdote','3.9.4: Any specific student reaction/anecdote you would like to share?'),
   ]},
 ];
+
+
+
 /* ---- SET B: Occasional User ---- */
 const occasionalSections = [
-  { title:'Usage Pattern', items:[
-    q.radio('o_timesUsed','Approximately how many times did you use it?', ['1 time','2-3 times','4-5 times']),
-    q.textarea('o_models','Which chapter/model did you use?'),
+  { title:'Section 3.1: Usage Pattern', items:[
+    q.radio('o_timesUsed','3.1.1: Approximately how many times did you use it?', ['1 time','2-3 times','4-5 times']),
+    q.textarea('o_models','3.1.2: Which chapter/model did you use?'),
   ]},
-  { title:'Barriers to Regular Use', items:[
-    q.checkbox('o_barriers','Reasons for limited use (select all that apply)', [
+  { title:'Section 3.2: Barriers to Regular Use', items:[
+    q.checkbox('o_barriers','3.2.1: Reasons for limited use (select all that apply)', [
       'Time constraint','Syllabus pressure','Technical issues (internet/device)','Lack of training/orientation',
       'Lack of awareness about available models','Preferred traditional teaching method',
       'Classroom management difficulty','School infrastructure (no projector/computer)','Other'
     ]),
-    q.textarea('o_barrierOther','If "Other" was selected, please specify'),
+    q.textarea('o_barrierOther','3.2.2: If "Other" was selected, please specify'),
   ]},
-  { title:'Partial Experience Evaluation', items:[
-    q.likert('o_helpful','Based on the times you used it, the model felt helpful'),
-    q.likert('o_easy','The model was easy to use'),
-    q.likert('o_engaged','Students appeared engaged when it was used'),
-    q.likert('o_understood','Students understood the concept better when the model was used (compared to when it was not)'),
+  { title:'Section 3.3: Partial Experience Evaluation', items:[
+    q.likert('o_helpful','3.3.1: Based on the times you used it, the model felt helpful'),
+    q.likert('o_easy','3.3.2: The model was easy to use'),
+    q.likert('o_engaged','3.3.3: Students appeared engaged when it was used'),
+    q.likert('o_understood','3.3.4: Students understood the concept better when the model was used (compared to when it was not)'),
   ]},
-  { title:'Support & Training', items:[
-    q.radio('o_training','Did you receive adequate orientation/training to use the models?', ['Yes','No']),
-    q.radio('o_moreSupport','Would more resources/support have led you to use it more?', ['Yes','No']),
+  { title:'Section 3.4: Support & Training', items:[
+    q.radio('o_training','3.4.1: Did you receive adequate orientation/training to use the models?', ['Yes','No']),
+    q.radio('o_moreSupport','3.4.2: Would more resources/support have led you to use it more?', ['Yes','No']),
   ]},
-  { title:'Future Intent', items:[
-    q.likert('o_futureIntent','I would like to use it more in the future, given the opportunity'),
-    q.textarea('o_blocker','What is stopping you from using it regularly?'),
+  { title:'Section 3.5: Future Intent', items:[
+    q.likert('o_futureIntent','3.5.1: I would like to use it more in the future, given the opportunity'),
+    q.textarea('o_blocker','3.5.2: What is stopping you from using it regularly?'),
   ]},
-  { title:'Open-Ended Feedback', items:[
-    q.textarea('o_suggestion','Suggestions'),
-    q.textarea('o_other','Anything else to share'),
+  { title:'Section 3.6: Open-Ended Feedback', items:[
+    q.textarea('o_suggestion','3.6.1: Suggestions'),
+    q.textarea('o_other','3.6.2: Anything else to share'),
   ]},
 ];
 
+
 /* ---- SET C: Non-User ---- */
 const nonuserSections = [
-  { title:'Awareness', items:[
-    q.radio('n_aware','Were you aware that the virtual models hub was available?', ['Yes','No']),
-    q.radio('n_howKnew','If yes, how did you find out?', ['Institute orientation','Colleague/friend','Self-discovered','Did not know at all']),
+  { title:'Section 3.1: Awareness', items:[
+    q.radio('n_aware','3.1.1: Were you aware that the virtual models hub was available?', ['Yes','No']),
+    q.radio('n_howKnew','3.1.2: If yes, how did you find out?', ['Institute orientation','Colleague/friend','Self-discovered','Did not know at all']),
   ]},
-  { title:'Reason for Non-Use', items:[
-    q.checkbox('n_reasons','Reasons for not using it (select all that apply)', [
+  { title:'Section 3.2: Reason for Non-Use', items:[
+    q.checkbox('n_reasons','3.2.1: Reasons for not using it (select all that apply)', [
       'No time','Syllabus pressure','Internet/device issue','No training received','Was not aware at all',
       'More comfortable with traditional method','School lacks projector/computer',
       'Mentor teacher/Principal did not allow it','Other'
     ]),
-    q.textarea('n_reasonOther','If "Other" was selected, please specify'),
+    q.textarea('n_reasonOther','3.2.2: If "Other" was selected, please specify'),
   ]},
-  { title:'Perceived Usefulness (Without Usage)', items:[
-    q.likert('n_pu1','I believe virtual models could be useful for my subject'),
-    q.likert('n_pu2','I believe students would be more engaged if virtual models were used'),
+  { title:'Section 3.3: Perceived Usefulness (Without Usage)', items:[
+    q.likert('n_pu1','3.3.1: I believe virtual models could be useful for my subject'),
+    q.likert('n_pu2','3.3.2: I believe students would be more engaged if virtual models were used'),
   ]},
-  { title:'Behavioral Intention', items:[
-    q.radio('n_futureUse','If the barriers were removed, would you use it in the future?', ['Yes','No']),
-    q.radio('n_trainingHelp','Would training increase your confidence to use it?', ['Yes','No']),
+  { title:'Section 3.4: Behavioral Intention', items:[
+    q.radio('n_futureUse','3.4.1: If the barriers were removed, would you use it in the future?', ['Yes','No']),
+    q.radio('n_trainingHelp','3.4.2: Would training increase your confidence to use it?', ['Yes','No']),
   ]},
-  { title:'Open-Ended Feedback', items:[
-    q.textarea('n_whyNot','Why did you not try it? (please elaborate)'),
-    q.textarea('n_suggestion','Suggestions for the institute to increase adoption'),
+  { title:'Section 3.5: Open-Ended Feedback', items:[
+    q.textarea('n_whyNot','3.5.1: Why did you not try it? (please elaborate)'),
+    q.textarea('n_suggestion','3.5.2: Suggestions for the institute to increase adoption'),
   ]},
 ];
+
 
 /* ---------------- Rendering ---------------- */
 function renderField(item){
