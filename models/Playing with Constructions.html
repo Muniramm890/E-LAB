@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Chapter 8: Playing with Constructions 2 | Digital Drafting Board</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --blueprint-dk: #061c30; --blueprint-md: #0c3559; --blueprint-lt: #2f75ac;
+        --grid-line: rgba(210,232,255,0.08); --grid-line-strong: rgba(210,232,255,0.25);
+        --brass: #c98a3e; --brass-lt: #e3ac6a; --brass-glow: rgba(201,138,62,0.4);
+        --paper-bg: #f5f0e1; --paper-text: #1a2a3a; --paper-line: #d1c7b1;
+        --text-hi: #ffffff; --text-mid: #a8c4df; --success: #2f8a5b; --danger: #c1452f; --violet: #8b6fc9;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { font-family:'IBM Plex Sans',sans-serif; background: var(--blueprint-dk); color: var(--text-hi);
+        height:100vh; height:100dvh; display:flex; flex-direction:column; overflow:hidden; }
+    header { padding:10px 20px; background:linear-gradient(180deg,#041220 0%,var(--blueprint-md) 100%);
+        border-bottom:1px solid var(--grid-line-strong); display:flex; align-items:center; justify-content:space-between;
+        z-index:10; flex-wrap:wrap; gap:10px; flex:none; }
+    .brand-area { display:flex; align-items:center; gap:15px; }
+    .back-btn { color:var(--brass-lt); text-decoration:none; font-family:'IBM Plex Mono',monospace; font-size:0.8rem;
+        border:1px solid var(--brass); padding:5px 12px; border-radius:20px; transition:.2s; white-space:nowrap; }
+    .back-btn:hover { background:var(--brass); color:var(--blueprint-dk); }
+    .module-title h1 { font-family:'Fraunces',serif; font-size:1.15rem; }
+    .module-title p { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-mid); letter-spacing:1px; }
+    .tabs-bar { display:flex; gap:8px; padding:8px 20px; background:rgba(0,0,0,0.3); border-bottom:1px solid var(--grid-line-strong); overflow-x:auto; flex:none; }
+    .tab-btn { background:transparent; border:1px solid var(--blueprint-lt); color:var(--text-mid); padding:7px 15px;
+        font-family:'IBM Plex Mono',monospace; font-size:0.76rem; border-radius:6px; cursor:pointer; transition:.3s; white-space:nowrap; flex:none; }
+    .tab-btn:hover { border-color:var(--brass-lt); color:var(--text-hi); }
+    .tab-btn.active { background:var(--brass); color:var(--blueprint-dk); border-color:var(--brass); font-weight:700; }
+    .workspace { display:flex; flex:1; min-height:0; position:relative; overflow:hidden; }
+    .sidebar { width:360px; background:var(--paper-bg); color:var(--paper-text); border-right:4px solid var(--brass);
+        display:flex; flex-direction:column; transition:transform .4s cubic-bezier(.2,.8,.2,1); position:relative; z-index:5;
+        box-shadow:5px 0 25px rgba(0,0,0,.5); flex:none; min-height:0; }
+    .sidebar.collapsed { transform:translateX(-100%); position:absolute; height:100%; }
+    .toggle-btn { position:absolute; top:20px; right:-40px; width:40px; height:50px; background:var(--brass); border:none;
+        border-radius:0 8px 8px 0; color:var(--blueprint-dk); font-size:1.2rem; cursor:pointer; display:flex; align-items:center;
+        justify-content:center; box-shadow:4px 0 10px rgba(0,0,0,.2); transition:.2s; z-index:6; }
+    .toggle-btn:hover { background:var(--brass-lt); width:45px; right:-45px; }
+    .sidebar-content { padding:16px; overflow-y:auto; flex:1; min-height:0; -webkit-overflow-scrolling:touch; }
+    .sidebar-content h2 { font-family:'Fraunces',serif; font-size:1.1rem; color:var(--blueprint-dk); margin-bottom:4px; }
+    .sidebar-content h4 { font-family:'Fraunces',serif; font-size:0.95rem; color:var(--blueprint-dk); margin:0 0 6px; }
+    .sidebar-content p { font-size:0.83rem; line-height:1.5; color:#4a5a6a; margin-bottom:10px; }
+    .data-panel { background:#fff; border:1px solid var(--paper-line); border-radius:8px; padding:12px; margin-bottom:12px; }
+    .data-row { display:flex; justify-content:space-between; align-items:center; font-family:'IBM Plex Mono',monospace;
+        font-size:0.78rem; padding:4px 0; border-bottom:1px dashed #eee; gap:8px; }
+    .data-row:last-child { border-bottom:none; }
+    .badge { display:block; text-align:center; padding:8px; border-radius:6px; font-family:'IBM Plex Mono',monospace;
+        font-weight:bold; font-size:0.86rem; margin-bottom:10px; }
+    .badge.success { background:#e4f3ea; color:var(--success); border:1px solid var(--success); }
+    .badge.info { background:#e3f2fd; color:#0277bd; border:1px solid #0277bd; }
+    .badge.danger { background:#fbe9e5; color:var(--danger); border:1px solid var(--danger); }
+    .action-btn { padding:8px; border:1px solid var(--blueprint-md); background:white; border-radius:6px; cursor:pointer;
+        font-family:'IBM Plex Mono',monospace; font-size:0.72rem; transition:.2s; }
+    .action-btn:hover { background:var(--blueprint-md); color:white; }
+    .action-btn.primary { background:var(--brass); border-color:var(--brass); color:white; font-weight:700; }
+    .action-btn.primary:hover { background:var(--brass-lt); }
+    .action-btn.wide { width:100%; margin-bottom:8px; }
+    .btn-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+    .proof-box { background:rgba(47,117,172,0.1); border-left:4px solid var(--blueprint-lt); padding:10px; border-radius:0 8px 8px 0; font-size:0.78rem; line-height:1.5; margin-bottom:4px; }
+    .pill-row { display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+    .pill-btn { flex:1; padding:7px 6px; border:1px solid var(--blueprint-md); background:white; border-radius:18px; cursor:pointer;
+        font-family:'IBM Plex Mono',monospace; font-size:0.68rem; text-align:center; transition:.2s; min-width:60px; }
+    .pill-btn.active { background:var(--blueprint-md); color:white; font-weight:700; }
+    .check-item { display:flex; align-items:flex-start; gap:8px; font-size:0.8rem; padding:5px 0; line-height:1.4; }
+    .dot { width:17px; height:17px; min-width:17px; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:0.65rem; font-weight:800; color:white; margin-top:1px; }
+
+    /* TOOL PALETTE */
+    .toolbelt { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-bottom:10px; }
+    .tool-btn { display:flex; flex-direction:column; align-items:center; gap:3px; padding:10px 4px; border:2px solid var(--blueprint-md);
+        background:white; border-radius:10px; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; transition:.15s; }
+    .tool-btn svg { width:24px; height:24px; }
+    .tool-btn.active { border-color:var(--brass); background:#fff3e2; box-shadow:0 0 0 2px var(--brass-glow); }
+    .tool-btn:hover { border-color:var(--brass-lt); }
+
+    .stage { flex:1; min-width:0; position:relative; display:flex; align-items:center; justify-content:center; padding:16px; }
+    .canvas-container { width:100%; max-width:940px; height:100%; max-height:640px; background:#0e2842;
+        border:1px solid var(--grid-line-strong); border-radius:12px; box-shadow:inset 0 0 60px rgba(0,0,0,.5),0 10px 30px rgba(0,0,0,.3);
+        position:relative; overflow:hidden; display:flex; }
+    #stageContainer { width:100%; height:100%; min-height:0; touch-action:none; cursor:crosshair; }
+    .svg-label { font-family:'IBM Plex Mono',monospace; font-weight:bold; font-size:14px; fill:white; pointer-events:none; }
+    .svg-label-sm { font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:11px; fill:var(--text-mid); pointer-events:none; }
+    .svg-label-live { font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px; fill:var(--brass-lt); pointer-events:none; }
+    .html-stage { width:100%; height:100%; overflow-y:auto; padding:22px; color:var(--text-hi); }
+    .html-stage h3 { font-family:'Fraunces',serif; font-size:1.2rem; margin-bottom:10px; color:var(--brass-lt); }
+    .quiz-wrap { max-width:560px; margin:0 auto; text-align:center; }
+    .quiz-progress { font-family:'IBM Plex Mono',monospace; color:var(--text-mid); margin-bottom:14px; font-size:.82rem; }
+    .quiz-prompt { font-family:'Fraunces',serif; font-size:1.5rem; margin-bottom:22px; line-height:1.4; }
+    .quiz-input-row { display:flex; gap:10px; justify-content:center; margin-bottom:16px; }
+    .quiz-input-row input { width:160px; padding:12px; font-size:1.1rem; border-radius:8px; border:none; font-family:'IBM Plex Mono',monospace; text-align:center; }
+    .quiz-btn { padding:12px 22px; border-radius:8px; border:none; background:var(--brass); color:white; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; }
+    .quiz-tf-row { display:flex; gap:14px; justify-content:center; margin-bottom:16px; }
+    .quiz-tf-row button { flex:1; max-width:150px; padding:14px; border-radius:8px; border:none; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:.95rem; }
+    .quiz-tf-row button.true-btn { background:var(--success); color:white; }
+    .quiz-tf-row button.false-btn { background:var(--danger); color:white; }
+    .quiz-feedback { padding:14px; border-radius:10px; margin-bottom:16px; font-size:.9rem; }
+    .quiz-feedback.correct { background:rgba(47,138,91,.2); border:1px solid var(--success); }
+    .quiz-feedback.wrong { background:rgba(193,69,47,.2); border:1px solid var(--danger); }
+    .toast { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); background:rgba(6,28,48,0.92);
+        border:1px solid var(--brass); color:#fff; padding:8px 16px; border-radius:20px; font-family:'IBM Plex Mono',monospace;
+        font-size:0.78rem; z-index:20; pointer-events:none; opacity:0.95; }
+    @media (max-width:860px) {
+        .sidebar { width:88vw; }
+        .toggle-btn { top:auto; bottom:18px; right:-46px; width:46px; height:46px; border-radius:50%; }
+    }
+    .sidebar-content::-webkit-scrollbar,.html-stage::-webkit-scrollbar { width:8px; }
+    .sidebar-content::-webkit-scrollbar-thumb,.html-stage::-webkit-scrollbar-thumb { background:var(--paper-line); border-radius:6px; }
+    .html-stage::-webkit-scrollbar-thumb { background:var(--blueprint-lt); }
+</style>
+</head>
+<body>
+<header>
+    <div class="brand-area">
+        <a href="../index.html" class="back-btn">← E-Lab</a>
+        <div class="module-title">
+            <h1>Playing with Constructions</h1>
+            <p>CLASS 6 · CHAPTER 08 · DRAG-&amp;-DRAW DRAFTING BOARD</p>
+        </div>
+    </div>
+</header>
+<div class="tabs-bar" id="tabsBar"></div>
+<div class="workspace">
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()" title="Show/hide panel">☰</button>
+        <div class="sidebar-content" id="sidebarContent"></div>
+    </aside>
+    <main class="stage">
+        <div class="canvas-container">
+            <div id="stageContainer"></div>
+        </div>
+    </main>
+</div>
+
+<script>
+// =========================================================================
+// UTILITIES
+// =========================================================================
+const GRID = 40; // px per cm
+const VBW = 900, VBH = 640;
+const uid = (()=>{ let n=0; return ()=> 'e'+(n++); })();
+const dist = (a,b)=> Math.hypot(a.x-b.x, a.y-b.y);
+const r1 = n => Math.round(n*10)/10;
+const toCm = px => r1(px/GRID);
+const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+function checkDot(ok){ return `<span class="dot" style="background:${ok?'var(--success)':'#c7bda0'}">${ok?'✓':'…'}</span>`; }
+
+// =========================================================================
+// BOARD ENGINE — the actual virtual instruments
+// =========================================================================
+const board = {
+    tool: 'point',
+    points: [], segments: [], circles: [], arcs: [],
+    history: [],
+    drag: null,
+    compassRadius: 4,
+    compassLock: false,
+    compassArcOnly: false,
+    protractorSnap: true,
+    toast: null,
+    currentTask: 'free',
+
+    clearAll(){ this.points=[]; this.segments=[]; this.circles=[]; this.arcs=[]; this.history=[]; this.drag=null; },
+
+    nextLabel(){
+        const used = new Set(this.points.map(p=>p.label));
+        for (const ch of letters) if (!used.has(ch)) return ch;
+        return 'P'+this.points.length;
+    },
+    addPoint(x,y,label,fixed){
+        const p = { id:uid(), x, y, label: label || this.nextLabel(), fixed: !!fixed };
+        this.points.push(p); this.history.push({type:'point', id:p.id});
+        return p;
+    },
+    findNearestPoint(pt, within=16, excludeId){
+        let best=null, bd=within;
+        this.points.forEach(p=>{ if (p.id===excludeId) return; const d=dist(p,pt); if (d<bd){ bd=d; best=p; } });
+        return best;
+    },
+    addPointSnapped(pt, excludeId){
+        const near = this.findNearestPoint(pt, 16, excludeId);
+        return near || this.addPoint(pt.x, pt.y);
+    },
+    getPoint(id){ return this.points.find(p=>p.id===id); },
+
+    addSegment(p1,p2,angleLabel){
+        if (p1.id===p2.id) return null;
+        const s = { id:uid(), p1:p1.id, p2:p2.id, angleLabel };
+        this.segments.push(s); this.history.push({type:'segment', id:s.id});
+        return s;
+    },
+    addCircle(center,rpx){
+        const c = { id:uid(), center:center.id, r:rpx };
+        this.circles.push(c); this.history.push({type:'circle', id:c.id});
+        return c;
+    },
+    addArc(center,rpx,a1,a2){
+        const a = { id:uid(), center:center.id, r:rpx, a1, a2 };
+        this.arcs.push(a); this.history.push({type:'arc', id:a.id});
+        return a;
+    },
+
+    removePoint(id){
+        this.points = this.points.filter(p=>p.id!==id);
+        this.segments = this.segments.filter(s=>s.p1!==id && s.p2!==id);
+        this.circles = this.circles.filter(c=>c.center!==id);
+        this.arcs = this.arcs.filter(a=>a.center!==id);
+    },
+    eraseNear(pt){
+        const p = this.findNearestPoint(pt, 16);
+        if (p && !p.fixed){ this.removePoint(p.id); this.showToast('Erased point '+p.label); return; }
+        let bestSeg=null, bd=14;
+        this.segments.forEach(s=>{
+            const A=this.getPoint(s.p1), B=this.getPoint(s.p2);
+            const d = this.pointToSegDist(pt, A, B);
+            if (d<bd){ bd=d; bestSeg=s; }
+        });
+        if (bestSeg){ this.segments = this.segments.filter(s=>s.id!==bestSeg.id); this.showToast('Erased segment'); return; }
+        this.circles.forEach(c=>{
+            const C=this.getPoint(c.center);
+            if (Math.abs(dist(C,pt)-c.r) < 10){ this.circles = this.circles.filter(x=>x.id!==c.id); this.showToast('Erased circle'); }
+        });
+    },
+    pointToSegDist(p,a,b){
+        const l2 = dist(a,b)**2; if (l2===0) return dist(p,a);
+        let t = ((p.x-a.x)*(b.x-a.x)+(p.y-a.y)*(b.y-a.y))/l2;
+        t = Math.max(0,Math.min(1,t));
+        const proj = { x:a.x+t*(b.x-a.x), y:a.y+t*(b.y-a.y) };
+        return dist(p,proj);
+    },
+    undo(){
+        const last = this.history.pop();
+        if (!last) return;
+        if (last.type==='point') this.points = this.points.filter(p=>p.id!==last.id);
+        if (last.type==='segment') this.segments = this.segments.filter(s=>s.id!==last.id);
+        if (last.type==='circle') this.circles = this.circles.filter(c=>c.id!==last.id);
+        if (last.type==='arc') this.arcs = this.arcs.filter(a=>a.id!==last.id);
+    },
+    baseAngleAt(vertex){
+        const seg = this.segments.find(s=>s.p1===vertex.id || s.p2===vertex.id);
+        if (!seg) return 0;
+        const other = this.getPoint(seg.p1===vertex.id ? seg.p2 : seg.p1);
+        return Math.atan2(other.y-vertex.y, other.x-vertex.x);
+    },
+    showToast(msg){ this.toast = msg; app.render(); clearTimeout(this._toastT); this._toastT = setTimeout(()=>{ this.toast=null; app.render(); }, 1600); },
+
+    // ---- pointer handlers ----
+    onDown(pt){
+        if (this.tool==='point'){ this.addPointSnapped(pt); app.render(); return; }
+        if (this.tool==='eraser'){ this.eraseNear(pt); app.render(); return; }
+        if (this.tool==='move'){
+            const p = this.findNearestPoint(pt);
+            if (p) this.drag = { type:'move', point:p };
+            return;
+        }
+        if (this.tool==='ruler'){
+            const start = this.addPointSnapped(pt);
+            this.drag = { type:'ruler', start, cur:pt };
+            return;
+        }
+        if (this.tool==='compass'){
+            const center = this.addPointSnapped(pt);
+            if (this.compassLock){
+                const rpx = this.compassRadius*GRID;
+                if (this.compassArcOnly) this.addArc(center, rpx, -0.9, 0.9);
+                else this.addCircle(center, rpx);
+                app.render();
+                return;
+            }
+            this.drag = { type:'compass', center, cur:pt };
+            return;
+        }
+        if (this.tool==='protractor'){
+            const vertex = this.addPointSnapped(pt);
+            const base = this.baseAngleAt(vertex);
+            this.drag = { type:'protractor', vertex, base, cur:pt };
+            return;
+        }
+    },
+    onMove(pt){
+        if (!this.drag) return;
+        this.drag.cur = pt;
+        if (this.drag.type==='move' && !this.drag.point.fixed){ this.drag.point.x = pt.x; this.drag.point.y = pt.y; }
+        app.render();
+    },
+    onUp(pt){
+        if (!this.drag) return;
+        const d = this.drag;
+        if (d.type==='ruler'){
+            const end = this.addPointSnapped(pt, d.start.id);
+            if (end.id !== d.start.id && dist(d.start,end) > 10) this.addSegment(d.start, end);
+        } else if (d.type==='compass'){
+            const rpx = dist(d.center, pt);
+            if (rpx > 8){
+                if (this.compassArcOnly){
+                    const ang = Math.atan2(pt.y-d.center.y, pt.x-d.center.x);
+                    this.addArc(d.center, rpx, ang-0.9, ang+0.9);
+                } else {
+                    this.addCircle(d.center, rpx);
+                }
+                this.compassRadius = toCm(rpx);
+            }
+        } else if (d.type==='protractor'){
+            const rawAng = Math.atan2(pt.y-d.vertex.y, pt.x-d.vertex.x);
+            let deg = (rawAng - d.base) * 180/Math.PI;
+            deg = ((deg+540)%360)-180;
+            if (this.protractorSnap) deg = Math.round(deg/5)*5;
+            const finalAng = d.base + deg*Math.PI/180;
+            const len = Math.max(70, dist(d.vertex, pt));
+            const endPt = { x:d.vertex.x+len*Math.cos(finalAng), y:d.vertex.y+len*Math.sin(finalAng) };
+            const endPoint = this.addPointSnapped(endPt);
+            this.addSegment(d.vertex, endPoint, Math.round(Math.abs(deg))+'°');
+        }
+        this.drag = null;
+        app.render();
+    },
+
+    // ---- shape analysis for task checklists ----
+    anglesOf(q){
+        return q.map((B,i)=>{
+            const A=q[(i+3)%4], C=q[(i+1)%4];
+            const v1={x:A.x-B.x,y:A.y-B.y}, v2={x:C.x-B.x,y:C.y-B.y};
+            const m1=Math.hypot(v1.x,v1.y), m2=Math.hypot(v2.x,v2.y);
+            if (m1<1e-6||m2<1e-6) return 0;
+            const cosv = (v1.x*v2.x+v1.y*v2.y)/(m1*m2);
+            return Math.acos(Math.max(-1,Math.min(1,cosv)))*180/Math.PI;
+        });
+    },
+    sidesOf(q){ return q.map((p,i)=>dist(p,q[(i+1)%4])); },
+    findQuad(predicate){
+        const pts = this.points; const n = pts.length;
+        if (n<4) return null;
+        const orders = [[0,1,2,3],[0,1,3,2],[0,2,1,3]];
+        for (let a=0;a<n;a++) for (let b=a+1;b<n;b++) for (let c=b+1;c<n;c++) for (let e=c+1;e<n;e++){
+            const idx=[a,b,c,e];
+            for (const ord of orders){
+                const q = ord.map(i=>pts[idx[i]]);
+                if (predicate(q)) return q;
+            }
+        }
+        return null;
+    },
+    hasSquare(){
+        return this.findQuad(q=>{
+            const sides=this.sidesOf(q), angs=this.anglesOf(q);
+            const avg = sides.reduce((s,v)=>s+v,0)/4;
+            if (avg < 30) return false;
+            const sidesOK = sides.every(s=>Math.abs(s-avg) < avg*0.14);
+            const angOK = angs.every(a=>Math.abs(a-90) < 12);
+            return sidesOK && angOK;
+        });
+    },
+    hasRectangle(){
+        return this.findQuad(q=>{
+            const sides=this.sidesOf(q), angs=this.anglesOf(q);
+            if (sides.some(s=>s<30)) return false;
+            const oppOK = Math.abs(sides[0]-sides[2])<sides[0]*0.14 && Math.abs(sides[1]-sides[3])<sides[1]*0.14;
+            const angOK = angs.every(a=>Math.abs(a-90) < 12);
+            return oppOK && angOK;
+        });
+    },
+    hasCircleWithRadius(cmLo, cmHi){
+        return this.circles.find(c=> { const rc=toCm(c.r); return rc>=cmLo && rc<=cmHi; });
+    },
+    hasEquidistantPoint(B,C,tol=0.12){
+        return this.points.find(p=>{
+            if (p===B||p===C) return false;
+            const dB=dist(p,B), dC=dist(p,C);
+            if (dB<20) return false;
+            return Math.abs(dB-dC) < dB*tol;
+        });
+    },
+    hasDiagonalsDrawn(){
+        // any two segments that cross roughly at their midpoints (rough diagonal detection)
+        for (let i=0;i<this.segments.length;i++) for (let j=i+1;j<this.segments.length;j++){
+            const s1=this.segments[i], s2=this.segments[j];
+            if ([s1.p1,s1.p2].includes(s2.p1) || [s1.p1,s1.p2].includes(s2.p2)) continue;
+            const A=this.getPoint(s1.p1),B=this.getPoint(s1.p2),C=this.getPoint(s2.p1),D=this.getPoint(s2.p2);
+            if (!A||!B||!C||!D) continue;
+            const len1 = dist(A,B), len2 = dist(C,D);
+            if (len1<40||len2<40) continue;
+            if (Math.abs(len1-len2) < len1*0.15) return true;
+        }
+        return false;
+    }
+};
+
+// =========================================================================
+// TASKS — each configures the board + instructions + a live checklist
+// =========================================================================
+const TASKS = {
+    free: {
+        name: 'Free Practice',
+        blurb: 'An open drafting board — no fixed goal. Pick up any instrument from the toolbelt and start constructing.',
+        setup(){},
+        checklist: []
+    },
+    circle: {
+        name: 'A Circle from a Point',
+        blurb: '§8.1 · Plant the compass at a point P and open it to about 4 cm. Drag outward, then release to strike the full circle.',
+        setup(){ board.addPoint(260, 320, 'P', true); },
+        checklist: [
+            { text:'Draw a circle of radius roughly 4 cm centred near P', check: ()=> !!board.hasCircleWithRadius(3.3,4.7) }
+        ]
+    },
+    square: {
+        name: 'Construct a Square',
+        blurb: '§8.3 · Use the ruler to draw one side, the protractor to raise a perpendicular at each end, and the compass to transfer the side length. Close the last side with the ruler.',
+        setup(){ board.addPoint(220, 460, 'P', true); },
+        checklist: [
+            { text:'Draw a base segment from P (use the ruler)', check: ()=> board.segments.length>=1 },
+            { text:'Mark a perpendicular at each end (protractor, ~90°)', check: ()=> board.segments.some(s=>s.angleLabel && Math.abs(parseInt(s.angleLabel)-90)<=8) },
+            { text:'Complete a 4-sided figure with all sides equal and all angles 90°', check: ()=> !!board.hasSquare() }
+        ]
+    },
+    rectDiag: {
+        name: 'Rectangle from Side + Diagonal',
+        blurb: '§8.5 · Draw one side with the ruler, raise a perpendicular at one end, then open the compass to the diagonal length and strike an arc from the opposite end to fix the far corner.',
+        setup(){ board.addPoint(220, 470, 'D', true); board.addPoint(220+5*GRID, 470, 'C', true); board.addSegment(board.points[0], board.points[1]); },
+        checklist: [
+            { text:'Raise a perpendicular at C (protractor)', check: ()=> board.segments.some(s=>s.angleLabel && Math.abs(parseInt(s.angleLabel)-90)<=8) },
+            { text:'Strike an arc/circle from D with radius = the diagonal', check: ()=> board.circles.length>=1 || board.arcs.length>=1 },
+            { text:'Complete the rectangle (opposite sides equal, all angles 90°)', check: ()=> !!board.hasRectangle() }
+        ]
+    },
+    equidistant: {
+        name: 'Points Equidistant from B and C',
+        blurb: '§8.6 · B and C are fixed. Open the compass to the SAME radius from both points (draw two arcs) — where they cross is equidistant from B and C.',
+        setup(){ board.addPoint(300, 380, 'B', true); board.addPoint(300+5*GRID, 380, 'C', true); },
+        checklist: [
+            { text:'Strike an arc/circle centred at B', check: ()=> board.circles.length+board.arcs.length>=1 },
+            { text:'Strike an arc/circle centred at C with the same radius', check: ()=> board.circles.length+board.arcs.length>=2 },
+            { text:'Mark the crossing point — check it is equidistant from B and C', check: ()=> !!board.hasEquidistantPoint(board.getPoint(board.points.find(p=>p.label==='B').id), board.getPoint(board.points.find(p=>p.label==='C').id)) }
+        ]
+    },
+    house: {
+        name: 'Build the House (§8.6)',
+        blurb: 'Every line of the house is the same length. Draw the square base with door, then use two equal-radius arcs from the top corners to find the roof apex.',
+        setup(){
+            const s = 5*GRID;
+            const D = board.addPoint(300, 480, 'D', true);
+            const E = board.addPoint(300+s, 480, 'E', true);
+            const B = board.addPoint(300, 480-s, 'B', true);
+            const C = board.addPoint(300+s, 480-s, 'C', true);
+            board.addSegment(D,E); board.addSegment(D,B); board.addSegment(E,C); board.addSegment(B,C);
+        },
+        checklist: [
+            { text:'Strike an arc/circle from B, radius = side of the square', check: ()=> board.circles.length+board.arcs.length>=1 },
+            { text:'Strike an arc/circle from C with the same radius → roof apex appears', check: ()=> board.circles.length+board.arcs.length>=2 },
+            { text:'Join the apex to B and to C with the ruler', check: ()=> board.segments.length>=6 }
+        ]
+    },
+    diagonals: {
+        name: 'Diagonals of a Rectangle',
+        blurb: '§8.5 · Draw a rectangle with the ruler and protractor, then draw both diagonals. Are they the same length? Do they cut the corner angles into equal halves?',
+        setup(){},
+        checklist: [
+            { text:'Construct a rectangle', check: ()=> !!board.hasRectangle() },
+            { text:'Draw both diagonals (equal length, crossing near the middle)', check: ()=> board.hasDiagonalsDrawn() }
+        ]
+    },
+    artwork: {
+        name: 'Artwork Studio',
+        blurb: '§8.1 · Freehand vs instruments — try recreating "A Person", the "Wavy Wave" or the "Eyes" from the chapter using only the compass and ruler. No fixed checklist here — just build and compare with the textbook figures.',
+        setup(){},
+        checklist: []
+    }
+};
+
+// =========================================================================
+// QUIZ MODULE (separate tab, unchanged interaction style)
+// =========================================================================
+class QuizModule {
+    constructor(){
+        this.started=false; this.questions=[]; this.index=0; this.score=0;
+        this.answered=false; this.lastCorrect=null; this.userVal=''; this.total=8;
+        this.tfBank = [
+            { stmt:'All points on a circle are the same distance from its centre.', a:true },
+            { stmt:'The distance from the centre to any point on a circle is called its diameter.', a:false },
+            { stmt:'Every angle of a rectangle measures 90°.', a:true },
+            { stmt:'Rotating a square changes the length of its sides.', a:false },
+            { stmt:'The two diagonals of a rectangle are always equal in length.', a:true },
+            { stmt:'A diagonal always divides a rectangle into two identical (congruent) triangles.', a:true },
+            { stmt:'A rectangle can be named by listing its four corner letters in any random order.', a:false },
+            { stmt:'Two circles of equal radius, centred less than twice the radius apart, cross at two points.', a:true },
+            { stmt:'A 4-sided figure with all angles 90° can have unequal opposite sides.', a:false },
+            { stmt:'A diagonal of a square splits every corner angle into two equal 45° halves.', a:true }
+        ];
+    }
+    setTotal(n){ this.total=n; app.render(); }
+    start(){ this.questions=this.generate(this.total); this.index=0; this.score=0; this.answered=false; this.lastCorrect=null; this.userVal=''; this.started=true; app.render(); }
+    restart(){ this.started=false; app.render(); }
+    generate(n){
+        const arr=[];
+        for(let i=0;i<n;i++){
+            const roll=Math.random();
+            if (roll<0.35){ const ab=2+Math.floor(Math.random()*8); arr.push({type:'numeric', prompt:`In rectangle ABCD, if AB = ${ab} cm, what must CD be (in cm)?`, answer:ab}); }
+            else if (roll<0.55){ const r=2+Math.floor(Math.random()*8); arr.push({type:'numeric', prompt:`A compass is opened to mark points ${r} cm from centre P. What is the radius, in cm?`, answer:r}); }
+            else if (roll<0.7){ const s=3+Math.floor(Math.random()*7); arr.push({type:'numeric', prompt:`A square has all sides ${s} cm. After rotating it 40°, what is the length of one side, in cm?`, answer:s}); }
+            else { const bank=this.tfBank[Math.floor(Math.random()*this.tfBank.length)]; arr.push({type:'tf', prompt:bank.stmt, answer:bank.a}); }
+        }
+        return arr;
+    }
+    setUserVal(v){ this.userVal=v; }
+    submitNumeric(){ if(this.answered) return; const q=this.questions[this.index]; const val=parseFloat(this.userVal);
+        this.answered=true; this.lastCorrect=(val===q.answer); if(this.lastCorrect) this.score++; app.render(); }
+    submitTF(b){ if(this.answered) return; const q=this.questions[this.index];
+        this.answered=true; this.lastCorrect=(b===q.answer); if(this.lastCorrect) this.score++; app.render(); }
+    next(){ this.index++; this.answered=false; this.lastCorrect=null; this.userVal=''; app.render(); }
+    getSidebarHTML(){
+        if (!this.started){
+            return `<h2>Quiz Arena</h2><p>Test what you know about circles, radii, squares, rectangles and constructions.</p>
+            <div class="data-panel"><div style="font-weight:700;margin-bottom:8px;">Number of questions</div>
+            <div class="pill-row">
+                <div class="pill-btn ${this.total===5?'active':''}" onclick="app.modules.quiz.setTotal(5)">5</div>
+                <div class="pill-btn ${this.total===8?'active':''}" onclick="app.modules.quiz.setTotal(8)">8</div>
+                <div class="pill-btn ${this.total===12?'active':''}" onclick="app.modules.quiz.setTotal(12)">12</div>
+            </div></div>
+            <button class="action-btn primary wide" onclick="app.modules.quiz.start()">▶ Start Quiz</button>`;
+        }
+        if (this.index>=this.questions.length){
+            return `<h2>Quiz Arena</h2><div class="badge success">Final score: ${this.score} / ${this.questions.length}</div>
+            <button class="action-btn primary wide" onclick="app.modules.quiz.restart()">↻ New Quiz</button>`;
+        }
+        return `<h2>Quiz Arena</h2><div class="badge info">Question ${this.index+1} / ${this.questions.length} · Score ${this.score}</div>
+        <button class="action-btn wide" onclick="app.modules.quiz.restart()">← Back to setup</button>`;
+    }
+    renderStage(){
+        if (!this.started) return {type:'html', html:`<div class="quiz-wrap"><h3>Ready when you are</h3><p style="color:var(--text-mid);">Pick a question count on the left, then hit Start Quiz.</p></div>`};
+        if (this.index>=this.questions.length){
+            const pct = Math.round(100*this.score/this.questions.length);
+            return {type:'html', html:`<div class="quiz-wrap"><h3>Quiz complete!</h3>
+                <div style="font-size:3rem;font-family:'IBM Plex Mono',monospace;color:var(--brass-lt);margin:20px 0;">${this.score}/${this.questions.length}</div>
+                <p style="color:var(--text-mid);">${pct>=80?'Excellent work! 🌟':pct>=50?'Good effort — keep practising!':'Review the chapter and try again!'}</p></div>`};
+        }
+        const q = this.questions[this.index];
+        let body = `<div class="quiz-wrap"><div class="quiz-progress">QUESTION ${this.index+1} OF ${this.questions.length}</div><div class="quiz-prompt">${q.prompt}</div>`;
+        if (!this.answered){
+            if (q.type==='numeric') body += `<div class="quiz-input-row"><input type="number" value="${this.userVal}" oninput="app.modules.quiz.setUserVal(this.value)" onkeypress="if(event.key==='Enter'){app.modules.quiz.submitNumeric();}"><button class="quiz-btn" onclick="app.modules.quiz.submitNumeric()">Submit</button></div>`;
+            else body += `<div class="quiz-tf-row"><button class="true-btn" onclick="app.modules.quiz.submitTF(true)">TRUE</button><button class="false-btn" onclick="app.modules.quiz.submitTF(false)">FALSE</button></div>`;
+        } else {
+            body += `<div class="quiz-feedback ${this.lastCorrect?'correct':'wrong'}">${this.lastCorrect?'✓ Correct!':`✕ Not quite — the answer is ${q.type==='numeric'?q.answer:(q.answer?'TRUE':'FALSE')}`}</div>
+            <button class="quiz-btn" onclick="app.modules.quiz.next()">${this.index+1<this.questions.length?'Next question →':'See results →'}</button>`;
+        }
+        body += `</div>`;
+        return {type:'html', html:body};
+    }
+}
+
+// =========================================================================
+// BOARD MODULE — wraps board engine for the app harness
+// =========================================================================
+const BoardModule = {
+    loadTask(id){
+        board.currentTask = id; board.clearAll();
+        TASKS[id].setup();
+        app.render();
+    },
+    setTool(t){ board.tool = t; board.drag = null; app.render(); },
+    getSidebarHTML(){
+        const task = TASKS[board.currentTask];
+        return `
+            <h2>Drafting Board</h2>
+            <p>Pick a task, then pick up an instrument below and build it by hand — click, drag, release, just like on paper.</p>
+            <div class="pill-row">
+                ${Object.keys(TASKS).map(k=>`<div class="pill-btn ${board.currentTask===k?'active':''}" onclick="BoardModule.loadTask('${k}')">${TASKS[k].name}</div>`).join('')}
+            </div>
+
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:8px;">🛠 Instruments</div>
+                <div class="toolbelt">
+                    ${toolBtn('point','Point','●')}
+                    ${toolBtn('ruler','Ruler','📏')}
+                    ${toolBtn('compass','Compass','◐')}
+                    ${toolBtn('protractor','Protractor','∠')}
+                    ${toolBtn('move','Move','✥')}
+                    ${toolBtn('eraser','Eraser','⌫')}
+                </div>
+                ${board.tool==='compass' ? `
+                <div style="display:flex; align-items:center; gap:8px; margin-top:6px;">
+                    <label style="font-size:0.75rem;font-weight:600;">Radius (cm)</label>
+                    <input type="number" step="0.5" min="0.5" max="10" value="${board.compassRadius}" style="width:60px;padding:5px;border:1px solid var(--blueprint-md);border-radius:5px;font-family:'IBM Plex Mono',monospace;" onchange="board.compassRadius=parseFloat(this.value)||4">
+                </div>
+                <label style="display:flex;align-items:center;gap:6px;font-size:0.75rem;margin-top:8px;cursor:pointer;">
+                    <input type="checkbox" ${board.compassLock?'checked':''} onchange="board.compassLock=this.checked"> Lock radius (single click strikes fixed circle)
+                </label>
+                <label style="display:flex;align-items:center;gap:6px;font-size:0.75rem;margin-top:6px;cursor:pointer;">
+                    <input type="checkbox" ${board.compassArcOnly?'checked':''} onchange="board.compassArcOnly=this.checked"> Draw arc only (not full circle)
+                </label>` : ''}
+                ${board.tool==='protractor' ? `
+                <label style="display:flex;align-items:center;gap:6px;font-size:0.75rem;margin-top:8px;cursor:pointer;">
+                    <input type="checkbox" ${board.protractorSnap?'checked':''} onchange="board.protractorSnap=this.checked"> Snap to nearest 5°
+                </label>` : ''}
+            </div>
+
+            <div class="btn-grid">
+                <button class="action-btn" onclick="board.undo(); app.render();">↩ Undo last</button>
+                <button class="action-btn" onclick="BoardModule.loadTask(board.currentTask)">↻ Restart task</button>
+            </div>
+
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">${task.name}</div>
+                <p style="margin-bottom:0;">${task.blurb}</p>
+            </div>
+            ${task.checklist.length ? `
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Checklist</div>
+                ${task.checklist.map(c=>`<div class="check-item">${checkDot(c.check())}<span>${c.text}</span></div>`).join('')}
+            </div>` : ''}
+
+            <div class="data-panel" style="max-height:140px;overflow-y:auto;">
+                <div style="font-weight:700;margin-bottom:6px;">Measurement log</div>
+                ${board.segments.length===0 && board.circles.length===0 ? '<p style="margin:0;">Nothing drawn yet.</p>' : ''}
+                ${board.segments.map(s=>{
+                    const A=board.getPoint(s.p1), B=board.getPoint(s.p2);
+                    if (!A||!B) return '';
+                    return `<div class="data-row"><span>${A.label}${B.label}${s.angleLabel?` (${s.angleLabel})`:''}</span><span>${toCm(dist(A,B))} cm</span></div>`;
+                }).join('')}
+                ${board.circles.map(c=>{
+                    const C=board.getPoint(c.center); if(!C) return '';
+                    return `<div class="data-row"><span>circle at ${C.label}</span><span>r = ${toCm(c.r)} cm</span></div>`;
+                }).join('')}
+            </div>
+            <div class="proof-box">Tip: instruments <b>snap</b> to any point you already drew (within a small radius) — that's how you chain constructions together, exactly like reusing marks on paper.</div>
+        `;
+    },
+    renderStage(){
+        let html = '';
+        // faint cm grid dots
+        for (let gx=20; gx<VBW; gx+=GRID) for (let gy=20; gy<VBH-40; gy+=GRID)
+            html += `<circle cx="${gx}" cy="${gy}" r="1.2" fill="rgba(255,255,255,0.08)"/>`;
+
+        // circles
+        board.circles.forEach(c=>{
+            const C = board.getPoint(c.center); if (!C) return;
+            html += `<circle cx="${C.x}" cy="${C.y}" r="${c.r}" fill="none" stroke="#e3ac6a" stroke-width="2"/>`;
+        });
+        // arcs
+        board.arcs.forEach(a=>{
+            const C = board.getPoint(a.center); if (!C) return;
+            const x1=C.x+a.r*Math.cos(a.a1), y1=C.y+a.r*Math.sin(a.a1);
+            const x2=C.x+a.r*Math.cos(a.a2), y2=C.y+a.r*Math.sin(a.a2);
+            html += `<path d="M ${x1} ${y1} A ${a.r} ${a.r} 0 0 1 ${x2} ${y2}" fill="none" stroke="#2f75ac" stroke-width="2.5"/>`;
+        });
+        // segments
+        board.segments.forEach(s=>{
+            const A = board.getPoint(s.p1), B = board.getPoint(s.p2); if (!A||!B) return;
+            html += `<line x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke="#ffffff" stroke-width="2.5"/>`;
+            const mx=(A.x+B.x)/2, my=(A.y+B.y)/2;
+            html += `<text x="${mx+6}" y="${my-6}" class="svg-label-sm">${toCm(dist(A,B))} cm</text>`;
+            if (s.angleLabel) html += `<text x="${A.x+10}" y="${A.y-10}" class="svg-label-sm" fill="#e35a8f">${s.angleLabel}</text>`;
+        });
+        // points
+        board.points.forEach(p=>{
+            html += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${p.fixed?'#e35a8f':'#fff'}" stroke="#061c30" stroke-width="1"/>`;
+            html += `<text x="${p.x+9}" y="${p.y-9}" class="svg-label">${p.label}</text>`;
+        });
+
+        // live drag previews
+        if (board.drag){
+            const d = board.drag;
+            if (d.type==='ruler'){
+                const len = toCm(dist(d.start, d.cur));
+                html += `<line x1="${d.start.x}" y1="${d.start.y}" x2="${d.cur.x}" y2="${d.cur.y}" stroke="#fff" stroke-width="2" stroke-dasharray="5,4" opacity="0.85"/>`;
+                html += rulerGhost(d.start, d.cur);
+                html += `<text x="${(d.start.x+d.cur.x)/2}" y="${(d.start.y+d.cur.y)/2-16}" text-anchor="middle" class="svg-label-live">${len} cm</text>`;
+            } else if (d.type==='compass'){
+                const rpx = dist(d.center, d.cur);
+                const rc = toCm(rpx);
+                if (board.compassArcOnly){
+                    const ang = Math.atan2(d.cur.y-d.center.y, d.cur.x-d.center.x);
+                    const x1=d.center.x+rpx*Math.cos(ang-0.9), y1=d.center.y+rpx*Math.sin(ang-0.9);
+                    const x2=d.center.x+rpx*Math.cos(ang+0.9), y2=d.center.y+rpx*Math.sin(ang+0.9);
+                    html += `<path d="M ${x1} ${y1} A ${rpx} ${rpx} 0 0 1 ${x2} ${y2}" fill="none" stroke="rgba(227,172,106,0.7)" stroke-width="2" stroke-dasharray="4,3"/>`;
+                } else {
+                    html += `<circle cx="${d.center.x}" cy="${d.center.y}" r="${rpx}" fill="none" stroke="rgba(227,172,106,0.7)" stroke-width="1.8" stroke-dasharray="4,3"/>`;
+                }
+                html += compassGhost(d.center, d.cur);
+                html += `<text x="${d.center.x}" y="${d.center.y-rpx-14}" text-anchor="middle" class="svg-label-live">r = ${rc} cm</text>`;
+            } else if (d.type==='protractor'){
+                const rawAng = Math.atan2(d.cur.y-d.vertex.y, d.cur.x-d.vertex.x);
+                let deg = (rawAng - d.base) * 180/Math.PI; deg = ((deg+540)%360)-180;
+                if (board.protractorSnap) deg = Math.round(deg/5)*5;
+                const finalAng = d.base + deg*Math.PI/180;
+                const R = 60;
+                html += protractorGhost(d.vertex, d.base, finalAng);
+                const ex = d.vertex.x+R*Math.cos(finalAng), ey = d.vertex.y+R*Math.sin(finalAng);
+                html += `<line x1="${d.vertex.x}" y1="${d.vertex.y}" x2="${ex}" y2="${ey}" stroke="#e35a8f" stroke-width="2.5"/>`;
+                html += `<text x="${d.vertex.x+70}" y="${d.vertex.y-40}" class="svg-label-live">${Math.round(Math.abs(deg))}°</text>`;
+            }
+        }
+
+        // ruler strip decoration along the bottom
+        html += rulerStrip();
+
+        if (board.toast) html += `<text x="450" y="30" text-anchor="middle" class="svg-label-live">${board.toast}</text>`;
+
+        return { type:'svg', html };
+    }
+};
+function toolBtn(id,label,glyph){
+    const active = board.tool===id;
+    return `<div class="tool-btn ${active?'active':''}" onclick="BoardModule.setTool('${id}')">
+        <span style="font-size:20px;">${glyph}</span><span>${label}</span>
+    </div>`;
+}
+function rulerGhost(a,b){
+    const len = dist(a,b);
+    const ang = Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
+    const ticks = Math.floor(len/GRID);
+    let t = '';
+    for (let i=0;i<=ticks;i++) t += `<line x1="${i*GRID}" y1="-7" x2="${i*GRID}" y2="0" stroke="#5c4a26" stroke-width="1"/>`;
+    return `<g transform="translate(${a.x},${a.y}) rotate(${ang})" opacity="0.88">
+        <rect x="0" y="-9" width="${len}" height="18" fill="rgba(232,220,180,0.9)" stroke="#8a6f3a" stroke-width="1"/>${t}
+    </g>`;
+}
+function compassGhost(c,cur){
+    const ang = Math.atan2(cur.y-c.y, cur.x-c.x);
+    const r = dist(c,cur);
+    const legx = c.x + Math.min(r, 250)*Math.cos(ang), legy = c.y + Math.min(r,250)*Math.sin(ang);
+    return `<g opacity="0.95">
+        <circle cx="${c.x}" cy="${c.y}" r="4" fill="#c98a3e"/>
+        <line x1="${c.x}" y1="${c.y}" x2="${legx}" y2="${legy}" stroke="#c98a3e" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="${legx}" cy="${legy}" r="3" fill="#dfe7ee"/>
+    </g>`;
+}
+function protractorGhost(v, base, cur){
+    const R = 46;
+    let arcPath = '';
+    const startAng = base, endAng = cur;
+    const x1=v.x+R*Math.cos(startAng), y1=v.y+R*Math.sin(startAng);
+    const x2=v.x+R*Math.cos(endAng), y2=v.y+R*Math.sin(endAng);
+    const large = Math.abs(endAng-startAng) > Math.PI ? 1 : 0;
+    const sweep = endAng>startAng ? 1 : 0;
+    return `<g opacity="0.9">
+        <path d="M ${x1} ${y1} A ${R} ${R} 0 ${large} ${sweep} ${x2} ${y2}" fill="none" stroke="#e8f2ff" stroke-width="2"/>
+        <line x1="${v.x}" y1="${v.y}" x2="${x1}" y2="${y1}" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-dasharray="2,3"/>
+    </g>`;
+}
+function rulerStrip(){
+    let t = '';
+    for (let i=0;i<=18;i++) t += `<line x1="${20+i*GRID}" y1="${VBH-24}" x2="${20+i*GRID}" y2="${VBH-24-(i%5===0?12:7)}" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>` +
+        (i%5===0 ? `<text x="${20+i*GRID}" y="${VBH-6}" text-anchor="middle" class="svg-label-sm">${i}</text>` : '');
+    return `<line x1="20" y1="${VBH-24}" x2="${20+18*GRID}" y2="${VBH-24}" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>${t}`;
+}
+
+// =========================================================================
+// APP CONTROLLER
+// =========================================================================
+const app = {
+    modules: { board: BoardModule, quiz: new QuizModule() },
+    tabDefs: [
+        { id:'board', name:'🛠 Drafting Board' },
+        { id:'quiz', name:'📝 Quiz Arena' }
+    ],
+    activeTab: 'board',
+    get activeModule(){ return this.modules[this.activeTab]; },
+
+    init(){
+        BoardModule.loadTask('free');
+        this.renderTabs();
+        this.render();
+        this.bindPointer();
+    },
+    renderTabs(){
+        document.getElementById('tabsBar').innerHTML = this.tabDefs.map(t=>
+            `<button class="tab-btn ${t.id===this.activeTab?'active':''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`
+        ).join('');
+    },
+    switchTab(id){
+        this.activeTab = id;
+        this.renderTabs();
+        this.render();
+    },
+    render(){
+        document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
+        const stageObj = this.activeModule.renderStage();
+        const container = document.getElementById('stageContainer');
+        if (stageObj.type==='svg'){
+            container.innerHTML = `<svg id="mainSvg" viewBox="0 0 ${VBW} ${VBH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">${stageObj.html}</svg>`;
+        } else {
+            container.innerHTML = `<div class="html-stage">${stageObj.html}</div>`;
+        }
+    },
+    bindPointer(){
+        const container = document.getElementById('stageContainer');
+        const svgPoint = (evt)=>{
+            const svg = document.getElementById('mainSvg');
+            if (!svg) return null;
+            const pt = svg.createSVGPoint();
+            pt.x = evt.clientX; pt.y = evt.clientY;
+            const ctm = svg.getScreenCTM();
+            if (!ctm) return null;
+            const p = pt.matrixTransform(ctm.inverse());
+            return { x:p.x, y:p.y };
+        };
+        container.addEventListener('pointerdown', (e)=>{
+            if (this.activeTab!=='board') return;
+            const p = svgPoint(e); if (!p) return;
+            board.onDown(p);
+        });
+        window.addEventListener('pointermove', (e)=>{
+            if (this.activeTab!=='board' || !board.drag) return;
+            const p = svgPoint(e); if (!p) return;
+            board.onMove(p);
+        });
+        window.addEventListener('pointerup', (e)=>{
+            if (this.activeTab!=='board' || !board.drag) return;
+            const p = svgPoint(e); if (!p) return;
+            board.onUp(p);
+        });
+    }
+};
+
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('collapsed'); }
+window.onload = () => app.init();
+</script>
+</body>
+</html>
