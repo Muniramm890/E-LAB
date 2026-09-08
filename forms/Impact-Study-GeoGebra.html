@@ -40,13 +40,18 @@
   input:focus, textarea:focus, select:focus{border-color:var(--gold);}
   textarea{min-height:75px;resize:vertical;}
 
-  .radio-group, .checkbox-group{display:flex;flex-direction:column;gap:8px;}
-  .radio-group label, .checkbox-group label{
+  /* 2-column layout for demographic radio buttons */
+  .radio-group-inline { display: flex; flex-direction: row; gap: 12px; flex-wrap: wrap; }
+  
+  .radio-group, .checkbox-group, .radio-group-inline { display:flex; gap:8px; }
+  .radio-group { flex-direction:column; }
+  
+  .radio-group label, .checkbox-group label, .radio-group-inline label{
     display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:500;
     background:var(--bg-panel-2);padding:10px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;
   }
-  .radio-group input, .checkbox-group input{margin-top:4px;accent-color:var(--gold);flex-shrink:0;}
-  .radio-group label:has(input:checked), .checkbox-group label:has(input:checked){border-color:var(--gold);}
+  .radio-group input, .checkbox-group input, .radio-group-inline input{margin-top:4px;accent-color:var(--gold);flex-shrink:0;}
+  .radio-group label:has(input:checked), .checkbox-group label:has(input:checked), .radio-group-inline label:has(input:checked){border-color:var(--gold);}
 
   .likert-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
   .likert-opt{
@@ -118,10 +123,10 @@
       <div class="category-card" id="roleField"></div>
     </div>
 
-    <!-- COMMON DETAILS -->
+    <!-- COMMON DETAILS (Demographics Added) -->
     <div id="commonContainer" class="hidden">
       <div class="card">
-          <div class="section-title">Basic Details <br><span class="hi">बुनियादी जानकारी</span></div>
+          <div class="section-title">Demographic Details <br><span class="hi">व्यक्तिगत जानकारी</span></div>
           <div id="commonFields"></div>
       </div>
     </div>
@@ -150,7 +155,6 @@
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwrx4CAj09yqiVl0bGk7sPESlPYnhAyxKRqk__-kwZ0j0hohTkI1D6-FSqAteAO9kW9zQ/exec";
 
 /* ---------------- Question Definitions ---------------- */
-// Likert scale mapping for 1 to 5 (Quantitative data for Analyst)
 const LIKERT = [
   "1<br><span class='hi'>Strongly Disagree<br>पूर्णतः असहमत</span>",
   "2<br><span class='hi'>Disagree<br>असहमत</span>",
@@ -159,77 +163,90 @@ const LIKERT = [
   "5<br><span class='hi'>Strongly Agree<br>पूर्णतः सहमत</span>"
 ];
 
-// Factory functions for form fields
 const q = {
   text: (id,label)=>({id,type:'text',label}),
+  number: (id,label)=>({id,type:'number',label}),
   textarea: (id,label)=>({id,type:'textarea',label}),
-  radio: (id,label,options)=>({id,type:'radio',label,options}),
+  radio: (id,label,options, inline=false)=>({id,type:'radio',label,options, inline}),
   likert: (id,label)=>({id,type:'likert',label}),
 };
 
-// ROLE OPTIONS
 const roleOptions = [
   {value:'student', clabel:'Student <span class="hi" style="display:inline; margin-left:8px;">(छात्र)</span>'},
   {value:'teacher', clabel:'Teacher <span class="hi" style="display:inline; margin-left:8px;">(शिक्षक)</span>'},
 ];
 
-// COMMON FIELDS (Shows for both, but adjusts label meaning based on context)
+// COMMON FIELDS (Now includes Age and Gender for demographic impact)
 const commonFields = [
   q.text('c_name','Name / नाम'),
+  q.number('c_age', 'Age / आयु (e.g. 14, 25)'),
+  q.radio('c_gender', 'Gender / लिंग', [
+    'Male <span class="hi" style="display:inline">(पुरुष)</span>',
+    'Female <span class="hi" style="display:inline">(महिला)</span>',
+    'Other <span class="hi" style="display:inline">(अन्य)</span>'
+  ], true),
   q.text('c_school','School Name / स्कूल का नाम'),
 ];
 
 
 /* ==========================================
-   STUDENT QUESTION SET 
+   STUDENT QUESTION SET (Mapped to Objectives)
    ========================================== */
 const studentSections = [
   { title:'Section 1: Chalk & Board Method (Traditional)<br><span class="hi">भाग 1: चॉक और बोर्ड का तरीका</span>', items:[
-    q.likert('s_cb1','1. I easily understand the properties of shapes drawn with chalk on the board.<br><span class="hi">बोर्ड पर चॉक से बनाए गए आकृतियों के गुण मुझे आसानी से समझ आते हैं।</span>'),
-    q.likert('s_cb2','2. When the teacher changes a shape on the board, it is easy to visualize the new angles.<br><span class="hi">जब शिक्षक बोर्ड पर आकृति बदलते हैं, तो नए कोण (angles) की कल्पना करना आसान होता है।</span>'),
-    q.likert('s_cb3','3. I stay fully focused when learning geometry on the blackboard.<br><span class="hi">ब्लैकबोर्ड पर ज्यामिति (geometry) पढ़ते समय मेरा ध्यान पूरी तरह लगा रहता है।</span>')
+    q.likert('s_cb1','1. I easily understand properties of shapes when drawn with chalk on the board.<br><span class="hi">बोर्ड पर चॉक से बनी आकृतियों के गुण मुझे आसानी से समझ आते हैं।</span>'),
+    q.likert('s_cb2','2. I trust the measurements (angles/lengths) drawn by hand on the blackboard.<br><span class="hi">बोर्ड पर हाथ से बनाए गए कोण और लंबाई की सटीकता पर मुझे पूरा भरोसा होता है।</span>'),
+    q.likert('s_cb3','3. It is easy to imagine what happens to a shape if we stretch or rotate it on the board.<br><span class="hi">बोर्ड पर बनी आकृति को खींचने या घुमाने पर वह कैसी दिखेगी, यह कल्पना करना आसान है।</span>')
   ]},
   { title:'Section 2: GeoGebra Method (Digital)<br><span class="hi">भाग 2: जियोजेब्रा का तरीका</span>', items:[
-    q.likert('s_gg1','4. Dragging and changing shapes in GeoGebra helps me understand the properties much better.<br><span class="hi">जियोजेब्रा में आकृतियों को खींचकर बदलने से गुण ज्यादा अच्छे से समझ आते हैं।</span>'),
-    q.likert('s_gg2','5. Seeing automatic real-time angle calculations increases my confidence in theorems (like sum of angles = 360°).<br><span class="hi">ऑटोमैटिक कैलकुलेशन देखकर प्रमेयों (theorems) पर मेरा कॉन्फिडेंस बढ़ता है।</span>'),
-    q.likert('s_gg3','6. Learning with colors and animations on the screen makes geometry more interesting.<br><span class="hi">स्क्रीन पर रंगों और एनिमेशन के साथ ज्यामिति पढ़ना ज्यादा रोचक लगता है।</span>')
+    // Objective: Invariants
+    q.likert('s_gg1','4. Dragging points in GeoGebra helps me see which properties never change (e.g., diagonals of a rhombus).<br><span class="hi">जियोजेब्रा में आकृतियों को खींचने से मुझे समझ आता है कि कौन से गुण कभी नहीं बदलते।</span>'),
+    // Objective: Precision
+    q.likert('s_gg2','5. Seeing exact, automatic calculations makes me understand theorems (like sum of angles = 360°) better.<br><span class="hi">ऑटोमैटिक और सटीक कैलकुलेशन देखकर मुझे गणितीय प्रमेय (theorems) बेहतर समझ आते हैं।</span>'),
+    // Objective: Hypothesis Testing
+    q.likert('s_gg3','6. I enjoy testing "What happens if I change this angle?" because the screen shows the result immediately.<br><span class="hi">मुझे "अगर कोण बदल दें तो क्या होगा?" सोचना और उसका तुरंत परिणाम देखना पसंद है।</span>')
   ]},
-  { title:'Section 3: Direct Comparison<br><span class="hi">भाग 3: सीधा मुक़ाबला</span>', items:[
-    q.radio('s_comp1','7. Which method made it easier to understand properties like diagonals bisecting?<br><span class="hi">विकर्ण (diagonals) के गुणों को समझने के लिए कौन सा तरीका ज्यादा आसान लगा?</span>', [
+  { title:'Section 3: Direct Comparison & Output<br><span class="hi">भाग 3: सीधा मुक़ाबला</span>', items:[
+    // Objective: Construction vs Drawing
+    q.radio('s_comp1','7. Which method helps you understand the difference between just "drawing lines" and "following geometry rules"?<br><span class="hi">किस तरीके से "सिर्फ रेखाएं खींचने" और "ज्यामिति के नियमों का पालन करने" के बीच का अंतर बेहतर समझ आता है?</span>', [
         'Chalk & Board <span class="hi" style="display:inline">(चॉक और बोर्ड)</span>',
         'GeoGebra <span class="hi" style="display:inline">(जियोजेब्रा)</span>',
-        'Both are equal <span class="hi" style="display:inline">(दोनों बराबर लगे)</span>'
+        'Both are equal <span class="hi" style="display:inline">(दोनों बराबर)</span>'
     ]),
-    q.radio('s_comp2','8. When solving exam questions, which visual image do you remember better?<br><span class="hi">परीक्षा में प्रश्न हल करते समय आपको कौन सा चित्र ज्यादा अच्छे से याद रहता है?</span>', [
-        'Shapes drawn on Blackboard <span class="hi" style="display:inline">(बोर्ड पर बनी आकृति)</span>',
+    q.radio('s_comp2','8. When solving exam questions, which visual image helps you remember the formulas better?<br><span class="hi">परीक्षा में प्रश्न हल करते समय कौन सा चित्र आपको फॉर्मूले याद रखने में अधिक मदद करता है?</span>', [
+        'Shapes on Blackboard <span class="hi" style="display:inline">(बोर्ड पर बनी आकृति)</span>',
         'Dynamic shapes in GeoGebra <span class="hi" style="display:inline">(जियोजेब्रा की आकृति)</span>'
     ]),
-    q.textarea('s_open','9. What did you like most about GeoGebra, and what was confusing?<br><span class="hi">जियोजेब्रा के बारे में आपको क्या सबसे अच्छा लगा और क्या कन्फ्यूजिंग लगा? (संक्षेप में बताएं)</span>')
+    q.textarea('s_open','9. What was the most interesting thing you learned using GeoGebra today?<br><span class="hi">जियोजेब्रा के उपयोग से आज आपने सबसे रोचक बात क्या सीखी? (संक्षेप में बताएं)</span>')
   ]},
 ];
 
 
 /* ==========================================
-   TEACHER QUESTION SET 
+   TEACHER QUESTION SET (Mapped to Objectives)
    ========================================== */
 const teacherSections = [
   { title:'Section 1: Teaching Efficiency & Effort<br><span class="hi">भाग 1: शिक्षण क्षमता और समय</span>', items:[
-    q.likert('t_cb1','1. Drawing accurate quadrilaterals (exact 90° or equal diagonals) on the board takes significant time and effort.<br><span class="hi">बोर्ड पर सटीक चतुर्भुज बनाने में काफी समय और मेहनत लगती है।</span>'),
-    q.likert('t_gg1','2. GeoGebra saves time, allowing me to focus more on explanation rather than drawing.<br><span class="hi">जियोजेब्रा समय बचाता है और मैं चित्र बनाने के बजाय समझाने पर ज्यादा ध्यान दे पाता/पाती हूँ।</span>'),
-    q.likert('t_gg2','3. Integrating GeoGebra into daily classroom routine (setup/projector) is practical and easy.<br><span class="hi">रोज़ाना क्लास में जियोजेब्रा का सेटअप लगाना व्यावहारिक और आसान है।</span>')
+    q.likert('t_cb1','1. Drawing precise quadrilaterals (e.g., exact 90° angles) on the board takes significant time and effort.<br><span class="hi">बोर्ड पर सटीक चतुर्भुज बनाने में काफी समय और मेहनत लगती है।</span>'),
+    q.likert('t_cb2','2. It is difficult to show students how a shape transforms (e.g., Parallelogram to Rectangle) using only chalk.<br><span class="hi">सिर्फ चॉक का उपयोग करके आकृतियों का बदलना (Transformation) दिखाना मुश्किल होता है।</span>')
   ]},
-  { title:'Section 2: Concept Delivery & Flexibility<br><span class="hi">भाग 2: कॉन्सेप्ट डिलीवरी</span>', items:[
-    q.likert('t_cd1','4. Explaining the hierarchy (e.g., a Square is a Rectangle) is much easier with GeoGebra’s drag feature than with chalk.<br><span class="hi">जियोजेब्रा के ड्रैग फीचर से चतुर्भुजों का पदानुक्रम (hierarchy) समझाना चॉक की तुलना में ज्यादा आसान है।</span>'),
-    q.likert('t_cd2','5. It is easier to answer students\' "What if?" questions in real-time using GeoGebra.<br><span class="hi">छात्रों के "क्या होगा यदि?" (What if?) वाले सवालों का तुरंत उत्तर देना जियोजेब्रा से आसान है।</span>')
+  { title:'Section 2: Concept Delivery & GeoGebra Integration<br><span class="hi">भाग 2: कॉन्सेप्ट डिलीवरी</span>', items:[
+    // Objective: Construction vs Drawing
+    q.likert('t_gg1','3. GeoGebra clearly teaches students the difference between merely sketching a shape and mathematically constructing it.<br><span class="hi">जियोजेब्रा छात्रों को "सिर्फ चित्र बनाने" और "गणितीय नियमों से रचना करने" के बीच का अंतर स्पष्ट करता है।</span>'),
+    // Objective: Algebra-Geometry Link
+    q.likert('t_gg2','4. The automatic display of coordinates and equations helps bridge the gap between Algebra and Geometry.<br><span class="hi">निर्देशांक और समीकरणों (equations) का स्वतः दिखना बीजगणित और ज्यामिति को जोड़ने में मदद करता है।</span>'),
+    // Objective: Hypothesis Testing
+    q.likert('t_gg3','5. The dynamic interface encourages students to ask "What if?" and test their hypotheses in real-time.<br><span class="hi">डायनामिक इंटरफेस छात्रों को सवाल पूछने और तुरंत जांचने के लिए प्रेरित करता है।</span>')
   ]},
-  { title:'Section 3: Student Response & Outcomes<br><span class="hi">भाग 3: छात्रों की प्रतिक्रिया</span>', items:[
-    q.likert('t_out1','6. Weak/back-bench students participated more actively when GeoGebra was used.<br><span class="hi">चॉक मेथड की तुलना में जियोजेब्रा के उपयोग से कमजोर छात्रों ने कक्षा में ज्यादा हिस्सा लिया।</span>'),
-    q.radio('t_comp1','7. Which method resulted in fewer conceptual mistakes during student assessments/notebook work?<br><span class="hi">छात्रों के टेस्ट या कॉपी वर्क में किस तरीके से वैचारिक गलतियाँ कम हुईं?</span>', [
+  { title:'Section 3: Student Response & Algorithmic Thinking<br><span class="hi">भाग 3: छात्रों की प्रतिक्रिया</span>', items:[
+    q.likert('t_out1','6. Weak/back-bench students participated more actively when GeoGebra was used compared to chalk.<br><span class="hi">चॉक मेथड की तुलना में जियोजेब्रा से कमजोर छात्रों ने कक्षा में अधिक हिस्सा लिया।</span>'),
+    // Objective: Algorithmic Thinking
+    q.likert('t_out2','7. GeoGebra improves students\' algorithmic and logical thinking better than traditional drafting.<br><span class="hi">पारंपरिक तरीके की तुलना में जियोजेब्रा छात्रों की तार्किक सोच (logical thinking) को बेहतर बनाता है।</span>'),
+    q.radio('t_comp1','8. Which method resulted in fewer conceptual mistakes during student assessments/notebook work?<br><span class="hi">छात्रों के टेस्ट या कॉपी वर्क में किस तरीके से वैचारिक गलतियाँ कम हुईं?</span>', [
         'Chalk Method <span class="hi" style="display:inline">(चॉक मेथड से)</span>',
         'GeoGebra Method <span class="hi" style="display:inline">(जियोजेब्रा मेथड से)</span>',
         'No noticeable difference <span class="hi" style="display:inline">(कोई खास अंतर नहीं)</span>'
     ]),
-    q.likert('t_out2','8. Chalk & board is better for maintaining classroom control and student focus (due to less digital distraction).<br><span class="hi">कक्षा नियंत्रण (class control) के लिए चॉक और बोर्ड ज्यादा बेहतर है।</span>'),
     q.textarea('t_open','9. What practical challenges do you face in making GeoGebra a permanent part of the curriculum?<br><span class="hi">जियोजेब्रा को पाठ्यक्रम का स्थायी हिस्सा बनाने में आपको क्या व्यावहारिक चुनौतियाँ लगती हैं?</span>')
   ]},
 ];
@@ -242,23 +259,25 @@ function renderField(item){
   
   const label = document.createElement('label');
   label.className = 'q';
-  label.innerHTML = item.label; // Using innerHTML to render bold and <span class="hi"> tags
+  label.innerHTML = item.label; 
   label.setAttribute('for', item.id);
   div.appendChild(label);
 
   if(item.type === 'text'){
-    div.innerHTML += `<input type="text" id="${item.id}" name="${item.id}">`;
+    div.innerHTML += `<input type="text" id="${item.id}" name="${item.id}" required>`;
+  } else if(item.type === 'number'){
+    div.innerHTML += `<input type="number" id="${item.id}" name="${item.id}" min="5" max="100" required>`;
   } else if(item.type === 'textarea'){
     div.innerHTML += `<textarea id="${item.id}" name="${item.id}"></textarea>`;
   } else if(item.type === 'radio'){
-    const g = document.createElement('div'); g.className = 'radio-group';
-    item.options.forEach((opt, idx)=>{
+    const g = document.createElement('div'); 
+    g.className = item.inline ? 'radio-group-inline' : 'radio-group';
+    item.options.forEach((opt)=>{
       g.innerHTML += `<label><input type="radio" name="${item.id}" value="${opt.replace(/<[^>]*>?/gm, '').trim()}"> <span>${opt}</span></label>`;
     });
     div.appendChild(g);
   } else if(item.type === 'likert'){
     const g = document.createElement('div'); g.className = 'likert-row';
-    // Clean value strips HTML tags to just send "1", "2", "3" to the database
     LIKERT.forEach((opt, index)=>{
       const cleanValue = index + 1; 
       g.innerHTML += `<label class="likert-opt"><input type="radio" name="${item.id}" value="${cleanValue}"><span>${opt}</span></label>`;
@@ -302,11 +321,9 @@ document.querySelectorAll('input[name="c_role"]').forEach(radio=>{
   radio.addEventListener('change', (e)=>{
     const role = e.target.value;
     
-    // Show common fields & submit button
     document.getElementById('commonContainer').classList.remove('hidden');
     document.getElementById('submitBtn').classList.remove('hidden');
     
-    // Toggle Specific Sets
     document.getElementById('setStudent').classList.toggle('hidden', role !== 'student');
     document.getElementById('setTeacher').classList.toggle('hidden', role !== 'teacher');
   });
@@ -352,7 +369,6 @@ document.getElementById('surveyForm').addEventListener('submit', async (e)=>{
     return;
   }
 
-  // Collect Data based on Active Path
   const common = collectAnswers(commonFields);
   common.c_role = role.value;
 
@@ -386,7 +402,7 @@ document.getElementById('surveyForm').addEventListener('submit', async (e)=>{
     console.error(err);
     showError('Network Error. Please try again / नेटवर्क समस्या, कृपया पुनः प्रयास करें।');
     submitBtn.disabled = false;
-    submitBtn.innerHTML = 'Submit Response <br><span style="font-size:12px; font-weight:normal;">जवाब सबमिट करें</span>';
+    submitBtn.innerHTML = 'Submit Response <br><span style="font-size:12px; font-weight:normal;">submit</span>';
   }
 });
 </script>
