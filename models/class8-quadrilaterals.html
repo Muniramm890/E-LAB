@@ -76,20 +76,21 @@
 
         /* WORKSPACE: Sidebar + Canvas */
         .workspace {
-            display: flex; flex: 1; position: relative; overflow: hidden;
-            background-image:
-                linear-gradient(var(--grid-line) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-            background-size: 25px 25px;
+          display: flex; flex: 1; position: relative; overflow: hidden;
+          min-height: 0;
+          background-image:
+          linear-gradient(var(--grid-line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+           background-size: 25px 25px;
         }
 
         /* DYNAMIC SIDEBAR */
-        .sidebar {
+       .sidebar {
             width: 360px; background: var(--paper-bg); color: var(--paper-text);
             border-right: 4px solid var(--brass); display: flex; flex-direction: column;
             transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5);
-            flex: none;
+            flex: none; min-height: 0;
         }
         .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
 
@@ -102,7 +103,7 @@
         }
         .toggle-btn:hover { background: var(--brass-lt); width: 45px; right: -45px;}
 
-        .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+        .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; }
         .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.35rem; color: var(--blueprint-dk); margin-bottom: 5px; }
         .sidebar-content p { font-size: 0.88rem; line-height: 1.5; color: #4a5a6a; margin-bottom: 15px; }
 
