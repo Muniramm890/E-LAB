@@ -1,253 +1,410 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Class 8: Fractions in Disguise Lab | Digital E-Lab</title>
-<link rel="stylesheet" href="../../../assets/css/style.css">
-<style>
-    /* Page-shell tweak: this is an app-like tool page, not a scrolling content page */
-    header { padding: 1.2rem 1.5rem; }
-    header h1 { font-size: clamp(1.3rem, 3.4vw, 1.9rem); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Class 8: Fractions in Disguise Lab | Digital E-Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../../assets/css/style.css">
+    <style>
+        /* ============================================================
+           DIGITAL E-LAB — same design system as the site (navy/blue/gold)
+           Local fallback vars so this file always renders correctly
+           even if the global stylesheet link is missing/renamed.
+           ============================================================ */
+        :root {
+            --bg-dark: #0a192f;
+            --card-bg: rgba(16, 37, 66, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-gold: #fbbf24;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(56, 189, 248, 0.2);
+            --radius: 16px;
+            --success: #34d399;
+            --danger: #f87171;
+        }
 
-    /* =====================================================
-       MODULE-SPECIFIC VISUALS (only used on this chapter)
-       ===================================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* --- Fraction strip (colored sheet segments) --- */
-    .frac-strip-wrap { margin-bottom: 18px; }
-    .frac-strip-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; display:flex; justify-content:space-between; }
-    .frac-strip { display: flex; height: 58px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-glow); box-shadow: inset 0 0 20px rgba(0,0,0,0.35); }
-    .frac-cell { flex: 1; border-right: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.045); transition: background 0.25s; }
-    .frac-cell:last-child { border-right: none; }
-    .frac-cell.filled-a { background: linear-gradient(180deg, #f87171, #dc2626); }
-    .frac-cell.filled-b { background: linear-gradient(180deg, var(--accent-gold), #d97706); }
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
 
-    .percent-scale { margin-top: 10px; }
-    .scale-track { position: relative; height: 30px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glow); overflow: hidden; }
-    .scale-fill { position: absolute; top: 0; left: 0; bottom: 0; background: linear-gradient(90deg, var(--accent-blue), #0ea5e9); transition: width 0.2s; }
-    .scale-ticks { position: relative; height: 18px; margin-top: 2px; }
-    .scale-tick { position: absolute; top: 0; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-muted); }
-    .scale-tick::before { content: ''; position: absolute; left: 50%; top: -20px; width: 1px; height: 8px; background: var(--border-glow); }
+        /* HEADER & TABS */
+        header {
+            padding: 12px 20px;
+            background: linear-gradient(180deg, #051023 0%, #0d1f38 100%);
+            border-bottom: 1px solid var(--border-glow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    /* --- Two-person comparison bars (Module 2) --- */
-    .compare-wrap { display: flex; gap: 20px; }
-    .compare-col { flex: 1; text-align: center; }
-    .compare-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; }
-    .compare-bar-outer { position: relative; height: 220px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.04); overflow: hidden; display: flex; align-items: flex-end; }
-    .compare-bar-fill { width: 100%; background: linear-gradient(180deg, rgba(56,189,248,0.25), rgba(56,189,248,0.1)); position: relative; }
-    .compare-sugar { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, var(--accent-gold), #d97706); display: flex; align-items: flex-start; justify-content: center; }
-    .compare-sugar span { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--bg-dark); font-weight: 700; margin-top: 4px; }
-    .compare-value { margin-top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; }
+        .brand-area { display: flex; align-items: center; gap: 15px; }
+        .back-btn {
+            color: var(--accent-gold); text-decoration: none; font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem; border: 1px solid var(--accent-gold); padding: 5px 12px;
+            border-radius: 20px; transition: 0.2s; white-space: nowrap;
+        }
+        .back-btn:hover { background: var(--accent-gold); color: var(--bg-dark); box-shadow: 0 0 10px rgba(251,191,36,0.4); }
+        .module-title h1 { font-family: 'Fraunces', serif; font-size: 1.2rem; margin-bottom: 2px; }
+        .module-title p { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px; }
 
-    /* --- FDP trio cards (Module 3) --- */
-    .fdp-row { display: flex; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; }
-    .fdp-card { flex: 1; min-width: 130px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-glow); border-radius: 12px; padding: 16px 10px; text-align: center; }
-    .fdp-card .fdp-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; }
-    .fdp-card .fdp-value { font-family: 'Fraunces', serif; font-size: 1.5rem; color: var(--accent-gold); }
-    .fdp-card.pct .fdp-value { color: var(--accent-blue); }
+        .tabs-bar {
+            display: flex; gap: 8px; padding: 10px 20px; background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border-glow); overflow-x: auto;
+        }
+        .tab-btn {
+            background: transparent; border: 1px solid var(--border-glow); color: var(--text-muted);
+            padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+            border-radius: 20px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex: none;
+        }
+        .tab-btn:hover { border-color: var(--accent-blue); color: var(--text-main); }
+        .tab-btn.active { background: var(--accent-blue); color: var(--bg-dark); border-color: var(--accent-blue); font-weight: 700; box-shadow: 0 0 15px rgba(56,189,248,0.35); }
 
-    /* --- Target/achievement bar beyond 100% (Module 4) --- */
-    .target-track { position: relative; height: 60px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.04); overflow: hidden; }
-    .target-fill-base { position: absolute; top:0; bottom:0; left:0; background: linear-gradient(90deg, #34d399, #059669); }
-    .target-fill-over { position: absolute; top:0; bottom:0; background: repeating-linear-gradient(45deg, var(--accent-gold), var(--accent-gold) 6px, #d97706 6px, #d97706 12px); }
-    .target-marker { position: absolute; top: -6px; bottom: -6px; width: 2px; background: #f87171; }
-    .target-marker::after { content: 'TARGET'; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size: 0.6rem; color: #f87171; white-space: nowrap; }
+        /* WORKSPACE: Sidebar + Canvas */
+        .workspace { display: flex; flex: 1; position: relative; overflow: hidden; min-height: 0; }
 
-    /* --- Stacked CP/MP/SP bar (Module 5) --- */
-    .stack-wrap { margin-bottom: 10px; }
-    .stack-track { position: relative; height: 70px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.04); }
-    .stack-seg { position: absolute; top: 10px; bottom: 10px; border-radius: 6px; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; font-weight:700; color: var(--bg-dark); }
-    .stack-cp { background: var(--accent-blue); }
-    .stack-profit { background: #34d399; }
-    .stack-loss { background: #f87171; }
-    .stack-marker { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--text-main); }
-    .stack-marker span { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size: 0.62rem; color: var(--text-main); white-space:nowrap; }
+        /* DYNAMIC SIDEBAR */
+        .sidebar {
+            width: 360px; background: var(--card-bg); backdrop-filter: blur(10px); color: var(--text-main);
+            border-right: 1px solid var(--border-glow); display: flex; flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+            flex: none; min-height: 0;
+        }
+        .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
 
-    .mini-compare { display: flex; gap: 14px; margin-top: 6px; }
-    .mini-compare > div { flex: 1; text-align: center; border: 1px solid var(--border-glow); border-radius: 10px; padding: 12px 6px; background: rgba(255,255,255,0.04); }
-    .mini-compare .shop-name { font-family:'IBM Plex Mono',monospace; font-size: 0.7rem; color: var(--text-muted); margin-bottom:6px; }
-    .mini-compare .shop-price { font-family:'Fraunces',serif; font-size: 1.3rem; color: var(--accent-gold); }
+        .toggle-btn {
+            position: absolute; top: 20px; right: -40px; width: 40px; height: 50px;
+            background: var(--accent-gold); border: none; border-radius: 0 8px 8px 0;
+            color: var(--bg-dark); font-size: 1.2rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.3); transition: 0.2s;
+        }
+        .toggle-btn:hover { background: var(--accent-blue); width: 45px; right: -45px; }
 
-    /* --- Compounding chart (Module 6) --- */
-    .chart-wrap { border: 1px solid var(--border-glow); border-radius: 12px; background: rgba(255,255,255,0.03); padding: 10px; }
-    .chart-wrap svg { width: 100%; height: auto; display: block; }
-    .chart-legend { display:flex; gap:18px; justify-content:center; margin-top:8px; font-family:'IBM Plex Mono',monospace; font-size:0.72rem; }
-    .chart-legend span { display:flex; align-items:center; gap:6px; }
-    .chart-legend i { width:14px; height:4px; border-radius:2px; display:inline-block; }
+        .sidebar-content { padding: 20px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; }
+        .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.3rem; color: var(--text-main); margin-bottom: 5px; }
+        .sidebar-content p { font-size: 0.86rem; line-height: 1.5; color: var(--text-muted); margin-bottom: 15px; }
 
-    .lab-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; }
-    .lab-table th, .lab-table td { padding: 6px 4px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .lab-table th { color: var(--text-muted); font-weight: 600; }
-    .lab-table td.hl { color: var(--accent-gold); font-weight: 700; }
-</style>
+        .data-panel { background: rgba(255,255,255,0.04); border: 1px solid var(--border-glow); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+        .data-row { display: flex; justify-content: space-between; align-items:center; font-family: 'IBM Plex Mono', monospace; font-size: 0.84rem; padding: 5px 0; border-bottom: 1px dashed rgba(255,255,255,0.08); gap:10px; }
+        .data-row:last-child { border-bottom: none; }
+
+        .badge { display: block; text-align: center; padding: 10px; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 1rem; margin-bottom: 15px; border: 1px solid; }
+        .badge.success { background: rgba(52,211,153,0.12); color: var(--success); border-color: var(--success); }
+        .badge.info { background: rgba(56,189,248,0.12); color: var(--accent-blue); border-color: var(--accent-blue); }
+        .badge.warn { background: rgba(251,191,36,0.12); color: var(--accent-gold); border-color: var(--accent-gold); }
+        .badge.danger { background: rgba(248,113,113,0.12); color: var(--danger); border-color: var(--danger); }
+
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .action-btn { padding: 9px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.03); color: var(--text-main); border-radius: 8px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; transition: 0.2s; }
+        .action-btn:hover { background: var(--accent-blue); color: var(--bg-dark); border-color: var(--accent-blue); }
+
+        .proof-box { background: rgba(56,189,248,0.08); border-left: 4px solid var(--accent-blue); padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.84rem; line-height:1.55; margin-bottom: 4px; }
+
+        .pill-row { display: flex; gap: 8px; margin-bottom: 14px; }
+        .pill-btn { flex: 1; padding: 9px 6px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.03); color: var(--text-main); border-radius: 20px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; text-align: center; transition: 0.2s; }
+        .pill-btn.active { background: var(--accent-blue); color: var(--bg-dark); font-weight: 700; }
+
+        /* STAGE */
+        .stage { flex: 1; position: relative; touch-action: none; overflow-y: auto; overflow-x: hidden; display: flex; align-items: flex-start; justify-content: center; padding: 24px 20px; min-height: 0; }
+        .canvas-container {
+            width: 100%; max-width: 900px;
+            background: rgba(4, 18, 32, 0.55); border: 1px solid var(--border-glow);
+            border-radius: 12px; box-shadow: inset 0 0 60px rgba(0,0,0,0.4), 0 10px 30px rgba(0,0,0,0.3);
+            padding: 28px 24px; touch-action: none;
+        }
+
+        @media (max-width: 860px) {
+            .sidebar { width: 86vw; }
+            .module-title h1 { font-size: 1rem; }
+            .toggle-btn { top: auto; bottom: 18px; right: -46px; width: 46px; height: 46px; border-radius: 50%; }
+        }
+        .sidebar-content::-webkit-scrollbar { width: 8px; }
+        .sidebar-content::-webkit-scrollbar-thumb { background: var(--border-glow); border-radius: 6px; }
+
+        /* =====================================================
+           ON-STAGE DRAG CONTROLS (replaces sidebar sliders)
+           ===================================================== */
+        .stage-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; color: var(--text-muted); margin-bottom: 18px; text-align: center; }
+        .drag-bar-wrap { margin-bottom: 22px; }
+        .drag-bar-label { display: flex; justify-content: space-between; align-items: baseline; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; }
+        .drag-bar-label b { color: var(--accent-gold); font-size: 0.95rem; }
+        .drag-track { position: relative; height: 14px; border-radius: 8px; background: rgba(255,255,255,0.07); border: 1px solid var(--border-glow); touch-action: none; }
+        .drag-fill { position: absolute; top: 0; left: 0; bottom: 0; border-radius: 8px; background: linear-gradient(90deg, var(--accent-blue), var(--accent-gold)); pointer-events: none; }
+        .drag-handle { position: absolute; top: 50%; width: 28px; height: 28px; margin-left: -14px; margin-top: -14px; border-radius: 50%; background: var(--accent-gold); border: 3px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.5); cursor: grab; touch-action: none; }
+        .drag-handle:hover { background: var(--accent-blue); }
+        .drag-handle:active { cursor: grabbing; }
+
+        .stepper-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 18px; }
+        .stepper-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.05); color: var(--text-main); font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; touch-action: manipulation; }
+        .stepper-btn:hover { background: var(--accent-blue); color: var(--bg-dark); border-color: var(--accent-blue); }
+        .stepper-value { font-family: 'Fraunces', serif; font-size: 1.15rem; min-width: 110px; text-align: center; color: var(--text-main); }
+        .stepper-value small { display:block; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color: var(--text-muted); letter-spacing:1px; margin-top:2px; }
+
+        .chip-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+        .chip-btn { padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.04); color: var(--text-main); font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; cursor: pointer; transition: 0.2s; }
+        .chip-btn:hover, .chip-btn.active { background: var(--accent-gold); color: var(--bg-dark); border-color: var(--accent-gold); font-weight: 700; }
+
+        /* --- Fraction strip (colored sheet segments) --- */
+        .frac-strip { display: flex; height: 60px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border-glow); box-shadow: inset 0 0 20px rgba(0,0,0,0.35); margin-bottom: 8px; }
+        .frac-cell { flex: 1; border-right: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.045); transition: background 0.15s; }
+        .frac-cell:last-child { border-right: none; }
+        .frac-cell.filled { background: linear-gradient(180deg, #f87171, #dc2626); }
+        .strip-scale-row { display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); margin-bottom: 20px; }
+
+        .percent-scale-track { position: relative; height: 26px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glow); overflow: hidden; margin-bottom: 4px; }
+        .percent-scale-fill { position: absolute; top: 0; left: 0; bottom: 0; background: linear-gradient(90deg, var(--accent-blue), #0ea5e9); pointer-events: none; }
+        .percent-scale-ticks { position: relative; height: 16px; margin-top: 4px; margin-bottom: 18px; }
+        .percent-scale-ticks span { position: absolute; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; color: var(--text-muted); }
+
+        /* --- Two-person comparison bars (Module 2) --- */
+        .compare-wrap { display: flex; gap: 24px; justify-content: center; }
+        .compare-col { flex: 1; max-width: 220px; text-align: center; }
+        .compare-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+        .compare-bar-outer { position: relative; height: 230px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.04); overflow: visible; touch-action: none; }
+        .compare-bar-fill { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(56,189,248,0.3), rgba(56,189,248,0.1)); border-radius: 0 0 9px 9px; }
+        .compare-sugar { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, var(--accent-gold), #d97706); display: flex; align-items: flex-start; justify-content: center; }
+        .compare-sugar span { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--bg-dark); font-weight: 700; margin-top: 4px; }
+        .compare-handle-top { position: absolute; left: 50%; width: 26px; height: 26px; margin-left: -13px; margin-top: -13px; border-radius: 50%; background: var(--accent-blue); border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: grab; touch-action: none; }
+        .compare-handle-sugar { position: absolute; left: 50%; width: 22px; height: 22px; margin-left: -11px; margin-top: -11px; border-radius: 50%; background: var(--accent-gold); border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: grab; touch-action: none; }
+        .compare-value { margin-top: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text-main); }
+
+        /* --- FDP trio cards (Module 3) --- */
+        .fdp-row { display: flex; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
+        .fdp-card { flex: 1; min-width: 130px; background: rgba(255,255,255,0.04); border: 1px solid var(--border-glow); border-radius: 12px; padding: 16px 10px; text-align: center; }
+        .fdp-card .fdp-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 8px; }
+        .fdp-card .fdp-value { font-family: 'Fraunces', serif; font-size: 1.5rem; color: var(--accent-gold); }
+        .fdp-card.pct .fdp-value { color: var(--accent-blue); }
+
+        /* --- Target/achievement bar beyond 100% (Module 4) --- */
+        .target-track { position: relative; height: 60px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.04); overflow: hidden; touch-action: none; margin-bottom: 6px; }
+        .target-fill-base { position: absolute; top:0; bottom:0; left:0; background: linear-gradient(90deg, #34d399, #059669); pointer-events: none; }
+        .target-fill-over { position: absolute; top:0; bottom:0; background: repeating-linear-gradient(45deg, var(--accent-gold), var(--accent-gold) 6px, #d97706 6px, #d97706 12px); pointer-events: none; }
+        .target-marker-line { position: absolute; top: -6px; bottom: -6px; width: 2px; background: #f87171; pointer-events: none; }
+        .target-marker-line::after { content: 'TARGET'; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size: 0.6rem; color: #f87171; white-space: nowrap; }
+        .target-handle { position: absolute; top: 50%; width: 30px; height: 30px; margin-left: -15px; margin-top: -15px; border-radius: 50%; background: var(--accent-blue); border: 3px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.5); cursor: grab; touch-action: none; z-index: 2; }
+
+        /* --- Stacked CP/MP/SP bar (Module 5) --- */
+        .stack-track { position: relative; height: 76px; border-radius: 10px; border: 1px solid var(--border-glow); background: rgba(255,255,255,0.04); touch-action: none; margin-bottom: 6px; }
+        .stack-seg { position: absolute; top: 12px; bottom: 12px; border-radius: 6px; pointer-events: none; }
+        .stack-cp { background: var(--accent-blue); }
+        .stack-profit { background: var(--success); }
+        .stack-loss { background: var(--danger); }
+        .price-handle { position: absolute; top: 50%; width: 26px; height: 26px; margin-left: -13px; margin-top: -13px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.5); cursor: grab; touch-action: none; z-index: 2; }
+        .price-handle span { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-family:'IBM Plex Mono',monospace; font-size: 0.62rem; color: var(--text-main); white-space:nowrap; }
+        .price-handle.cp { background: var(--accent-blue); }
+        .price-handle.mp { background: var(--text-muted); }
+        .price-handle.sp { background: var(--accent-gold); }
+
+        .mini-compare { display: flex; gap: 14px; margin-top: 6px; margin-bottom: 18px; }
+        .mini-compare > div { flex: 1; text-align: center; border: 1px solid var(--border-glow); border-radius: 10px; padding: 12px 6px; background: rgba(255,255,255,0.04); }
+        .mini-compare .shop-name { font-family:'IBM Plex Mono',monospace; font-size: 0.7rem; color: var(--text-muted); margin-bottom:6px; }
+        .mini-compare .shop-price { font-family:'Fraunces',serif; font-size: 1.3rem; color: var(--accent-gold); }
+
+        /* --- Compounding chart (Module 6) --- */
+        .chart-wrap { border: 1px solid var(--border-glow); border-radius: 12px; background: rgba(255,255,255,0.03); padding: 12px; margin-bottom: 18px; }
+        .chart-wrap svg { width: 100%; height: auto; display: block; }
+        .chart-legend { display:flex; gap:18px; justify-content:center; margin-top:8px; font-family:'IBM Plex Mono',monospace; font-size:0.72rem; }
+        .chart-legend span { display:flex; align-items:center; gap:6px; }
+        .chart-legend i { width:14px; height:4px; border-radius:2px; display:inline-block; }
+
+        .lab-table { width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; }
+        .lab-table th, .lab-table td { padding: 6px 4px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .lab-table th { color: var(--text-muted); font-weight: 600; }
+        .lab-table td.hl { color: var(--accent-gold); font-weight: 700; }
+    </style>
 </head>
-<body class="lab-page">
+<body>
 
     <header>
-        <a href="../../../index.html" class="back-btn">← E-Lab</a>
-        <h1>Fractions in Disguise</h1>
-        <p class="lab-subtitle">CLASS 8 · CHAPTER 01 · GANITA PRAKASH PART-II · INTERACTIVE ENGINE</p>
+        <div class="brand-area">
+            <a href="../../../index.html" class="back-btn">← E-Lab</a>
+            <div class="module-title">
+                <h1>Fractions in Disguise</h1>
+                <p>CLASS 8 · CHAPTER 01 · GANITA PRAKASH PART-II · INTERACTIVE ENGINE</p>
+            </div>
+        </div>
     </header>
 
-    <div class="lab-tabs" id="tabsBar"></div>
+    <div class="tabs-bar" id="tabsBar"></div>
 
-    <div class="lab-workspace">
-        <aside class="lab-sidebar" id="sidebar">
-            <button class="lab-toggle-btn" onclick="toggleSidebar()" title="Show/hide panel">☰</button>
-            <div class="lab-sidebar-content" id="sidebarContent"></div>
+    <div class="workspace">
+        <aside class="sidebar" id="sidebar">
+            <button class="toggle-btn" onclick="toggleSidebar()" title="Show/hide info panel">☰</button>
+            <div class="sidebar-content" id="sidebarContent"></div>
         </aside>
-        <main class="lab-stage">
-            <div class="lab-canvas" id="stageCanvas"></div>
+
+        <main class="stage">
+            <div class="canvas-container" id="stageCanvas"></div>
         </main>
     </div>
 
 <script>
     // =====================================================================
-    // HELPERS
+    // 1. HELPERS
     // =====================================================================
     function gcd(a, b) { a = Math.abs(Math.round(a)); b = Math.abs(Math.round(b)); while (b) { [a, b] = [b, a % b]; } return a || 1; }
     function simplify(n, d) { const g = gcd(n, d); return [n / g, d / g]; }
     function fmt(n, dp = 2) {
         if (!isFinite(n)) return '—';
         const r = Math.round(n * Math.pow(10, dp)) / Math.pow(10, dp);
-        return (Number.isInteger(r)) ? r.toString() : r.toFixed(dp).replace(/0+$/, '').replace(/\.$/, '');
+        return Number.isInteger(r) ? r.toString() : r.toFixed(dp).replace(/0+$/, '').replace(/\.$/, '');
     }
-    function toggleSwitch(checked) {
-        return `<div style="width:40px;height:20px;background:${checked ? 'var(--accent-gold)' : 'rgba(255,255,255,0.15)'};border-radius:10px;position:relative;flex:none;">
-            <div style="width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:2px;left:${checked ? '22px' : '2px'};transition:.2s;"></div>
+
+    // Reusable on-stage draggable bar (replaces sidebar <input type=range>)
+    function dragBar(id, label, setter, value, min, max, formatFn) {
+        const pct = (Math.max(min, Math.min(max, value)) - min) / (max - min) * 100;
+        const disp = formatFn ? formatFn(value) : fmt(value);
+        return `<div class="drag-bar-wrap">
+            <div class="drag-bar-label"><span>${label}</span><b>${disp}</b></div>
+            <div class="drag-track" id="${id}">
+                <div class="drag-fill" style="width:${pct}%"></div>
+                <div class="drag-handle" data-track="${id}" data-setter="${setter}" data-min="${min}" data-max="${max}" style="left:${pct}%"></div>
+            </div>
         </div>`;
     }
-    function percentScaleHTML(pct, maxScale) {
+    function percentScale(pct, maxScale) {
         const clamped = Math.max(0, Math.min(pct, maxScale));
         const w = (clamped / maxScale * 100).toFixed(2);
         const step = maxScale <= 100 ? 25 : (maxScale <= 200 ? 50 : 100);
         let ticks = '';
         for (let v = 0; v <= maxScale; v += step) {
             const left = (v / maxScale * 100).toFixed(2);
-            ticks += `<div class="scale-tick" style="left:${left}%">${v}%</div>`;
+            ticks += `<span style="left:${left}%">${v}%</span>`;
         }
-        return `<div class="percent-scale">
-            <div class="scale-track"><div class="scale-fill" style="width:${w}%"></div></div>
-            <div class="scale-ticks">${ticks}</div>
-        </div>`;
+        return `<div class="percent-scale-track"><div class="percent-scale-fill" style="width:${w}%"></div></div><div class="percent-scale-ticks">${ticks}</div>`;
     }
 
     // =====================================================================
-    // MODULE 1 — FRACTION ⇄ PERCENTAGE  (§1.1)
+    // 2. MODULE 1 — FRACTION ⇄ PERCENTAGE  (§1.1)
     // =====================================================================
     class FractionPercentModule {
         constructor() {
             this.mode = 'fraction';
-            this.num = 3; this.den = 4;      // fraction mode
-            this.ratioA = 2; this.ratioB = 7; // ratio mode (millet : water)
+            this.num = 3; this.den = 4;
+            this.ratioA = 2; this.ratioB = 7;
         }
         setMode(m) { this.mode = m; app.render(); }
-        setNum(v) { this.num = Math.min(parseInt(v), this.den); app.render(); }
-        setDen(v) { this.den = Math.max(parseInt(v), this.num); app.render(); }
-        setRatioA(v) { this.ratioA = parseInt(v); app.render(); }
-        setRatioB(v) { this.ratioB = parseInt(v); app.render(); }
+        setNum(v) { this.num = Math.min(Math.round(v), this.den); app.render(); }
+        setDen(v) { this.den = Math.max(Math.round(v), 1); if (this.num > this.den) this.num = this.den; app.render(); }
         setPreset(n, d) { this.num = n; this.den = d; this.mode = 'fraction'; app.render(); }
+        stepRatio(which, delta) { this[which] = Math.max(1, Math.min(15, this[which] + delta)); app.render(); }
         compute() {
-            if (this.mode === 'fraction') {
-                return { part: this.num, whole: this.den, pct: this.num / this.den * 100 };
-            }
+            if (this.mode === 'fraction') return { part: this.num, whole: this.den, pct: this.num / this.den * 100 };
             const whole = this.ratioA + this.ratioB;
             return { part: this.ratioA, whole, pct: this.ratioA / whole * 100 };
         }
         tabsHTML() {
-            return `<div class="lab-pill-row">
-                <div class="lab-pill-btn ${this.mode === 'fraction' ? 'active' : ''}" onclick="app.activeModule.setMode('fraction')">Fraction</div>
-                <div class="lab-pill-btn ${this.mode === 'ratio' ? 'active' : ''}" onclick="app.activeModule.setMode('ratio')">Ratio (Millet : Water)</div>
+            return `<div class="pill-row">
+                <div class="pill-btn ${this.mode === 'fraction' ? 'active' : ''}" onclick="app.activeModule.setMode('fraction')">Fraction</div>
+                <div class="pill-btn ${this.mode === 'ratio' ? 'active' : ''}" onclick="app.activeModule.setMode('ratio')">Ratio Mix</div>
             </div>`;
         }
         getSidebarHTML() {
             const { part, whole, pct } = this.compute();
             const [sn, sd] = simplify(part, whole);
-            const hundredths = (part / whole * 100);
             if (this.mode === 'fraction') {
                 return `
                     <h2>Fraction ⇄ Percentage</h2>
-                    <p><b>§1.1</b> · Percentages are just fractions where the denominator is 100. Drag the sliders — the red sheet always shows <b>${this.num}</b> out of <b>${this.den}</b> equal parts.</p>
+                    <p><b>§1.1</b> · Drag the sheet's width on the board to set the numerator, or drag the marker on the 0–100% scale — both stay in sync.</p>
                     ${this.tabsHTML()}
-                    <div class="lab-badge info">${this.num}/${this.den} = ${fmt(hundredths)}%</div>
-                    <div class="lab-panel">
-                        <div class="lab-range-row"><label>Numerator (a) — ${this.num}</label>
-                        <input type="range" min="0" max="${this.den}" value="${this.num}" oninput="app.activeModule.setNum(this.value)"></div>
-                        <div class="lab-range-row" style="margin-bottom:0;"><label>Denominator (b) — ${this.den}</label>
-                        <input type="range" min="1" max="20" value="${this.den}" oninput="app.activeModule.setDen(this.value)"></div>
-                    </div>
-                    <div class="lab-panel">
+                    <div class="badge info">${this.num}/${this.den} = ${fmt(pct)}%</div>
+                    <div class="data-panel">
                         <div style="font-weight:700;margin-bottom:8px;">Conversion chain</div>
-                        <div class="lab-row"><span>Simplest form</span><span>${sn}/${sd}</span></div>
-                        <div class="lab-row"><span>As hundredths</span><span>${fmt(hundredths)}/100</span></div>
-                        <div class="lab-row"><span>As decimal</span><span>${fmt(part / whole, 3)}</span></div>
-                        <div class="lab-row"><span>As percentage</span><span>${fmt(pct)}%</span></div>
+                        <div class="data-row"><span>Simplest form</span><span>${sn}/${sd}</span></div>
+                        <div class="data-row"><span>As hundredths</span><span>${fmt(pct)}/100</span></div>
+                        <div class="data-row"><span>As decimal</span><span>${fmt(part / whole, 3)}</span></div>
+                        <div class="data-row"><span>As percentage</span><span>${fmt(pct)}%</span></div>
                     </div>
-                    <div class="lab-btn-grid">
-                        <button class="lab-action-btn" onclick="app.activeModule.setPreset(3,4)">3/4</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setPreset(2,5)">2/5</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setPreset(1,3)">1/3</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setPreset(5,11)">5/11</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setPreset(7,14)">7/14</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setPreset(9,20)">9/20</button>
+                    <div class="btn-grid">
+                        <button class="action-btn" onclick="app.activeModule.setPreset(3,4)">3/4</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset(2,5)">2/5</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset(1,3)">1/3</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset(5,11)">5/11</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset(7,14)">7/14</button>
+                        <button class="action-btn" onclick="app.activeModule.setPreset(9,20)">9/20</button>
                     </div>
-                    <div class="lab-proof-box">To express a fraction as a percentage, find its equivalent fraction with 100 as denominator: multiply by 100 (or scale up). <b>${this.num}/${this.den} × 100 = ${fmt(pct)}</b>.</div>
+                    <div class="proof-box">To express a fraction as a percentage, scale it to a denominator of 100: <b>${this.num}/${this.den} × 100 = ${fmt(pct)}</b>.</div>
                 `;
             }
             const otherPct = 100 - pct;
             return `
                 <h2>Fraction ⇄ Percentage</h2>
-                <p><b>§1.1 · Example 4</b> · A ratio can be converted to a fraction, and then to a percentage. Try the millet-to-water porridge mix.</p>
+                <p><b>§1.1 · Example 4</b> · Millet-to-water porridge mix. Use the +/− steppers on the board to change each part of the ratio.</p>
                 ${this.tabsHTML()}
-                <div class="lab-badge info">Millet : Water = ${this.ratioA} : ${this.ratioB} → ${fmt(pct)}% millet</div>
-                <div class="lab-panel">
-                    <div class="lab-range-row"><label>Millet parts — ${this.ratioA}</label>
-                    <input type="range" min="1" max="15" value="${this.ratioA}" oninput="app.activeModule.setRatioA(this.value)"></div>
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Water parts — ${this.ratioB}</label>
-                    <input type="range" min="1" max="15" value="${this.ratioB}" oninput="app.activeModule.setRatioB(this.value)"></div>
+                <div class="badge info">Millet : Water = ${this.ratioA} : ${this.ratioB} → ${fmt(pct)}% millet</div>
+                <div class="data-panel">
+                    <div class="data-row"><span>Millet : total mixture</span><span>${this.ratioA} : ${whole}</span></div>
+                    <div class="data-row"><span>Millet %</span><span>${fmt(pct)}%</span></div>
+                    <div class="data-row"><span>Water %</span><span>${fmt(otherPct)}%</span></div>
+                    <div class="data-row"><span>Millet in 500 ml mix</span><span>${fmt(pct / 100 * 500)} ml</span></div>
                 </div>
-                <div class="lab-panel">
-                    <div class="lab-row"><span>Millet : total mixture</span><span>${this.ratioA} : ${whole}</span></div>
-                    <div class="lab-row"><span>Millet %</span><span>${fmt(pct)}%</span></div>
-                    <div class="lab-row"><span>Water %</span><span>${fmt(otherPct)}%</span></div>
-                    <div class="lab-row"><span>Millet in 500 ml mix</span><span>${fmt(pct / 100 * 500)} ml</span></div>
-                </div>
-                <div class="lab-proof-box">In one unit of mixture, millet occupies ${this.ratioA}/${whole} units. Percentage = ${this.ratioA}/${whole} × 100 = <b>${fmt(pct)}%</b>.</div>
+                <div class="proof-box">In one unit of mixture, millet occupies ${this.ratioA}/${whole} units. Percentage = ${this.ratioA}/${whole} × 100 = <b>${fmt(pct)}%</b>.</div>
             `;
         }
         renderStage() {
             const { part, whole, pct } = this.compute();
-            let cells = '';
-            for (let i = 0; i < whole; i++) cells += `<div class="frac-cell ${i < part ? 'filled-a' : ''}"></div>`;
-            const label1 = this.mode === 'fraction' ? `${part} of ${whole} equal parts shaded` : `Millet occupies ${part} of ${whole} mixture units`;
-            return `
-                <div class="frac-strip-wrap">
-                    <div class="frac-strip-label"><span>${label1}</span><span>${fmt(pct)}%</span></div>
+            if (this.mode === 'fraction') {
+                let cells = '';
+                for (let i = 0; i < whole; i++) cells += `<div class="frac-cell ${i < part ? 'filled' : ''}"></div>`;
+                return `
+                    <div class="stage-label">${part} of ${whole} equal parts shaded — drag the handle below the strip</div>
                     <div class="frac-strip">${cells}</div>
+                    ${dragBar('numTrack', 'Numerator (a)', 'setNum', this.num, 0, this.den, v => Math.round(v))}
+                    ${dragBar('denTrack', 'Denominator (b)', 'setDen', this.den, 1, 20, v => Math.round(v))}
+                    <div class="stage-label" style="margin-top:4px;">Same value on a 0–100% scale</div>
+                    ${percentScale(pct, 100)}
+                `;
+            }
+            return `
+                <div class="stage-label">Millet : Water mixture — drag isn't needed here, use +/−</div>
+                <div class="frac-strip"><div class="frac-cell filled" style="flex:${this.ratioA}"></div><div class="frac-cell" style="flex:${this.ratioB}"></div></div>
+                <div class="stepper-row">
+                    <button class="stepper-btn" onclick="app.activeModule.stepRatio('ratioA',-1)">−</button>
+                    <div class="stepper-value">${this.ratioA}<small>MILLET PARTS</small></div>
+                    <button class="stepper-btn" onclick="app.activeModule.stepRatio('ratioA',1)">+</button>
                 </div>
-                <div class="frac-strip-wrap">
-                    <div class="frac-strip-label"><span>Same amount, scaled onto a 0–100% strip</span><span></span></div>
-                    ${percentScaleHTML(pct, 100)}
+                <div class="stepper-row">
+                    <button class="stepper-btn" onclick="app.activeModule.stepRatio('ratioB',-1)">−</button>
+                    <div class="stepper-value">${this.ratioB}<small>WATER PARTS</small></div>
+                    <button class="stepper-btn" onclick="app.activeModule.stepRatio('ratioB',1)">+</button>
                 </div>
+                ${percentScale(pct, 100)}
             `;
         }
     }
 
     // =====================================================================
-    // MODULE 2 — PERCENTAGE OF A QUANTITY  (§1.2, Madhu & Madhav)
+    // 3. MODULE 2 — PERCENTAGE OF A QUANTITY  (§1.2, Madhu & Madhav)
     // =====================================================================
     class QuantityModule {
         constructor() {
             this.p1 = { name: 'Madhu', pct: 25, grams: 120 };
             this.p2 = { name: 'Madhav', pct: 35, grams: 95 };
         }
-        setParam(who, k, v) { this[who][k] = parseFloat(v); app.render(); }
+        setP1Grams(v) { this.p1.grams = Math.round(v); app.render(); }
+        setP1Pct(v) { this.p1.pct = Math.round(v); app.render(); }
+        setP2Grams(v) { this.p2.grams = Math.round(v); app.render(); }
+        setP2Pct(v) { this.p2.pct = Math.round(v); app.render(); }
         setPreset(name) {
             const P = {
                 simple: { p1: { pct: 25, grams: 100 }, p2: { pct: 35, grams: 100 } },
                 book:   { p1: { pct: 25, grams: 120 }, p2: { pct: 35, grams: 95 } },
-                close:  { p1: { pct: 40, grams: 80 },  p2: { pct: 30, grams: 110 } },
             };
             Object.assign(this.p1, P[name].p1); Object.assign(this.p2, P[name].p2);
             app.render();
@@ -258,59 +415,48 @@
             const winner = s1 > s2 ? this.p1.name : (s2 > s1 ? this.p2.name : 'Both equal');
             return `
                 <h2>Percentage of a Quantity</h2>
-                <p><b>§1.2</b> · Madhu and Madhav each ate biscuits of a different variety with different sugar %. Comparing just the percentage is unfair if the quantities differ — find the actual grams of sugar instead.</p>
-                <div class="lab-badge success">${winner} ate more sugar</div>
-                <div class="lab-panel">
-                    <div style="font-weight:700;margin-bottom:6px;color:var(--accent-blue);">${this.p1.name}</div>
-                    <div class="lab-range-row"><label>Sugar % — ${this.p1.pct}%</label>
-                    <input type="range" min="0" max="100" value="${this.p1.pct}" oninput="app.activeModule.setParam('p1','pct',this.value)"></div>
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Biscuits eaten — ${this.p1.grams} g</label>
-                    <input type="range" min="10" max="250" value="${this.p1.grams}" oninput="app.activeModule.setParam('p1','grams',this.value)"></div>
+                <p><b>§1.2</b> · On the board: drag the top of each jar to set biscuits eaten, drag the gold line inside to set sugar %.</p>
+                <div class="badge success">${winner} ate more sugar</div>
+                <div class="data-panel">
+                    <div class="data-row"><span>${this.p1.name}'s sugar</span><span>${this.p1.pct}/100 × ${this.p1.grams} = <b>${fmt(s1)} g</b></span></div>
+                    <div class="data-row"><span>${this.p2.name}'s sugar</span><span>${this.p2.pct}/100 × ${this.p2.grams} = <b>${fmt(s2)} g</b></span></div>
                 </div>
-                <div class="lab-panel">
-                    <div style="font-weight:700;margin-bottom:6px;color:var(--accent-gold);">${this.p2.name}</div>
-                    <div class="lab-range-row"><label>Sugar % — ${this.p2.pct}%</label>
-                    <input type="range" min="0" max="100" value="${this.p2.pct}" oninput="app.activeModule.setParam('p2','pct',this.value)"></div>
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Biscuits eaten — ${this.p2.grams} g</label>
-                    <input type="range" min="10" max="250" value="${this.p2.grams}" oninput="app.activeModule.setParam('p2','grams',this.value)"></div>
+                <div class="btn-grid">
+                    <button class="action-btn" onclick="app.activeModule.setPreset('simple')">Equal 100g</button>
+                    <button class="action-btn" onclick="app.activeModule.setPreset('book')">Book Example</button>
                 </div>
-                <div class="lab-panel">
-                    <div class="lab-row"><span>${this.p1.name}'s sugar</span><span>${this.p1.pct}/100 × ${this.p1.grams} = <b>${fmt(s1)} g</b></span></div>
-                    <div class="lab-row"><span>${this.p2.name}'s sugar</span><span>${this.p2.pct}/100 × ${this.p2.grams} = <b>${fmt(s2)} g</b></span></div>
-                </div>
-                <div class="lab-btn-grid">
-                    <button class="lab-action-btn" onclick="app.activeModule.setPreset('simple')">Equal 100g</button>
-                    <button class="lab-action-btn" onclick="app.activeModule.setPreset('book')">Book Example</button>
-                </div>
-                <div class="lab-proof-box">General rule: <b>y% of some value z is (y/100) × z</b>. Weight of sugar is proportional to weight of biscuits consumed.</div>
+                <div class="proof-box">General rule: <b>y% of some value z is (y/100) × z</b>. Weight of sugar is proportional to weight of biscuits consumed.</div>
             `;
         }
         renderStage() {
             const s1 = this.sugar(this.p1), s2 = this.sugar(this.p2);
-            const maxGrams = Math.max(this.p1.grams, this.p2.grams, 1);
+            const maxGrams = 250;
             const h1 = (this.p1.grams / maxGrams * 100).toFixed(1);
             const h2 = (this.p2.grams / maxGrams * 100).toFixed(1);
-            const sugarH1 = (this.p1.pct).toFixed(1);
-            const sugarH2 = (this.p2.pct).toFixed(1);
             return `
+                <div class="stage-label">Drag jar-top (blue) = biscuits eaten · drag inner line (gold) = sugar %</div>
                 <div class="compare-wrap">
                     <div class="compare-col">
-                        <div class="compare-name">${this.p1.name} · ${this.p1.grams} g biscuits</div>
-                        <div class="compare-bar-outer">
+                        <div class="compare-name">${this.p1.name} · ${this.p1.grams} g</div>
+                        <div class="compare-bar-outer" id="p1Track">
                             <div class="compare-bar-fill" style="height:${h1}%;">
-                                <div class="compare-sugar" style="height:${sugarH1}%;"><span>SUGAR</span></div>
+                                <div class="compare-sugar" id="p1SugarTrack" style="height:${this.p1.pct}%;"><span>${this.p1.pct}%</span></div>
                             </div>
+                            <div class="compare-handle-top" data-track="p1Track" data-setter="setP1Grams" data-min="0" data-max="${maxGrams}" data-invert="1" style="top:${100 - h1}%;"></div>
+                            <div class="compare-handle-sugar" data-track="p1SugarHeightTrack" data-setter="setP1Pct" data-min="0" data-max="100" data-invert="1" data-relative-to="p1Track" data-relative-height="${h1}" style="top:${100 - (h1 * this.p1.pct / 100)}%;"></div>
                         </div>
-                        <div class="compare-value">${this.p1.pct}% sugar = ${fmt(s1)} g</div>
+                        <div class="compare-value">${fmt(s1)} g sugar</div>
                     </div>
                     <div class="compare-col">
-                        <div class="compare-name">${this.p2.name} · ${this.p2.grams} g biscuits</div>
-                        <div class="compare-bar-outer">
+                        <div class="compare-name">${this.p2.name} · ${this.p2.grams} g</div>
+                        <div class="compare-bar-outer" id="p2Track">
                             <div class="compare-bar-fill" style="height:${h2}%;">
-                                <div class="compare-sugar" style="height:${sugarH2}%;"><span>SUGAR</span></div>
+                                <div class="compare-sugar" id="p2SugarTrack" style="height:${this.p2.pct}%;"><span>${this.p2.pct}%</span></div>
                             </div>
+                            <div class="compare-handle-top" data-track="p2Track" data-setter="setP2Grams" data-min="0" data-max="${maxGrams}" data-invert="1" style="top:${100 - h2}%;"></div>
+                            <div class="compare-handle-sugar" data-track="p2SugarHeightTrack" data-setter="setP2Pct" data-min="0" data-max="100" data-invert="1" data-relative-to="p2Track" data-relative-height="${h2}" style="top:${100 - (h2 * this.p2.pct / 100)}%;"></div>
                         </div>
-                        <div class="compare-value">${this.p2.pct}% sugar = ${fmt(s2)} g</div>
+                        <div class="compare-value">${fmt(s2)} g sugar</div>
                     </div>
                 </div>
             `;
@@ -318,251 +464,200 @@
     }
 
     // =====================================================================
-    // MODULE 3 — THE FDP TRIO  (Fractions, Decimals, Percentages)
+    // 4. MODULE 3 — THE FDP TRIO
     // =====================================================================
     class FDPTrioModule {
         constructor() { this.pct = 50; this.mentalValue = 80; }
-        setPct(v) { this.pct = parseFloat(v); app.render(); }
-        setMentalValue(v) { this.mentalValue = parseFloat(v); app.render(); }
+        setPct(v) { this.pct = Math.round(v); app.render(); }
+        setMentalValue(v) { this.mentalValue = v; app.render(); }
         getSidebarHTML() {
-            const [n, d] = simplify(this.pct, 100);
-            const decimal = this.pct / 100;
             const mentalAns = this.pct / 100 * this.mentalValue;
-            const presets = [50, 100, 25, 75, 10, 1, 5, 43, 90, 110, 200, 250, 15];
             return `
                 <h2>The FDP Trio</h2>
-                <p>Fractions, Decimals and Percentages are three faces of the same value. Slide or pick a percentage to see all three at once.</p>
-                <div class="lab-panel">
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Percentage — ${fmt(this.pct)}%</label>
-                    <input type="range" min="0" max="300" step="1" value="${this.pct}" oninput="app.activeModule.setPct(this.value)"></div>
+                <p>Fractions, decimals and percentages are three faces of the same value. Drag the marker on the board's scale (0–300%).</p>
+                <div class="data-panel">
+                    <div style="font-weight:700;margin-bottom:6px;">Mental Math — y% of a value</div>
+                    <div class="data-row"><span>${fmt(this.pct)}% of ${this.mentalValue}</span><span><b>${fmt(mentalAns)}</b></span></div>
                 </div>
-                <div class="lab-btn-grid">
-                    ${presets.map(p => `<button class="lab-action-btn ${this.pct === p ? 'active' : ''}" onclick="app.activeModule.setPct(${p})">${p}%</button>`).join('')}
-                </div>
-                <div class="lab-panel">
-                    <div style="font-weight:700;margin-bottom:8px;">Mental Math — y% of a value</div>
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Value — ${this.mentalValue}</label>
-                    <input type="range" min="1" max="300" value="${this.mentalValue}" oninput="app.activeModule.setMentalValue(this.value)"></div>
-                </div>
-                <div class="lab-badge success">${fmt(this.pct)}% of ${this.mentalValue} = ${fmt(mentalAns)}</div>
-                <div class="lab-proof-box">Handy shortcuts: <b>20%</b> is double <b>10%</b>. <b>25% + 5% = 30%</b> of the same value. <b>x% of y</b> always equals <b>y% of x</b> — try it!</div>
+                <div class="proof-box">Shortcuts: <b>20%</b> is double <b>10%</b>. <b>25% = 20% + 5%</b> of the same value. <b>x% of y</b> always equals <b>y% of x</b>.</div>
             `;
         }
         renderStage() {
             const [n, d] = simplify(this.pct, 100);
             const decimal = this.pct / 100;
+            const presets = [50, 100, 25, 75, 10, 1, 5, 43, 90, 110, 200, 250, 15];
+            const values = [100, 200, 50, 80, 10, 35, 287];
             return `
                 <div class="fdp-row">
-                    <div class="fdp-card">
-                        <div class="fdp-label">FRACTION</div>
-                        <div class="fdp-value">${n}/${d}</div>
-                    </div>
-                    <div class="fdp-card">
-                        <div class="fdp-label">DECIMAL</div>
-                        <div class="fdp-value">${fmt(decimal, 3)}</div>
-                    </div>
-                    <div class="fdp-card pct">
-                        <div class="fdp-label">PERCENTAGE</div>
-                        <div class="fdp-value">${fmt(this.pct)}%</div>
-                    </div>
+                    <div class="fdp-card"><div class="fdp-label">FRACTION</div><div class="fdp-value">${n}/${d}</div></div>
+                    <div class="fdp-card"><div class="fdp-label">DECIMAL</div><div class="fdp-value">${fmt(decimal, 3)}</div></div>
+                    <div class="fdp-card pct"><div class="fdp-label">PERCENTAGE</div><div class="fdp-value">${fmt(this.pct)}%</div></div>
                 </div>
-                ${percentScaleHTML(this.pct, this.pct > 100 ? 300 : 100)}
+                <div class="stage-label">Drag the marker to set the percentage</div>
+                ${dragBar('pctTrack', 'Percentage', 'setPct', this.pct, 0, 300, v => fmt(v) + '%')}
+                <div class="stage-label" style="margin-top:0;">Quick percentages</div>
+                <div class="chip-row">${presets.map(p => `<button class="chip-btn ${this.pct === p ? 'active' : ''}" onclick="app.activeModule.setPct(${p})">${p}%</button>`).join('')}</div>
+                <div class="stage-label">Try it on a value</div>
+                <div class="chip-row">${values.map(v => `<button class="chip-btn ${this.mentalValue === v ? 'active' : ''}" onclick="app.activeModule.setMentalValue(${v})">${v}</button>`).join('')}</div>
             `;
         }
     }
 
     // =====================================================================
-    // MODULE 4 — PERCENTAGES GREATER THAN 100%  (Kishanlal's sales target)
+    // 5. MODULE 4 — PERCENTAGES GREATER THAN 100%  (Kishanlal's sales target)
     // =====================================================================
     class AboveHundredModule {
         constructor() { this.target = 5000; this.achieved = 3500; }
-        setParam(k, v) { this[k] = parseFloat(v); app.render(); }
-        setDay(v) {
-            const days = { d1: 2000, d2: 3500, d3: 5000, d4: 6000, d5: 7800, d6: 9550 };
-            this.achieved = days[v]; app.render();
-        }
+        setAchieved(v) { this.achieved = Math.round(v / 50) * 50; app.render(); }
+        setTarget(v) { this.target = v; app.render(); }
         getSidebarHTML() {
             const pct = this.achieved / this.target * 100;
             const diff = this.achieved - this.target;
             const msg = diff === 0 ? 'Exactly on target!' : (diff > 0 ? `${fmt(pct - 100)}% MORE than target` : `${fmt(100 - pct)}% SHORT of target`);
             return `
                 <h2>Percentages &gt; 100%</h2>
-                <p><b>§1.3</b> · Kishanlal's garment shop targets ₹${this.target} in daily sales. When actual sales cross the target, the percentage goes past 100%.</p>
-                <div class="lab-badge ${diff >= 0 ? 'success' : 'warn'}">${fmt(pct)}% of target · ${msg}</div>
-                <div class="lab-panel">
-                    <div class="lab-range-row"><label>Daily Target — ₹${this.target}</label>
-                    <input type="range" min="1000" max="10000" step="500" value="${this.target}" oninput="app.activeModule.setParam('target',this.value)"></div>
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Actual Sales — ₹${this.achieved}</label>
-                    <input type="range" min="0" max="15000" step="100" value="${this.achieved}" oninput="app.activeModule.setParam('achieved',this.value)"></div>
-                </div>
-                <div class="lab-panel">
-                    <div style="font-weight:700;margin-bottom:6px;">Replay the book's 6 days (target ₹5000)</div>
-                    <div class="lab-btn-grid">
-                        <button class="lab-action-btn" onclick="app.activeModule.setParam('target',5000); app.activeModule.setDay('d1')">Day 1: ₹2000</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setParam('target',5000); app.activeModule.setDay('d2')">Day 2: ₹3500</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setParam('target',5000); app.activeModule.setDay('d3')">Day 3: ₹5000</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setParam('target',5000); app.activeModule.setDay('d4')">Day 4: ₹6000</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setParam('target',5000); app.activeModule.setDay('d5')">Day 5: ₹7800</button>
-                        <button class="lab-action-btn" onclick="app.activeModule.setParam('target',5000); app.activeModule.setDay('d6')">Day 6: ₹9550</button>
+                <p><b>§1.3</b> · Kishanlal's shop targets ₹${this.target}/day. Drag the blue handle on the board to change actual sales.</p>
+                <div class="badge ${diff >= 0 ? 'success' : 'warn'}">${fmt(pct)}% of target · ${msg}</div>
+                <div class="data-panel">
+                    <div style="font-weight:700;margin-bottom:6px;">Daily Target</div>
+                    <div class="btn-grid">
+                        <button class="action-btn" onclick="app.activeModule.setTarget(2500)">₹2500</button>
+                        <button class="action-btn" onclick="app.activeModule.setTarget(5000)">₹5000</button>
+                        <button class="action-btn" onclick="app.activeModule.setTarget(7500)">₹7500</button>
+                        <button class="action-btn" onclick="app.activeModule.setTarget(10000)">₹10000</button>
                     </div>
                 </div>
-                <div class="lab-proof-box">₹${this.achieved} ÷ ₹${this.target} × 100 = <b>${fmt(pct)}%</b>. A value greater than 100% simply means it's more than the whole (the target).</div>
+                <div class="proof-box">₹${this.achieved} ÷ ₹${this.target} × 100 = <b>${fmt(pct)}%</b>. Above 100% simply means more than the whole (the target).</div>
             `;
         }
         renderStage() {
             const pct = this.achieved / this.target * 100;
             const scaleMax = Math.max(200, Math.ceil(pct / 50) * 50 + 50);
+            const maxAchieved = this.target * (scaleMax / 100);
             const baseW = Math.min(pct, 100) / scaleMax * 100;
             const overW = pct > 100 ? (Math.min(pct, scaleMax) - 100) / scaleMax * 100 : 0;
             const overLeft = 100 / scaleMax * 100;
             const markerLeft = 100 / scaleMax * 100;
+            const handleLeft = Math.min(pct, scaleMax) / scaleMax * 100;
             let ticks = '';
-            for (let v = 0; v <= scaleMax; v += 50) {
-                const left = (v / scaleMax * 100).toFixed(2);
-                ticks += `<div class="scale-tick" style="left:${left}%">${v}%</div>`;
-            }
+            for (let v = 0; v <= scaleMax; v += 50) ticks += `<span style="left:${(v / scaleMax * 100).toFixed(2)}%">${v}%</span>`;
             return `
-                <div class="frac-strip-label"><span>Sales: ₹${this.achieved} against a ₹${this.target} target</span><span>${fmt(pct)}%</span></div>
-                <div class="target-track">
+                <div class="stage-label">₹${this.achieved} sales against a ₹${this.target} target — drag the blue handle</div>
+                <div class="target-track" id="achTrack">
                     <div class="target-fill-base" style="width:${baseW}%;"></div>
                     ${overW > 0 ? `<div class="target-fill-over" style="left:${overLeft}%; width:${overW}%;"></div>` : ''}
-                    <div class="target-marker" style="left:${markerLeft}%;"></div>
+                    <div class="target-marker-line" style="left:${markerLeft}%;"></div>
+                    <div class="target-handle" data-track="achTrack" data-setter="setAchieved" data-min="0" data-max="${maxAchieved}" style="left:${handleLeft}%;"></div>
                 </div>
-                <div class="scale-ticks" style="margin-top:6px;">${ticks}</div>
+                <div class="percent-scale-ticks">${ticks}</div>
             `;
         }
     }
 
     // =====================================================================
-    // MODULE 5 — PROFIT, LOSS & DISCOUNT  (two sub-tabs)
+    // 6. MODULE 5 — PROFIT, LOSS & DISCOUNT  (two sub-tabs)
     // =====================================================================
     class ProfitLossModule {
         constructor() {
             this.subMode = 'basic';
-            this.cp = 300; this.sp = 430; this.mp = 480; // Kishanlal's sweater
+            this.cp = 300; this.sp = 430; this.mp = 480;
             this.cakePrice = 200; this.disc1 = 30; this.disc2 = 20; this.singleDisc = 50;
         }
         setSubMode(m) { this.subMode = m; app.render(); }
-        setParam(k, v) { this[k] = parseFloat(v); app.render(); }
+        setCP(v) { this.cp = Math.round(v); app.render(); }
+        setMP(v) { this.mp = Math.round(v); app.render(); }
+        setSP(v) { this.sp = Math.round(v); app.render(); }
+        setDisc1(v) { this.disc1 = Math.round(v); app.render(); }
+        setDisc2(v) { this.disc2 = Math.round(v); app.render(); }
+        setSingleDisc(v) { this.singleDisc = Math.round(v); app.render(); }
         setPreset(name) {
-            const P = {
-                sweater: { cp: 300, mp: 480, sp: 430 },
-                vase:    { cp: 2650, mp: 2650, sp: 2173 },
-                rice:    { cp: 350, mp: 350, sp: 300 },
-            };
+            const P = { sweater: { cp: 300, mp: 480, sp: 430 }, vase: { cp: 2650, mp: 2650, sp: 2173 }, rice: { cp: 350, mp: 350, sp: 300 } };
             Object.assign(this, P[name]); app.render();
         }
         tabsHTML() {
-            return `<div class="lab-pill-row">
-                <div class="lab-pill-btn ${this.subMode === 'basic' ? 'active' : ''}" onclick="app.activeModule.setSubMode('basic')">CP · MP · SP</div>
-                <div class="lab-pill-btn ${this.subMode === 'successive' ? 'active' : ''}" onclick="app.activeModule.setSubMode('successive')">Successive Discounts</div>
+            return `<div class="pill-row">
+                <div class="pill-btn ${this.subMode === 'basic' ? 'active' : ''}" onclick="app.activeModule.setSubMode('basic')">CP · MP · SP</div>
+                <div class="pill-btn ${this.subMode === 'successive' ? 'active' : ''}" onclick="app.activeModule.setSubMode('successive')">Successive Discounts</div>
             </div>`;
         }
         getSidebarHTML() { return this.subMode === 'basic' ? this.basicSidebar() : this.successiveSidebar(); }
         basicSidebar() {
-            const plAmt = this.sp - this.cp;
-            const plPct = plAmt / this.cp * 100;
-            const discAmt = this.mp - this.sp;
-            const discPct = this.mp > 0 ? discAmt / this.mp * 100 : 0;
+            const plAmt = this.sp - this.cp, plPct = plAmt / this.cp * 100;
+            const discAmt = this.mp - this.sp, discPct = this.mp > 0 ? discAmt / this.mp * 100 : 0;
             const tone = plAmt >= 0 ? 'success' : 'danger';
             return `
                 <h2>Profit, Loss &amp; Discount</h2>
-                <p>Cost Price (CP) is what the shopkeeper paid. Marked Price (MP) is quoted to customers. Selling Price (SP) is what the customer actually pays.</p>
+                <p>CP = what the shopkeeper paid. MP = quoted to customers. SP = what the customer pays. Drag all three markers on the board's price line.</p>
                 ${this.tabsHTML()}
-                <div class="lab-badge ${tone}">${plAmt >= 0 ? 'Profit' : 'Loss'}: ₹${fmt(Math.abs(plAmt))} (${fmt(Math.abs(plPct))}%)</div>
-                <div class="lab-panel">
-                    <div class="lab-range-row"><label>Cost Price (CP) — ₹${this.cp}</label>
-                    <input type="range" min="50" max="3000" value="${this.cp}" oninput="app.activeModule.setParam('cp',this.value)"></div>
-                    <div class="lab-range-row"><label>Marked Price (MP) — ₹${this.mp}</label>
-                    <input type="range" min="50" max="3200" value="${this.mp}" oninput="app.activeModule.setParam('mp',this.value)"></div>
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Selling Price (SP) — ₹${this.sp}</label>
-                    <input type="range" min="0" max="3200" value="${this.sp}" oninput="app.activeModule.setParam('sp',this.value)"></div>
+                <div class="badge ${tone}">${plAmt >= 0 ? 'Profit' : 'Loss'}: ₹${fmt(Math.abs(plAmt))} (${fmt(Math.abs(plPct))}%)</div>
+                <div class="data-panel">
+                    <div class="data-row"><span>Profit/Loss % (on CP)</span><span>${fmt(plPct)}%</span></div>
+                    <div class="data-row"><span>Discount amount</span><span>₹${fmt(discAmt)}</span></div>
+                    <div class="data-row"><span>Discount % (on MP)</span><span>${fmt(discPct)}%</span></div>
                 </div>
-                <div class="lab-panel">
-                    <div class="lab-row"><span>Profit/Loss % (on CP)</span><span>${fmt(plPct)}%</span></div>
-                    <div class="lab-row"><span>Discount amount</span><span>₹${fmt(discAmt)}</span></div>
-                    <div class="lab-row"><span>Discount % (on MP)</span><span>${fmt(discPct)}%</span></div>
+                <div class="btn-grid">
+                    <button class="action-btn" onclick="app.activeModule.setPreset('sweater')">Sweater</button>
+                    <button class="action-btn" onclick="app.activeModule.setPreset('vase')">Vase (18% loss)</button>
+                    <button class="action-btn" onclick="app.activeModule.setPreset('rice')">Old rice</button>
                 </div>
-                <div class="lab-btn-grid">
-                    <button class="lab-action-btn" onclick="app.activeModule.setPreset('sweater')">Sweater (retailer)</button>
-                    <button class="lab-action-btn" onclick="app.activeModule.setPreset('vase')">Damaged vase (18% loss)</button>
-                    <button class="lab-action-btn" onclick="app.activeModule.setPreset('rice')">Old rice (loss sale)</button>
-                </div>
-                <div class="lab-proof-box">% profit/loss is calculated with CP as 100% (the base). % discount is calculated with MP as 100% (the base). These are different bases!</div>
+                <div class="proof-box">Profit/Loss % uses CP as the 100% base. Discount % uses MP as the 100% base — different bases!</div>
             `;
         }
         successiveSidebar() {
             const succPrice = this.cakePrice * (1 - this.disc1 / 100) * (1 - this.disc2 / 100);
             const singlePrice = this.cakePrice * (1 - this.singleDisc / 100);
-            const cheaper = succPrice < singlePrice ? 'Successive' : (succPrice > singlePrice ? 'Single' : 'Equal');
+            const cheaper = succPrice < singlePrice ? 'Cakely' : (succPrice > singlePrice ? 'Cakify' : 'Both equal');
             return `
                 <h2>Profit, Loss &amp; Discount</h2>
-                <p><b>Example 12</b> · Cakely offers 30% + 20% off. Cakify offers a flat 50% off. Mathematically 30+20=50, but discounts compound — they are NOT the same!</p>
+                <p><b>Example 12</b> · Cakely: 30%+20% off. Cakify: flat 50% off. 30+20=50 mathematically, but discounts compound — NOT the same!</p>
                 ${this.tabsHTML()}
-                <div class="lab-badge info">${cheaper === 'Equal' ? 'Both cost the same' : cheaper + ' discount is cheaper'}</div>
-                <div class="lab-panel">
-                    <div class="lab-range-row"><label>Original cake price — ₹${this.cakePrice}</label>
-                    <input type="range" min="50" max="1000" step="10" value="${this.cakePrice}" oninput="app.activeModule.setParam('cakePrice',this.value)"></div>
-                    <div class="lab-range-row"><label>Cakely: 1st discount — ${this.disc1}%</label>
-                    <input type="range" min="0" max="70" value="${this.disc1}" oninput="app.activeModule.setParam('disc1',this.value)"></div>
-                    <div class="lab-range-row"><label>Cakely: 2nd discount — ${this.disc2}%</label>
-                    <input type="range" min="0" max="70" value="${this.disc2}" oninput="app.activeModule.setParam('disc2',this.value)"></div>
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Cakify: single discount — ${this.singleDisc}%</label>
-                    <input type="range" min="0" max="90" value="${this.singleDisc}" oninput="app.activeModule.setParam('singleDisc',this.value)"></div>
+                <div class="badge info">${cheaper === 'Both equal' ? 'Both cost the same' : cheaper + ' is cheaper'}</div>
+                <div class="data-panel">
+                    <div class="data-row"><span>Cakely final price</span><span>₹${fmt(succPrice)}</span></div>
+                    <div class="data-row"><span>Cakify final price</span><span>₹${fmt(singlePrice)}</span></div>
                 </div>
-                <div class="lab-panel">
-                    <div class="lab-row"><span>Cakely (${this.disc1}%+${this.disc2}%) final price</span><span>₹${fmt(succPrice)}</span></div>
-                    <div class="lab-row"><span>Cakify (${this.singleDisc}%) final price</span><span>₹${fmt(singlePrice)}</span></div>
-                </div>
-                <div class="lab-proof-box">A 30% discount then 20% discount is NOT a 50% discount — the second discount applies to an already-reduced price, so the combined effect is always less than the sum.</div>
+                <div class="proof-box">A 30% discount then 20% applies to an already-reduced price — the combined effect is always less than a flat 50%.</div>
             `;
         }
         renderStage() {
             if (this.subMode === 'basic') {
-                const maxVal = Math.max(this.cp, this.mp, this.sp, 1) * 1.15;
-                const cpW = this.cp / maxVal * 100;
-                const spW = this.sp / maxVal * 100;
-                const mpLeft = this.mp / maxVal * 100;
+                const maxVal = 3200;
+                const cpL = this.cp / maxVal * 100, mpL = this.mp / maxVal * 100, spL = this.sp / maxVal * 100;
                 const isProfit = this.sp >= this.cp;
-                const segLeft = Math.min(cpW, spW);
-                const segWidth = Math.abs(spW - cpW);
+                const segLeft = Math.min(cpL, spL), segW = Math.abs(spL - cpL);
                 return `
-                    <div class="stack-wrap">
-                        <div class="frac-strip-label"><span>CP → SP (profit/loss region shaded)</span><span></span></div>
-                        <div class="stack-track">
-                            <div class="stack-seg stack-cp" style="left:0; width:${cpW}%;">CP ₹${this.cp}</div>
-                            <div class="stack-seg ${isProfit ? 'stack-profit' : 'stack-loss'}" style="left:${segLeft}%; width:${segWidth}%;">${isProfit ? '+' : '−'}₹${fmt(Math.abs(this.sp - this.cp))}</div>
-                            <div class="stack-marker" style="left:${mpLeft}%;"><span>MP ₹${this.mp}</span></div>
-                            <div class="stack-marker" style="left:${spW}%;"><span>SP ₹${this.sp}</span></div>
-                        </div>
+                    <div class="stage-label">Drag CP (blue), MP (grey) and SP (gold) along the price line</div>
+                    <div class="stack-track" id="plTrack">
+                        <div class="stack-seg ${isProfit ? 'stack-profit' : 'stack-loss'}" style="left:${segLeft}%; width:${segW}%;"></div>
+                        <div class="price-handle cp" data-track="plTrack" data-setter="setCP" data-min="0" data-max="${maxVal}" style="left:${cpL}%;"><span>CP ₹${this.cp}</span></div>
+                        <div class="price-handle mp" data-track="plTrack" data-setter="setMP" data-min="0" data-max="${maxVal}" style="left:${mpL}%;"><span>MP ₹${this.mp}</span></div>
+                        <div class="price-handle sp" data-track="plTrack" data-setter="setSP" data-min="0" data-max="${maxVal}" style="left:${spL}%;"><span>SP ₹${this.sp}</span></div>
                     </div>
                 `;
             }
             const succPrice = this.cakePrice * (1 - this.disc1 / 100) * (1 - this.disc2 / 100);
             const singlePrice = this.cakePrice * (1 - this.singleDisc / 100);
             return `
-                <div class="frac-strip-label"><span>Cake worth ₹${this.cakePrice} — final price after each shop's discount</span><span></span></div>
+                <div class="stage-label">Cake worth ₹${this.cakePrice} — drag each discount below</div>
                 <div class="mini-compare">
-                    <div>
-                        <div class="shop-name">CAKELY · ${this.disc1}% + ${this.disc2}%</div>
-                        <div class="shop-price">₹${fmt(succPrice)}</div>
-                    </div>
-                    <div>
-                        <div class="shop-name">CAKIFY · ${this.singleDisc}% flat</div>
-                        <div class="shop-price">₹${fmt(singlePrice)}</div>
-                    </div>
+                    <div><div class="shop-name">CAKELY · ${this.disc1}%+${this.disc2}%</div><div class="shop-price">₹${fmt(succPrice)}</div></div>
+                    <div><div class="shop-name">CAKIFY · ${this.singleDisc}% flat</div><div class="shop-price">₹${fmt(singlePrice)}</div></div>
                 </div>
-                <div style="margin-top:18px;">${percentScaleHTML(this.cakePrice > 0 ? succPrice / this.cakePrice * 100 : 0, 100)}</div>
+                ${dragBar('disc1Track', 'Cakely — 1st discount', 'setDisc1', this.disc1, 0, 70, v => Math.round(v) + '%')}
+                ${dragBar('disc2Track', 'Cakely — 2nd discount', 'setDisc2', this.disc2, 0, 70, v => Math.round(v) + '%')}
+                ${dragBar('singleDiscTrack', 'Cakify — single discount', 'setSingleDisc', this.singleDisc, 0, 90, v => Math.round(v) + '%')}
             `;
         }
     }
 
     // =====================================================================
-    // MODULE 6 — GROWTH & COMPOUNDING  (FD calculator)
+    // 7. MODULE 6 — GROWTH & COMPOUNDING  (FD calculator)
     // =====================================================================
     class CompoundingModule {
         constructor() { this.principal = 6000; this.rate = 10; this.years = 3; }
-        setParam(k, v) { this[k] = parseFloat(v); app.render(); }
+        setPrincipal(v) { this.principal = Math.round(v / 500) * 500; app.render(); }
+        setRate(v) { this.rate = Math.round(v); app.render(); }
+        setYears(v) { this.years = Math.round(v); app.render(); }
         setPreset(name) {
             const P = { book: { principal: 6000, rate: 10, years: 3 }, yahapur: { principal: 20000, rate: 10, years: 2 }, post: { principal: 50000, rate: 7, years: 3 } };
             Object.assign(this, P[name]); app.render();
@@ -577,50 +672,39 @@
             const rows = simple.map((s, i) => `<tr><td>${i}</td><td>₹${fmt(s)}</td><td class="hl">₹${fmt(compound[i])}</td></tr>`).join('');
             return `
                 <h2>Growth &amp; Compounding</h2>
-                <p>A Fixed Deposit grows differently depending on whether interest is paid out each year (simple) or reinvested (compound). <b>p(1+rt)</b> vs <b>p(1+r)ᵗ</b>.</p>
-                <div class="lab-panel">
-                    <div class="lab-range-row"><label>Principal (₹) — ${this.principal}</label>
-                    <input type="range" min="1000" max="100000" step="500" value="${this.principal}" oninput="app.activeModule.setParam('principal',this.value)"></div>
-                    <div class="lab-range-row"><label>Rate of interest — ${this.rate}% p.a.</label>
-                    <input type="range" min="1" max="20" value="${this.rate}" oninput="app.activeModule.setParam('rate',this.value)"></div>
-                    <div class="lab-range-row" style="margin-bottom:0;"><label>Years — ${this.years}</label>
-                    <input type="range" min="1" max="10" value="${this.years}" oninput="app.activeModule.setParam('years',this.value)"></div>
-                </div>
-                <div class="lab-badge info">No compounding: ₹${fmt(finalSimple)} (${fmt(gainSimplePct)}% gain)</div>
-                <div class="lab-badge success">With compounding: ₹${fmt(finalCompound)} (${fmt(gainCompoundPct)}% gain)</div>
-                <div class="lab-panel">
+                <p>An FD grows differently whether interest is paid out (simple) or reinvested (compound): <b>p(1+rt)</b> vs <b>p(1+r)ᵗ</b>. Drag principal / rate / years on the board.</p>
+                <div class="badge info">No compounding: ₹${fmt(finalSimple)} (${fmt(gainSimplePct)}% gain)</div>
+                <div class="badge success">With compounding: ₹${fmt(finalCompound)} (${fmt(gainCompoundPct)}% gain)</div>
+                <div class="data-panel">
                     <table class="lab-table">
                         <thead><tr><th>Year</th><th>Simple</th><th>Compound</th></tr></thead>
                         <tbody>${rows}</tbody>
                     </table>
                 </div>
-                <div class="lab-btn-grid">
-                    <button class="lab-action-btn" onclick="app.activeModule.setPreset('book')">₹6000 @10%, 3yr</button>
-                    <button class="lab-action-btn" onclick="app.activeModule.setPreset('yahapur')">₹20000 @10%, 2yr</button>
-                    <button class="lab-action-btn" onclick="app.activeModule.setPreset('post')">₹50000 @7%, 3yr</button>
+                <div class="btn-grid">
+                    <button class="action-btn" onclick="app.activeModule.setPreset('book')">₹6000 @10%,3yr</button>
+                    <button class="action-btn" onclick="app.activeModule.setPreset('yahapur')">₹20000 @10%,2yr</button>
+                    <button class="action-btn" onclick="app.activeModule.setPreset('post')">₹50000 @7%,3yr</button>
                 </div>
-                <div class="lab-proof-box">With compounding, each year's interest is added back to the principal, so the next year's interest is calculated on a larger amount — this is why compound growth pulls ahead over time.</div>
+                <div class="proof-box">With compounding, each year's interest is added back, so next year's interest is on a larger amount — compound growth pulls ahead over time.</div>
             `;
         }
         renderStage() {
             const simple = this.seriesSimple(), compound = this.seriesCompound();
             const maxVal = Math.max(...simple, ...compound) * 1.08;
-            const W = 640, H = 320, padL = 55, padB = 34, padT = 16, padR = 16;
+            const W = 640, H = 300, padL = 55, padB = 30, padT = 16, padR = 16;
             const plotW = W - padL - padR, plotH = H - padT - padB;
             const xFor = i => padL + (i / this.years) * plotW;
             const yFor = v => padT + plotH - (v / maxVal) * plotH;
             const pathFor = arr => arr.map((v, i) => `${i === 0 ? 'M' : 'L'} ${xFor(i).toFixed(1)} ${yFor(v).toFixed(1)}`).join(' ');
             let gridY = '';
             for (let g = 0; g <= 4; g++) {
-                const val = maxVal / 4 * g;
-                const y = yFor(val);
+                const val = maxVal / 4 * g, y = yFor(val);
                 gridY += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
                     <text x="${padL - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="#94a3b8" font-family="IBM Plex Mono, monospace">₹${Math.round(val)}</text>`;
             }
             let gridX = '';
-            for (let t = 0; t <= this.years; t++) {
-                gridX += `<text x="${xFor(t).toFixed(1)}" y="${H - padB + 18}" text-anchor="middle" font-size="10" fill="#94a3b8" font-family="IBM Plex Mono, monospace">Yr ${t}</text>`;
-            }
+            for (let t = 0; t <= this.years; t++) gridX += `<text x="${xFor(t).toFixed(1)}" y="${H - padB + 18}" text-anchor="middle" font-size="10" fill="#94a3b8" font-family="IBM Plex Mono, monospace">Yr ${t}</text>`;
             const dotsSimple = simple.map((v, i) => `<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="3.5" fill="#38bdf8"/>`).join('');
             const dotsCompound = compound.map((v, i) => `<circle cx="${xFor(i).toFixed(1)}" cy="${yFor(v).toFixed(1)}" r="3.5" fill="#fbbf24"/>`).join('');
             return `
@@ -636,13 +720,19 @@
                         <span><i style="background:#fbbf24;"></i> With compounding</span>
                     </div>
                 </div>
+                <div class="stage-label">Drag to change the deposit</div>
+                ${dragBar('principalTrack', 'Principal (₹)', 'setPrincipal', this.principal, 1000, 100000, v => '₹' + Math.round(v / 500) * 500)}
+                ${dragBar('rateTrack', 'Rate of interest', 'setRate', this.rate, 1, 20, v => Math.round(v) + '% p.a.')}
+                ${dragBar('yearsTrack', 'Years', 'setYears', this.years, 1, 10, v => Math.round(v))}
             `;
         }
     }
 
     // =====================================================================
-    // MAIN APP CONTROLLER
+    // 8. MAIN APP CONTROLLER
     // =====================================================================
+    const stageCanvas = document.getElementById('stageCanvas');
+
     const app = {
         modules: {
             'frac-pct': new FractionPercentModule(),
@@ -662,15 +752,17 @@
         ],
         activeTab: 'frac-pct',
         activeModule: null,
+        dragCtx: null,
 
         init() {
             this.activeModule = this.modules[this.activeTab];
             this.renderTabs();
             this.render();
+            this.setupEvents();
         },
         renderTabs() {
             document.getElementById('tabsBar').innerHTML = this.tabDefs.map(t =>
-                `<button class="lab-tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`
+                `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`
             ).join('');
         },
         switchTab(id) {
@@ -682,7 +774,54 @@
         },
         render() {
             document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
-            document.getElementById('stageCanvas').innerHTML = this.activeModule.renderStage();
+            stageCanvas.innerHTML = this.activeModule.renderStage();
+        },
+        setupEvents() {
+            stageCanvas.addEventListener('pointerdown', e => {
+                const handle = e.target.closest('[data-setter]');
+                if (!handle) return;
+                this.dragCtx = {
+                    setter: handle.dataset.setter,
+                    trackId: handle.dataset.track,
+                    min: parseFloat(handle.dataset.min),
+                    max: parseFloat(handle.dataset.max),
+                    invert: handle.dataset.invert === '1',
+                    relTo: handle.dataset.relativeTo || null,
+                    relHeight: handle.dataset.relativeHeight ? parseFloat(handle.dataset.relativeHeight) : null,
+                };
+                stageCanvas.setPointerCapture(e.pointerId);
+                e.preventDefault();
+                this.handleDrag(e);
+            });
+            stageCanvas.addEventListener('pointermove', e => { if (this.dragCtx) this.handleDrag(e); });
+            const end = () => { this.dragCtx = null; };
+            stageCanvas.addEventListener('pointerup', end);
+            stageCanvas.addEventListener('pointercancel', end);
+        },
+        handleDrag(e) {
+            const { setter, trackId, min, max, invert, relTo, relHeight } = this.dragCtx;
+            const trackId2 = relTo || trackId;
+            const track = document.getElementById(trackId2);
+            if (!track) return;
+            const rect = track.getBoundingClientRect();
+            let frac;
+            if (invert) {
+                // vertical drag (bottom = min, top = max)
+                frac = (rect.bottom - e.clientY) / rect.height;
+            } else {
+                // horizontal drag (left = min, right = max)
+                frac = (e.clientX - rect.left) / rect.width;
+            }
+            frac = Math.max(0, Math.min(1, frac));
+            let value;
+            if (relHeight !== null) {
+                // sugar-% handle: frac of the OUTER track maps through the inner bar's height %
+                const innerFrac = Math.max(0, Math.min(1, frac / (relHeight / 100)));
+                value = min + innerFrac * (max - min);
+            } else {
+                value = min + frac * (max - min);
+            }
+            if (typeof this.activeModule[setter] === 'function') this.activeModule[setter](value);
         }
     };
 
