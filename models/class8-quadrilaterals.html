@@ -521,191 +521,269 @@
         // =====================================================================
         // 6. MODULE 4 — RHOMBUS  (§4.4, side + apex-angle construction)
         // =====================================================================
-        class RhombusModule {
-            constructor() { this.params = { side: 130, apex: 70 }; }
-            setParam(k, v) { this.params[k] = parseFloat(v); }
-            setPreset(name) {
-                const P = { thin: { side: 150, apex: 35 }, fat: { side: 120, apex: 110 }, square: { side: 120, apex: 90 } };
-                this.params = { ...P[name] };
-                app.render();
-            }
-            computePoints() {
-                const { side, apex } = this.params;
-                const A = { x: 280, y: 430 };
-                const rad = apex * Math.PI / 180;
-                const B = { x: A.x + side, y: A.y };
-                const D = { x: A.x + side * Math.cos(-rad), y: A.y + side * Math.sin(-rad) };
-                const C = { x: B.x + (D.x - A.x), y: B.y + (D.y - A.y) };
-                return { A, B, C, D };
-            }
-            updatePoint() {}
-            getSidebarHTML() {
-                const { A, B, C, D } = this.computePoints();
-                const v1 = { x: C.x - A.x, y: C.y - A.y }, v2 = { x: D.x - B.x, y: D.y - B.y };
-                let ang = Math.acos((v1.x * v2.x + v1.y * v2.y) / (Math.hypot(v1.x, v1.y) * Math.hypot(v2.x, v2.y))) * 180 / Math.PI;
-                const acuteAngle = ang > 90 ? 180 - ang : ang;
-                const angles = MathUtils.interiorAngles([A, B, C, D]);
-                const half = this.params.apex / 2;
-                return `
-                    <h2>Rhombus</h2>
-                    <p><b>§4.4</b> · Two equal adjacent sides AB, AD at your chosen apex angle — C completes the parallelogram, so all four sides come out equal.</p>
-                    <div class="badge success">All sides = ${this.params.side}px</div>
-                    <div class="data-panel">
-                        <div class="range-row"><label>Side length — ${this.params.side}px</label>
-                        <input type="range" min="70" max="170" value="${this.params.side}" oninput="app.activeModule.setParam('side',this.value); app.render();"></div>
-                        <div class="range-row" style="margin-bottom:0;"><label>Apex angle ∠A — ${this.params.apex}°</label>
-                        <input type="range" min="30" max="150" value="${this.params.apex}" oninput="app.activeModule.setParam('apex',this.value); app.render();"></div>
-                    </div>
-                    <div class="data-panel">
-                        <div style="font-weight:700;margin-bottom:6px;">Angles</div>
-                        ${['A', 'B', 'C', 'D'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
-                    </div>
-                    <div class="data-panel">
-                        <div style="font-weight:700;margin-bottom:6px;">Diagonal check (Deductions 9–10)</div>
-                        <div class="data-row"><span>Intersection angle</span><span>${acuteAngle.toFixed(0)}° / ${(180 - acuteAngle).toFixed(0)}°</span></div>
-                        <div class="data-row"><span>∠A split by diagonal</span><span>${half.toFixed(0)}° + ${half.toFixed(0)}°</span></div>
-                    </div>
-                    <div class="btn-grid">
-                        <button class="action-btn" onclick="app.activeModule.setPreset('thin')">Thin</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('fat')">Fat</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('square')">90° (square)</button>
-                    </div>
-                    <div class="proof-box">Notice the intersection angle stays at <b>90°</b> no matter what apex angle you pick — the diagonals of a rhombus always meet at right angles and bisect its vertex angles.</div>
-                `;
-            }
-            renderSVG() {
-                const { A, B, C, D } = this.computePoints();
-                let html = drawGrid();
-                html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge" style="fill:rgba(191,77,46,0.18); stroke:#e08a6a;"/>`;
-                html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
-                html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
-                const offs = { A: [-16, 14], B: [18, 0], C: [16, -12], D: [-18, 4] };
-                [['A', A], ['B', B], ['C', C], ['D', D]].forEach(([n, p]) => {
-                    html += `<text x="${p.x + offs[n][0]}" y="${p.y + offs[n][1] - 12}" text-anchor="middle" class="svg-label">${n}</text>`;
-                    html += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--brass)" stroke="#fff" stroke-width="2"/>`;
-                });
-                return html;
-            }
+    class RhombusModule {
+      constructor() {
+        this.A = { x: 280, y: 430 };
+        this.side = 130;
+        this.angB = 0;     // direction (deg) of side AB from A
+        this.angD = -70;   // direction (deg) of side AD from A
+        this.recompute();
+      }
+    recompute() {
+        const radB = this.angB * Math.PI / 180, radD = this.angD * Math.PI / 180;
+        const dirB = { x: Math.cos(radB), y: Math.sin(radB) };
+        const dirD = { x: Math.cos(radD), y: Math.sin(radD) };
+        const B = { x: this.A.x + dirB.x * this.side, y: this.A.y + dirB.y * this.side };
+        const D = { x: this.A.x + dirD.x * this.side, y: this.A.y + dirD.y * this.side };
+        const C = { x: B.x + D.x - this.A.x, y: B.y + D.y - this.A.y };
+        this.pts = [this.A, B, C, D];
+    }
+    setPreset(name) {
+        const P = {
+            thin:   { side: 150, angB: 0, angD: -35 },
+            fat:    { side: 120, angB: 0, angD: -110 },
+            square: { side: 120, angB: 0, angD: -90 },
+        };
+        const p = P[name];
+        this.side = p.side; this.angB = p.angB; this.angD = p.angD;
+        this.recompute();
+        app.render();
+    }
+    // Free drag on any corner — shape auto-corrects to stay a valid rhombus
+    updatePoint(i, p) {
+        if (i === 0) {
+            this.A = p; // moving A translates the whole rhombus
+        } else if (i === 1) {
+            const dx = p.x - this.A.x, dy = p.y - this.A.y;
+            this.side = Math.max(30, Math.hypot(dx, dy));
+            this.angB = Math.atan2(dy, dx) * 180 / Math.PI;
+        } else if (i === 3) {
+            const dx = p.x - this.A.x, dy = p.y - this.A.y;
+            this.side = Math.max(30, Math.hypot(dx, dy));
+            this.angD = Math.atan2(dy, dx) * 180 / Math.PI;
+        } else if (i === 2) {
+            // dragging the far corner C uniformly resizes (apex angle stays same)
+            const radB = this.angB * Math.PI / 180, radD = this.angD * Math.PI / 180;
+            const dirSum = { x: Math.cos(radB) + Math.cos(radD), y: Math.sin(radB) + Math.sin(radD) };
+            const denom = dirSum.x * dirSum.x + dirSum.y * dirSum.y || 1;
+            const v = { x: p.x - this.A.x, y: p.y - this.A.y };
+            const newSide = (v.x * dirSum.x + v.y * dirSum.y) / denom;
+            this.side = Math.max(30, newSide);
         }
+        this.recompute();
+    }
+    getSidebarHTML() {
+        const [A, B, C, D] = this.pts;
+        const angles = MathUtils.interiorAngles([A, B, C, D]);
+        let apex = Math.abs(this.angB - this.angD) % 360;
+        if (apex > 180) apex = 360 - apex;
+        const half = apex / 2;
+        const v1 = { x: C.x - A.x, y: C.y - A.y }, v2 = { x: D.x - B.x, y: D.y - B.y };
+        let diagAng = Math.acos((v1.x * v2.x + v1.y * v2.y) / (Math.hypot(v1.x, v1.y) * Math.hypot(v2.x, v2.y))) * 180 / Math.PI;
+        const acuteAngle = diagAng > 90 ? 180 - diagAng : diagAng;
+        return `
+            <h2>Rhombus</h2>
+            <p><b>§4.4</b> · Drag any corner on the board — A moves the whole shape, B or D changes a side's length &amp; angle, C resizes it. All four sides stay equal automatically.</p>
+            <div class="badge success">All sides = ${this.side.toFixed(0)}px</div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Angles</div>
+                ${['A', 'B', 'C', 'D'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Diagonal check (Deductions 9–10)</div>
+                <div class="data-row"><span>Intersection angle</span><span>${acuteAngle.toFixed(0)}° / ${(180 - acuteAngle).toFixed(0)}°</span></div>
+                <div class="data-row"><span>∠A split by diagonal</span><span>${half.toFixed(0)}° + ${half.toFixed(0)}°</span></div>
+            </div>
+            <div class="btn-grid">
+                <button class="action-btn" onclick="app.activeModule.setPreset('thin')">Thin</button>
+                <button class="action-btn" onclick="app.activeModule.setPreset('fat')">Fat</button>
+                <button class="action-btn" onclick="app.activeModule.setPreset('square')">90° (square)</button>
+            </div>
+            <div class="proof-box">Notice the intersection angle stays at <b>90°</b> no matter what apex angle you pick — the diagonals of a rhombus always meet at right angles and bisect its vertex angles.</div>
+        `;
+    }
+    renderSVG() {
+        const [A, B, C, D] = this.pts;
+        let html = drawGrid();
+        html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge" style="fill:rgba(191,77,46,0.18); stroke:#e08a6a;"/>`;
+        html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
+        html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
+        const labels = ['A', 'B', 'C', 'D'];
+        this.pts.forEach((p, i) => {
+            html += `<text x="${p.x}" y="${p.y - 18}" text-anchor="middle" class="svg-label">${labels[i]}</text>`;
+            html += `<circle cx="${p.x}" cy="${p.y}" r="9" class="vtx-handle" data-id="${i}"/>`;
+        });
+        return html;
+    }
+}
 
         // =====================================================================
         // 7. MODULE 5 — KITE & TRAPEZIUM  (§4.6, two sub-tabs, one module)
         // =====================================================================
-        class KiteTrapeziumModule {
-            constructor() {
-                this.subMode = 'kite';
-                this.kiteParams = { m: 90, OB: 70, OD: 170 };
-                this.trapParams = { top: 220, bottom: 380, height: 220, isosceles: true, skew: 0 };
+       class KiteTrapeziumModule {
+    constructor() {
+        this.subMode = 'kite';
+
+        // Kite state: A, C are free points; tB, tD are signed distances of B, D
+        // from the perpendicular bisector of AC — this is what forces AB=BC, CD=DA.
+        this.kA = { x: 310, y: 260 };
+        this.kC = { x: 490, y: 260 };
+        this.tB = -70;
+        this.tD = 170;
+
+        // Trapezium state: P,Q share a y (top), R,S share a y (bottom) -> PQ ∥ SR always.
+        this.trap = {
+            P: { x: 290, y: 190 }, Q: { x: 510, y: 190 },
+            R: { x: 590, y: 410 }, S: { x: 210, y: 410 },
+        };
+        this.trapAxisX = 400;
+        this.isosceles = true;
+    }
+
+    setSubMode(m) { this.subMode = m; app.render(); }
+
+    // ---------- KITE ----------
+    computeKite() {
+        const A = this.kA, C = this.kC;
+        const v = { x: C.x - A.x, y: C.y - A.y };
+        const L = Math.hypot(v.x, v.y) || 1;
+        const u = { x: v.x / L, y: v.y / L };
+        const d = { x: -u.y, y: u.x }; // unit perpendicular to AC
+        const M = { x: (A.x + C.x) / 2, y: (A.y + C.y) / 2 };
+        const B = { x: M.x + d.x * this.tB, y: M.y + d.y * this.tB };
+        const D = { x: M.x + d.x * this.tD, y: M.y + d.y * this.tD };
+        return { A, B, C, D, M, d };
+    }
+    setKitePreset(name) {
+        const P = {
+            standard: { A: { x: 310, y: 260 }, C: { x: 490, y: 260 }, tB: -70, tD: 170 },
+            wide:     { A: { x: 260, y: 280 }, C: { x: 540, y: 280 }, tB: -50, tD: 90 },
+            tall:     { A: { x: 350, y: 260 }, C: { x: 450, y: 260 }, tB: -140, tD: 200 },
+        };
+        const p = P[name];
+        this.kA = { ...p.A }; this.kC = { ...p.C }; this.tB = p.tB; this.tD = p.tD;
+        app.render();
+    }
+
+    // ---------- TRAPEZIUM ----------
+    computeTrap() { return this.trap; }
+    toggleIsosceles() {
+        this.isosceles = !this.isosceles;
+        if (this.isosceles) {
+            const t = this.trap;
+            const halfTop = Math.abs(t.P.x - t.Q.x) / 2;
+            const halfBottom = Math.abs(t.S.x - t.R.x) / 2;
+            t.P.x = this.trapAxisX - halfTop; t.Q.x = this.trapAxisX + halfTop;
+            t.S.x = this.trapAxisX - halfBottom; t.R.x = this.trapAxisX + halfBottom;
+        }
+        app.render();
+    }
+
+    // ---------- SHARED DRAG ENTRY POINT ----------
+    updatePoint(i, p) {
+        if (this.subMode === 'kite') {
+            if (i === 0) this.kA = p;
+            else if (i === 2) this.kC = p;
+            else if (i === 1 || i === 3) {
+                const A = this.kA, C = this.kC;
+                const v = { x: C.x - A.x, y: C.y - A.y };
+                const L = Math.hypot(v.x, v.y) || 1;
+                const u = { x: v.x / L, y: v.y / L };
+                const d = { x: -u.y, y: u.x };
+                const M = { x: (A.x + C.x) / 2, y: (A.y + C.y) / 2 };
+                const w = { x: p.x - M.x, y: p.y - M.y };
+                const t = w.x * d.x + w.y * d.y;
+                if (i === 1) this.tB = t; else this.tD = t;
             }
-            setSubMode(m) { this.subMode = m; app.render(); }
-            setKiteParam(k, v) { this.kiteParams[k] = parseFloat(v); }
-            setTrapParam(k, v) {
-                if (k === 'isosceles') {
-                    this.trapParams.isosceles = !this.trapParams.isosceles;
-                    if (this.trapParams.isosceles) this.trapParams.skew = 0;
-                } else this.trapParams[k] = parseFloat(v);
-                app.render();
-            }
-            updatePoint() {}
-            computeKite() {
-                const { m, OB, OD } = this.kiteParams;
-                const O = { x: 400, y: 260 };
-                return { A: { x: O.x - m, y: O.y }, B: { x: O.x, y: O.y - OB }, C: { x: O.x + m, y: O.y }, D: { x: O.x, y: O.y + OD }, O };
-            }
-            computeTrap() {
-                const { top, bottom, height, skew } = this.trapParams;
-                const cx = 400, cy = 300;
-                return {
-                    P: { x: cx - top / 2 + skew, y: cy - height / 2 },
-                    Q: { x: cx + top / 2 + skew, y: cy - height / 2 },
-                    R: { x: cx + bottom / 2, y: cy + height / 2 },
-                    S: { x: cx - bottom / 2, y: cy + height / 2 },
-                };
-            }
-            getSidebarHTML() { return this.subMode === 'kite' ? this.kiteSidebar() : this.trapSidebar(); }
-            tabsHTML() {
-                return `<div class="pill-row">
-                    <div class="pill-btn ${this.subMode === 'kite' ? 'active' : ''}" onclick="app.activeModule.setSubMode('kite')">Kite</div>
-                    <div class="pill-btn ${this.subMode === 'trapezium' ? 'active' : ''}" onclick="app.activeModule.setSubMode('trapezium')">Trapezium</div>
-                </div>`;
-            }
-            kiteSidebar() {
-                const { A, B, C, D } = this.computeKite();
-                const AB = MathUtils.distance(A, B), DA = MathUtils.distance(D, A);
-                const angles = MathUtils.interiorAngles([A, B, C, D]);
-                return `
-                    <h2>Kite &amp; Trapezium Studio</h2>
-                    ${this.tabsHTML()}
-                    <p><b>§4.6</b> · O sits exactly halfway along AC, so AB always equals BC, and DA always equals DC — a kite by construction.</p>
-                    <div class="badge success">AB=BC=${AB.toFixed(0)}px · CD=DA=${DA.toFixed(0)}px</div>
-                    <div class="data-panel">
-                        <div class="range-row"><label>Half of AC — ${this.kiteParams.m}px</label>
-                        <input type="range" min="50" max="150" value="${this.kiteParams.m}" oninput="app.activeModule.setKiteParam('m',this.value); app.render();"></div>
-                        <div class="range-row"><label>OB — ${this.kiteParams.OB}px</label>
-                        <input type="range" min="40" max="200" value="${this.kiteParams.OB}" oninput="app.activeModule.setKiteParam('OB',this.value); app.render();"></div>
-                        <div class="range-row" style="margin-bottom:0;"><label>OD — ${this.kiteParams.OD}px</label>
-                        <input type="range" min="40" max="220" value="${this.kiteParams.OD}" oninput="app.activeModule.setKiteParam('OD',this.value); app.render();"></div>
-                    </div>
-                    <div class="data-panel">
-                        <div style="font-weight:700;margin-bottom:6px;">Angles</div>
-                        ${['A', 'B', 'C', 'D'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
-                    </div>
-                    <div class="proof-box">Diagonal BD is the kite's axis of symmetry: it bisects AC at right angles, and bisects ∠B and ∠D. Set OB = OD and the kite becomes a rhombus.</div>
-                `;
-            }
-            trapSidebar() {
-                const { P, Q, R, S } = this.computeTrap();
-                const angles = MathUtils.interiorAngles([P, Q, R, S]);
-                return `
-                    <h2>Kite &amp; Trapezium Studio</h2>
-                    ${this.tabsHTML()}
-                    <p><b>§4.6</b> · PQ ∥ SR always. Toggle isosceles to force equal legs UX = VW.</p>
-                    <div class="badge info">∠S+∠P=180° · ∠R+∠Q=180°</div>
-                    <div class="data-panel">
-                        <div class="range-row"><label>Top width PQ — ${this.trapParams.top}px</label>
-                        <input type="range" min="100" max="320" value="${this.trapParams.top}" oninput="app.activeModule.setTrapParam('top',this.value); app.render();"></div>
-                        <div class="range-row"><label>Bottom width SR — ${this.trapParams.bottom}px</label>
-                        <input type="range" min="200" max="480" value="${this.trapParams.bottom}" oninput="app.activeModule.setTrapParam('bottom',this.value); app.render();"></div>
-                        <div class="range-row" style="margin-bottom:${this.trapParams.isosceles ? '0' : '12px'};"><label>Height — ${this.trapParams.height}px</label>
-                        <input type="range" min="120" max="300" value="${this.trapParams.height}" oninput="app.activeModule.setTrapParam('height',this.value); app.render();"></div>
-                        ${!this.trapParams.isosceles ? `<div class="range-row" style="margin-bottom:0;"><label>Skew (scalene) — ${this.trapParams.skew}px</label>
-                        <input type="range" min="-80" max="80" value="${this.trapParams.skew}" oninput="app.activeModule.setTrapParam('skew',this.value); app.render();"></div>` : ''}
-                    </div>
-                    <div class="data-panel" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="app.activeModule.setTrapParam('isosceles')">
-                        <strong>Isosceles trapezium</strong>${toggleSwitch(this.trapParams.isosceles)}
-                    </div>
-                    <div class="data-panel">
-                        <div style="font-weight:700;margin-bottom:6px;">Angles</div>
-                        ${['P', 'Q', 'R', 'S'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
-                    </div>
-                    <div class="proof-box">${this.trapParams.isosceles ? 'With equal legs, base angles at each end match — ∠P = ∠Q and ∠S = ∠R — proven by dropping two perpendiculars and matching congruent right triangles.' : 'Scalene trapezium: only PQ ∥ SR is guaranteed, so the base angles need not match.'}</div>
-                `;
-            }
-            renderSVG() {
-                let html = drawGrid();
-                if (this.subMode === 'kite') {
-                    const { A, B, C, D } = this.computeKite();
-                    html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge" style="fill:rgba(47,117,172,0.25);"/>`;
-                    html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
-                    html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
-                    const offs = { A: [-18, 4], B: [0, -16], C: [18, 4], D: [0, 26] };
-                    [['A', A], ['B', B], ['C', C], ['D', D]].forEach(([n, p]) => {
-                        html += `<text x="${p.x + offs[n][0]}" y="${p.y + offs[n][1]}" text-anchor="middle" class="svg-label">${n}</text>`;
-                        html += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--brass)" stroke="#fff" stroke-width="2"/>`;
-                    });
-                } else {
-                    const { P, Q, R, S } = this.computeTrap();
-                    html += `<polygon points="${P.x},${P.y} ${Q.x},${Q.y} ${R.x},${R.y} ${S.x},${S.y}" class="shape-edge" style="fill:rgba(47,117,172,0.25);"/>`;
-                    const offs = { P: -16, Q: -16, R: 26, S: 26 };
-                    [['P', P], ['Q', Q], ['R', R], ['S', S]].forEach(([n, p]) => {
-                        html += `<text x="${p.x}" y="${p.y + offs[n]}" text-anchor="middle" class="svg-label">${n}</text>`;
-                        html += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--brass)" stroke="#fff" stroke-width="2"/>`;
-                    });
-                }
-                return html;
+        } else {
+            const t = this.trap;
+            const ax = this.trapAxisX;
+            if (i === 0) { // P
+                t.P = { x: p.x, y: p.y }; t.Q.y = p.y;
+                if (this.isosceles) t.Q.x = 2 * ax - t.P.x;
+            } else if (i === 1) { // Q
+                t.Q = { x: p.x, y: p.y }; t.P.y = p.y;
+                if (this.isosceles) t.P.x = 2 * ax - t.Q.x;
+            } else if (i === 2) { // R
+                t.R = { x: p.x, y: p.y }; t.S.y = p.y;
+                if (this.isosceles) t.S.x = 2 * ax - t.R.x;
+            } else if (i === 3) { // S
+                t.S = { x: p.x, y: p.y }; t.R.y = p.y;
+                if (this.isosceles) t.R.x = 2 * ax - t.S.x;
             }
         }
+    }
 
+    getSidebarHTML() { return this.subMode === 'kite' ? this.kiteSidebar() : this.trapSidebar(); }
+    tabsHTML() {
+        return `<div class="pill-row">
+            <div class="pill-btn ${this.subMode === 'kite' ? 'active' : ''}" onclick="app.activeModule.setSubMode('kite')">Kite</div>
+            <div class="pill-btn ${this.subMode === 'trapezium' ? 'active' : ''}" onclick="app.activeModule.setSubMode('trapezium')">Trapezium</div>
+        </div>`;
+    }
+    kiteSidebar() {
+        const { A, B, C, D } = this.computeKite();
+        const AB = MathUtils.distance(A, B), DA = MathUtils.distance(D, A);
+        const angles = MathUtils.interiorAngles([A, B, C, D]);
+        return `
+            <h2>Kite &amp; Trapezium Studio</h2>
+            ${this.tabsHTML()}
+            <p><b>§4.6</b> · Drag any corner on the board. Move A or C and B/D follow along the symmetry line automatically — AB=BC and CD=DA stay true no matter what.</p>
+            <div class="badge success">AB=BC=${AB.toFixed(0)}px · CD=DA=${DA.toFixed(0)}px</div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Angles</div>
+                ${['A', 'B', 'C', 'D'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
+            </div>
+            <div class="btn-grid">
+                <button class="action-btn" onclick="app.activeModule.setKitePreset('standard')">Standard</button>
+                <button class="action-btn" onclick="app.activeModule.setKitePreset('wide')">Wide</button>
+                <button class="action-btn" onclick="app.activeModule.setKitePreset('tall')">Tall</button>
+            </div>
+            <div class="proof-box">Diagonal BD is the kite's axis of symmetry: it's always the perpendicular bisector of AC, so it bisects AC at right angles, and bisects ∠B and ∠D. Set B and D equally far from the axis midpoint and the kite becomes a rhombus.</div>
+        `;
+    }
+    trapSidebar() {
+        const { P, Q, R, S } = this.trap;
+        const angles = MathUtils.interiorAngles([P, Q, R, S]);
+        return `
+            <h2>Kite &amp; Trapezium Studio</h2>
+            ${this.tabsHTML()}
+            <p><b>§4.6</b> · Drag P, Q, R or S anywhere. Top two stay level and bottom two stay level, so PQ ∥ SR always — no matter how you move them.</p>
+            <div class="badge info">∠S+∠P=180° · ∠R+∠Q=180°</div>
+            <div class="data-panel" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="app.activeModule.toggleIsosceles()">
+                <strong>Isosceles trapezium</strong>${toggleSwitch(this.isosceles)}
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Angles</div>
+                ${['P', 'Q', 'R', 'S'].map((l, i) => `<div class="data-row"><span>∠${l}</span><span>${angles[i].toFixed(0)}°</span></div>`).join('')}
+            </div>
+            <div class="proof-box">${this.isosceles ? 'With equal legs, base angles at each end match — ∠P = ∠Q and ∠S = ∠R — proven by dropping two perpendiculars and matching congruent right triangles.' : 'Scalene trapezium: only PQ ∥ SR is guaranteed, so the base angles need not match. Turn Isosceles back on to snap the legs equal again.'}</div>
+        `;
+    }
+    renderSVG() {
+        let html = drawGrid();
+        if (this.subMode === 'kite') {
+            const { A, B, C, D } = this.computeKite();
+            html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge" style="fill:rgba(47,117,172,0.25);"/>`;
+            html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
+            html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
+            const pts = [A, B, C, D], labels = ['A', 'B', 'C', 'D'];
+            pts.forEach((p, i) => {
+                html += `<text x="${p.x}" y="${p.y - 18}" text-anchor="middle" class="svg-label">${labels[i]}</text>`;
+                html += `<circle cx="${p.x}" cy="${p.y}" r="9" class="vtx-handle" data-id="${i}"/>`;
+            });
+        } else {
+            const { P, Q, R, S } = this.trap;
+            html += `<polygon points="${P.x},${P.y} ${Q.x},${Q.y} ${R.x},${R.y} ${S.x},${S.y}" class="shape-edge" style="fill:rgba(47,117,172,0.25);"/>`;
+            const pts = [P, Q, R, S], labels = ['P', 'Q', 'R', 'S'], offs = [-18, -18, 26, 26];
+            pts.forEach((p, i) => {
+                html += `<text x="${p.x}" y="${p.y + offs[i]}" text-anchor="middle" class="svg-label">${labels[i]}</text>`;
+                html += `<circle cx="${p.x}" cy="${p.y}" r="9" class="vtx-handle" data-id="${i}"/>`;
+            });
+        }
+        return html;
+    }
+}
         // =====================================================================
         // 8. MODULE 6 — WHICH QUAD? FAMILY TREE + QUIZ  (Summary + Fig-it-out Q11)
         // =====================================================================
