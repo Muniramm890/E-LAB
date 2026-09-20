@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Class 8: Quadrilaterals Drafting Lab | Digital E-Lab</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600&display=swap" rel="stylesheet">
     <style>
@@ -34,9 +34,11 @@
             background-color: var(--blueprint-dk);
             color: var(--text-hi);
             height: 100vh;
+            height: 100dvh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         /* HEADER & TABS */
@@ -103,7 +105,7 @@
         }
         .toggle-btn:hover { background: var(--brass-lt); width: 45px; right: -45px;}
 
-        .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; }
+        .sidebar-content { padding: 20px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); overflow-y: auto; flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; }
         .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.35rem; color: var(--blueprint-dk); margin-bottom: 5px; }
         .sidebar-content p { font-size: 0.88rem; line-height: 1.5; color: #4a5a6a; margin-bottom: 15px; }
 
