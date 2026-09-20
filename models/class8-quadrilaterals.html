@@ -350,113 +350,99 @@
         // =====================================================================
         // 4. MODULE 2 — RECTANGLE & SQUARE  (§4.1, Carpenter's Problem — diagonal lab)
         // =====================================================================
-        class RectangleSquareModule {
-            constructor() {
-                this.params = { OA: 120, OC: 120, OB: 120, OD: 120, theta: 60 };
-                this.center = { x: 400, y: 300 };
-            }
-            setParam(k, v) { this.params[k] = parseFloat(v); }
-            setPreset(name) {
-                const P = {
-                    rectangle: { OA: 130, OC: 130, OB: 130, OD: 130, theta: 55 },
-                    square: { OA: 115, OC: 115, OB: 115, OD: 115, theta: 90 },
-                    rhombus: { OA: 70, OC: 70, OB: 145, OD: 145, theta: 90 },
-                    parallelogram: { OA: 60, OC: 60, OB: 125, OD: 125, theta: 55 },
-                    kite: { OA: 95, OC: 95, OB: 60, OD: 155, theta: 90 },
-                    general: { OA: 60, OC: 130, OB: 80, OD: 150, theta: 70 },
-                };
-                this.params = { ...P[name] };
-                app.render();
-            }
-            computePoints() {
-                const { OA, OC, OB, OD, theta } = this.params;
-                const O = this.center;
-                const rad = theta * Math.PI / 180;
-                const d1 = { x: 1, y: 0 }, d2 = { x: Math.cos(rad), y: Math.sin(rad) };
-                const A = { x: O.x - d1.x * OA, y: O.y - d1.y * OA };
-                const C = { x: O.x + d1.x * OC, y: O.y + d1.y * OC };
-                const B = { x: O.x + d2.x * OB, y: O.y + d2.y * OB };
-                const D = { x: O.x - d2.x * OD, y: O.y - d2.y * OD };
-                return { A, B, C, D, O };
-            }
-            classify() {
-                const { OA, OC, OB, OD, theta } = this.params;
-                const eps = 3;
-                const diag1Bisected = Math.abs(OA - OC) < eps;
-                const diag2Bisected = Math.abs(OB - OD) < eps;
-                const eqDiag = Math.abs((OA + OC) - (OB + OD)) < eps;
-                let t = theta % 180; if (t > 90) t = 180 - t;
-                const perp = Math.abs(t - 90) < 2;
-                let name = 'General quadrilateral', tone = 'info';
-                if (diag1Bisected && diag2Bisected && eqDiag && perp) { name = 'Square ✓'; tone = 'success'; }
-                else if (diag1Bisected && diag2Bisected && eqDiag) { name = 'Rectangle ✓'; tone = 'success'; }
-                else if (diag1Bisected && diag2Bisected && perp) { name = 'Rhombus ✓'; tone = 'success'; }
-                else if (diag1Bisected && diag2Bisected) { name = 'Parallelogram ✓'; tone = 'success'; }
-                else if (perp && (diag1Bisected || diag2Bisected)) { name = 'Kite ✓'; tone = 'success'; }
-                return { name, tone, diag1Bisected, diag2Bisected, eqDiag, perp };
-            }
-            updatePoint() {}
-            getSidebarHTML() {
-                const { A, B, C, D } = this.computePoints();
-                const cls = this.classify();
-                const sides = { AB: MathUtils.distance(A, B), BC: MathUtils.distance(B, C), CD: MathUtils.distance(C, D), DA: MathUtils.distance(D, A) };
-                const angles = MathUtils.interiorAngles([A, B, C, D]);
-                const p = this.params;
-                return `
-                    <h2>Rectangle &amp; Square</h2>
-                    <p><b>§4.1</b> · The Carpenter's Problem: set the four half-diagonal lengths and the angle between the diagonals, exactly like joining two wooden strips.</p>
-                    <div class="badge ${cls.tone}">${cls.name}</div>
-                    <div class="data-panel">
-                        <div class="range-row"><label>OA (half-diagonal 1) — ${p.OA}px</label>
-                        <input type="range" min="40" max="160" value="${p.OA}" oninput="app.activeModule.setParam('OA',this.value); app.render();"></div>
-                        <div class="range-row"><label>OC — ${p.OC}px</label>
-                        <input type="range" min="40" max="160" value="${p.OC}" oninput="app.activeModule.setParam('OC',this.value); app.render();"></div>
-                        <div class="range-row"><label>OB (half-diagonal 2) — ${p.OB}px</label>
-                        <input type="range" min="40" max="160" value="${p.OB}" oninput="app.activeModule.setParam('OB',this.value); app.render();"></div>
-                        <div class="range-row"><label>OD — ${p.OD}px</label>
-                        <input type="range" min="40" max="160" value="${p.OD}" oninput="app.activeModule.setParam('OD',this.value); app.render();"></div>
-                        <div class="range-row" style="margin-bottom:0;"><label>Angle between diagonals θ — ${p.theta}°</label>
-                        <input type="range" min="10" max="170" value="${p.theta}" oninput="app.activeModule.setParam('theta',this.value); app.render();"></div>
-                    </div>
-                    <div class="data-panel">
-                        <div style="font-weight:700;margin-bottom:6px;">Diagonal test (Deductions 1–3, 5)</div>
-                        <div class="data-row"><span>AC = BD (equal length)</span>${checkDot(cls.eqDiag)}</div>
-                        <div class="data-row"><span>O bisects AC</span>${checkDot(cls.diag1Bisected)}</div>
-                        <div class="data-row"><span>O bisects BD</span>${checkDot(cls.diag2Bisected)}</div>
-                        <div class="data-row"><span>Diagonals ⟂ (90°)</span>${checkDot(cls.perp)}</div>
-                    </div>
-                    <div class="data-panel">
-                        <div style="font-weight:700;margin-bottom:6px;">Resulting sides &amp; angles</div>
-                        <div class="data-row"><span>AB · BC · CD · DA</span><span>${[sides.AB,sides.BC,sides.CD,sides.DA].map(s=>s.toFixed(0)).join(' · ')}</span></div>
-                        <div class="data-row"><span>∠A · ∠B · ∠C · ∠D</span><span>${angles.map(a => a.toFixed(0)).join('° · ')}°</span></div>
-                    </div>
-                    <div class="btn-grid">
-                        <button class="action-btn" onclick="app.activeModule.setPreset('rectangle')">Rectangle</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('square')">Square</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('rhombus')">Rhombus</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('parallelogram')">Parallelogram</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('kite')">Kite</button>
-                        <button class="action-btn" onclick="app.activeModule.setPreset('general')">General</button>
-                    </div>
-                    <div class="proof-box">A <b>rectangle</b> needs diagonals that are equal and bisect each other — any angle works. Add a right angle between them and it locks into a <b>square</b>. Keep them bisecting but unequal, still at 90°, and you get a <b>rhombus</b> instead.</div>
-                `;
-            }
-            renderSVG() {
-                const { A, B, C, D, O } = this.computePoints();
-                let html = drawGrid();
-                html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge"/>`;
-                html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
-                html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
-                html += `<circle cx="${O.x}" cy="${O.y}" r="4" fill="var(--brass-lt)"/><text x="${O.x + 10}" y="${O.y - 10}" class="svg-label">O</text>`;
-                [['A', A], ['B', B], ['C', C], ['D', D]].forEach(([name, p]) => {
-                    const dx = p.x - O.x, dy = p.y - O.y, len = Math.hypot(dx, dy) || 1;
-                    html += `<text x="${p.x + dx / len * 24}" y="${p.y + dy / len * 24}" text-anchor="middle" class="svg-label">${name}</text>`;
-                    html += `<circle cx="${p.x}" cy="${p.y}" r="7" fill="var(--brass)" stroke="#fff" stroke-width="2"/>`;
-                });
-                return html;
-            }
-        }
-
+       class RectangleSquareModule {
+    constructor() {
+        this.pts = this.paramsToPoints({ OA: 130, OC: 130, OB: 130, OD: 130, theta: 55 });
+    }
+    paramsToPoints({ OA, OC, OB, OD, theta }) {
+        const O = { x: 400, y: 300 };
+        const rad = theta * Math.PI / 180;
+        const d1 = { x: 1, y: 0 }, d2 = { x: Math.cos(rad), y: Math.sin(rad) };
+        const A = { x: O.x - d1.x * OA, y: O.y - d1.y * OA };
+        const C = { x: O.x + d1.x * OC, y: O.y + d1.y * OC };
+        const B = { x: O.x + d2.x * OB, y: O.y + d2.y * OB };
+        const D = { x: O.x - d2.x * OD, y: O.y - d2.y * OD };
+        return [A, B, C, D];
+    }
+    setPreset(name) {
+        const P = {
+            rectangle: { OA: 130, OC: 130, OB: 130, OD: 130, theta: 55 },
+            square: { OA: 115, OC: 115, OB: 115, OD: 115, theta: 90 },
+            rhombus: { OA: 70, OC: 70, OB: 145, OD: 145, theta: 90 },
+            parallelogram: { OA: 60, OC: 60, OB: 125, OD: 125, theta: 55 },
+            kite: { OA: 95, OC: 95, OB: 60, OD: 155, theta: 90 },
+            general: { OA: 60, OC: 130, OB: 80, OD: 150, theta: 70 },
+        };
+        this.pts = this.paramsToPoints(P[name]);
+        app.render();
+    }
+    // Yehi function drag ko point move karne deta hai — Tab 1 jaisa
+    updatePoint(i, p) { this.pts[i] = p; }
+    classify() {
+        const [A, B, C, D] = this.pts;
+        const lenAC = MathUtils.distance(A, C), lenBD = MathUtils.distance(B, D);
+        const midAC = { x: (A.x + C.x) / 2, y: (A.y + C.y) / 2 };
+        const midBD = { x: (B.x + D.x) / 2, y: (B.y + D.y) / 2 };
+        const bisect = MathUtils.distance(midAC, midBD) < 6;
+        const eqDiag = Math.abs(lenAC - lenBD) < 6;
+        const vAC = { x: C.x - A.x, y: C.y - A.y }, vBD = { x: D.x - B.x, y: D.y - B.y };
+        const dot = vAC.x * vBD.x + vAC.y * vBD.y;
+        const magProd = (Math.hypot(vAC.x, vAC.y) * Math.hypot(vBD.x, vBD.y)) || 1;
+        const ang = Math.acos(Math.max(-1, Math.min(1, dot / magProd))) * 180 / Math.PI;
+        const perp = Math.abs(ang - 90) < 3;
+        let name = 'General quadrilateral', tone = 'info';
+        if (bisect && eqDiag && perp) { name = 'Square ✓'; tone = 'success'; }
+        else if (bisect && eqDiag) { name = 'Rectangle ✓'; tone = 'success'; }
+        else if (bisect && perp) { name = 'Rhombus ✓'; tone = 'success'; }
+        else if (bisect) { name = 'Parallelogram ✓'; tone = 'success'; }
+        else if (perp) { name = 'Kite-like (⟂ diagonals) ✓'; tone = 'success'; }
+        return { name, tone, bisect, eqDiag, perp };
+    }
+    getSidebarHTML() {
+        const [A, B, C, D] = this.pts;
+        const cls = this.classify();
+        const sides = { AB: MathUtils.distance(A, B), BC: MathUtils.distance(B, C), CD: MathUtils.distance(C, D), DA: MathUtils.distance(D, A) };
+        const angles = MathUtils.interiorAngles([A, B, C, D]);
+        return `
+            <h2>Rectangle &amp; Square</h2>
+            <p><b>§4.1</b> · Board pe kisi bhi corner (A, B, C, D) ko seedha drag karo — Angle-Sum tab jaisa. Naam neeche diagonals se auto-update hota hai.</p>
+            <div class="badge ${cls.tone}">${cls.name}</div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Diagonal test</div>
+                <div class="data-row"><span>AC = BD (equal length)</span>${checkDot(cls.eqDiag)}</div>
+                <div class="data-row"><span>Diagonals bisect each other</span>${checkDot(cls.bisect)}</div>
+                <div class="data-row"><span>Diagonals ⟂ (90°)</span>${checkDot(cls.perp)}</div>
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;">Sides &amp; angles</div>
+                <div class="data-row"><span>AB · BC · CD · DA</span><span>${[sides.AB, sides.BC, sides.CD, sides.DA].map(s => s.toFixed(0)).join(' · ')}</span></div>
+                <div class="data-row"><span>∠A · ∠B · ∠C · ∠D</span><span>${angles.map(a => a.toFixed(0)).join('° · ')}°</span></div>
+            </div>
+            <div class="btn-grid">
+                <button class="action-btn" onclick="app.activeModule.setPreset('rectangle')">Rectangle</button>
+                <button class="action-btn" onclick="app.activeModule.setPreset('square')">Square</button>
+                <button class="action-btn" onclick="app.activeModule.setPreset('rhombus')">Rhombus</button>
+                <button class="action-btn" onclick="app.activeModule.setPreset('parallelogram')">Parallelogram</button>
+                <button class="action-btn" onclick="app.activeModule.setPreset('kite')">Kite</button>
+                <button class="action-btn" onclick="app.activeModule.setPreset('general')">General</button>
+            </div>
+            <div class="proof-box">A <b>rectangle</b> needs diagonals that are equal and bisect each other — any angle works. Add a right angle between them and it locks into a <b>square</b>. Keep them bisecting but unequal, still at 90°, and you get a <b>rhombus</b> instead.</div>
+        `;
+    }
+    renderSVG() {
+        let html = drawGrid();
+        const [A, B, C, D] = this.pts;
+        html += `<polygon points="${A.x},${A.y} ${B.x},${B.y} ${C.x},${C.y} ${D.x},${D.y}" class="shape-edge"/>`;
+        html += `<line x1="${A.x}" y1="${A.y}" x2="${C.x}" y2="${C.y}" class="diag-line"/>`;
+        html += `<line x1="${B.x}" y1="${B.y}" x2="${D.x}" y2="${D.y}" class="diag-line"/>`;
+        const labels = ['A', 'B', 'C', 'D'];
+        this.pts.forEach((p, i) => {
+            html += `<text x="${p.x}" y="${p.y - 18}" text-anchor="middle" class="svg-label">${labels[i]}</text>`;
+            html += `<circle cx="${p.x}" cy="${p.y}" r="9" class="vtx-handle" data-id="${i}"/>`;
+        });
+        return html;
+    }
+}
         // =====================================================================
         // 5. MODULE 3 — PARALLELOGRAM  (§4.3, side + angle construction)
         // =====================================================================
