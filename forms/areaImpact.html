@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impact Study: GeoGebra vs Chalk Method — Area | RIE Ajmer</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#0E1526; --bg-panel:#16203A; --bg-panel-2:#1D2A4A;
+    --gold:#F2B705; --teal:#2FD1B0; --text:#EDF1FA; --muted:#8B96B8;
+    --border:rgba(237,241,250,0.09); --radius:12px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg-deep);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 80px;}
+  header{text-align:center;margin-bottom:28px;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--teal);text-transform:uppercase;}
+  h1{font-family:'Fraunces',serif;font-weight:600;font-size:1.9rem;margin:8px 0 6px;}
+  .sub{color:var(--muted);font-size:14px;max-width:560px;margin:0 auto; line-height: 1.5;}
+
+  .card{background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;}
+  .section-title{
+    font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin:0 0 14px;
+    padding-bottom:10px;border-bottom:1px solid var(--border);color:var(--gold);
+    line-height: 1.4;
+  }
+  .field{margin-bottom:22px;}
+  .field:last-child{margin-bottom:0;}
+  .field label.q{display:block;font-size:14.5px;font-weight:500;margin-bottom:10px;line-height:1.5;}
+  .req{color:var(--teal);}
+
+  .hi { display: block; font-size: 13.5px; color: var(--muted); margin-top: 3px; font-weight: 400; }
+
+  input[type=text], input[type=number], textarea, select{
+    width:100%;padding:10px 12px;border-radius:8px;background:var(--bg-panel-2);
+    border:1px solid var(--border);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;
+  }
+  input:focus, textarea:focus, select:focus{border-color:var(--gold);}
+  textarea{min-height:75px;resize:vertical;}
+
+  .radio-group-inline { display: flex; flex-direction: row; gap: 12px; flex-wrap: wrap; }
+  .radio-group, .checkbox-group, .radio-group-inline { display:flex; gap:8px; }
+  .radio-group { flex-direction:column; }
+
+  .radio-group label, .checkbox-group label, .radio-group-inline label{
+    display:flex;align-items:flex-start;gap:10px;font-size:14px;font-weight:500;
+    background:var(--bg-panel-2);padding:10px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;
+  }
+  .radio-group input, .checkbox-group input, .radio-group-inline input{margin-top:4px;accent-color:var(--gold);flex-shrink:0;}
+  .radio-group label:has(input:checked), .checkbox-group label:has(input:checked), .radio-group-inline label:has(input:checked){border-color:var(--gold);}
+
+  .likert-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+  .likert-opt{
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    background:var(--bg-panel-2);border:1px solid transparent;border-radius:8px;padding:10px 4px;cursor:pointer;
+  }
+  .likert-opt:has(input:checked){border-color:var(--gold);background:rgba(242,183,5,0.1);}
+  .likert-opt input{accent-color:var(--gold);}
+  .likert-opt span{font-size:11px;font-weight:500;color:var(--text);text-align:center;line-height:1.3;}
+  .likert-opt span .hi { font-size:10px; margin-top: 2px;}
+
+  .category-card{display:flex;flex-direction:column;gap:10px;}
+  .category-card label{
+    display:flex;gap:12px;align-items:flex-start;background:var(--bg-panel-2);
+    border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;
+  }
+  .category-card label:has(input:checked){border-color:var(--gold);box-shadow:0 0 0 3px rgba(242,183,5,0.12);}
+  .category-card input{margin-top:3px;accent-color:var(--gold);}
+  .category-card .clabel{font-weight:600;font-size:16px;}
+
+  .hidden{display:none !important;}
+
+  .submit-btn{
+    width:100%;padding:14px;border-radius:10px;background:var(--gold);color:#1a1200;
+    font-weight:700;font-size:15px;border:none;cursor:pointer;margin-top:10px;
+  }
+  .submit-btn:hover{filter:brightness(1.07);}
+  .submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+  .note{font-size:12px;color:var(--muted);text-align:center;margin-top:12px;}
+
+  .success{
+    text-align:center;padding:40px 20px;background:var(--bg-panel);border-radius:var(--radius);border:1px solid var(--teal);
+  }
+  .success h2{font-family:'Fraunces',serif;color:var(--teal);}
+  .error-banner{
+    background:rgba(220,60,60,0.15);border:1px solid #dc3c3c;color:#ffb3b3;
+    padding:12px 14px;border-radius:8px;margin-bottom:16px;font-size:13px;
+  }
+
+  .return-btn{
+    display:inline-block;margin-top:22px;padding:12px 26px;border-radius:10px;
+    background:linear-gradient(135deg,var(--gold),var(--teal));color:#0a192f;
+    text-decoration:none;font-weight:700;font-size:14px;transition:filter .15s;
+  }
+  .return-btn:hover{filter:brightness(1.08);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">RIE Ajmer · Research Cell</div>
+    <h1>Impact Study: GeoGebra vs Chalk Method</h1>
+    <p class="sub">Learning Area of Rectangle, Square &amp; Triangle <br><span class="hi">आयत, वर्ग एवं त्रिभुज के क्षेत्रफल के अध्ययन पर प्रभाव</span></p>
+  </header>
+
+  <div id="errorBanner" class="error-banner hidden"></div>
+
+  <form id="surveyForm">
+    <div class="card">
+      <div class="section-title">Are you a Student or a Teacher? <br><span class="hi">आप यह फॉर्म किस रूप में भर रहे हैं?</span></div>
+      <div class="category-card" id="roleField"></div>
+    </div>
+
+    <div id="commonContainer" class="hidden">
+      <div class="card">
+          <div class="section-title">Demographic Details <br><span class="hi">व्यक्तिगत जानकारी</span></div>
+          <div id="commonFields"></div>
+      </div>
+    </div>
+
+    <div id="setStudent" class="hidden"></div>
+    <div id="setTeacher" class="hidden"></div>
+
+    <button type="submit" class="submit-btn hidden" id="submitBtn">Submit Response <br><span style="font-size:12px; font-weight:normal;">जवाब सबमिट करें</span></button>
+    <p class="note">Data collected will be strictly used for academic research at RIE Ajmer.</p>
+  </form>
+
+ <div id="successMsg" class="success hidden">
+    <h2>✓ Response Submitted / डेटा सुरक्षित हो गया</h2>
+    <p>Thank you for your valuable feedback.</p>
+    <a href="#" class="return-btn" onclick="location.reload()">← Submit Another Response</a>
+</div>
+</div>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/PASTE_YOUR_DEPLOYMENT_ID/exec";
+
+const LIKERT = [
+  "1<br><span class='hi'>Strongly Disagree<br>पूर्णतः असहमत</span>",
+  "2<br><span class='hi'>Disagree<br>असहमत</span>",
+  "3<br><span class='hi'>Neutral<br>तटस्थ</span>",
+  "4<br><span class='hi'>Agree<br>सहमत</span>",
+  "5<br><span class='hi'>Strongly Agree<br>पूर्णतः सहमत</span>"
+];
+
+const q = {
+  text: (id,label)=>({id,type:'text',label}),
+  number: (id,label)=>({id,type:'number',label}),
+  textarea: (id,label)=>({id,type:'textarea',label}),
+  radio: (id,label,options, inline=false)=>({id,type:'radio',label,options, inline}),
+  likert: (id,label)=>({id,type:'likert',label}),
+};
+
+const roleOptions = [
+  {value:'student', clabel:'Student <span class="hi" style="display:inline; margin-left:8px;">(छात्र)</span>'},
+  {value:'teacher', clabel:'Teacher <span class="hi" style="display:inline; margin-left:8px;">(शिक्षक)</span>'},
+];
+
+const commonFields = [
+  q.text('c_name','Name / नाम'),
+  q.number('c_age', 'Age / आयु (e.g. 14, 25)'),
+  q.radio('c_gender', 'Gender / लिंग', [
+    'Male <span class="hi" style="display:inline">(पुरुष)</span>',
+    'Female <span class="hi" style="display:inline">(महिला)</span>',
+    'Other <span class="hi" style="display:inline">(अन्य)</span>'
+  ], true),
+  q.text('c_school','School Name / स्कूल का नाम'),
+];
+
+/* STUDENT QUESTION SET -- topic: Area of Rectangle, Square, Triangle */
+const studentSections = [
+  { title:'Section 1: Chalk & Board Method (Traditional)<br><span class="hi">भाग 1: चॉक और बोर्ड का तरीका</span>', items:[
+    q.likert('s_cb1','1. I easily understand how the area formula of a rectangle/square is derived when shown with chalk on the board.<br><span class="hi">बोर्ड पर चॉक से आयत/वर्ग के क्षेत्रफल का सूत्र कैसे बनता है, यह मुझे आसानी से समझ आता है।</span>'),
+    q.likert('s_cb2','2. I trust the accuracy of a triangle drawn by hand on the board when finding its base and height.<br><span class="hi">त्रिभुज का आधार और ऊँचाई पहचानने के लिए बोर्ड पर हाथ से बनाई गई आकृति पर मुझे पूरा भरोसा होता है।</span>'),
+    q.likert('s_cb3','3. It is easy to imagine how the area changes if the length or side of a shape is changed, using only the board drawing.<br><span class="hi">सिर्फ बोर्ड की आकृति देखकर यह कल्पना करना आसान है कि लंबाई या भुजा बदलने पर क्षेत्रफल कैसे बदलेगा।</span>')
+  ]},
+  { title:'Section 2: GeoGebra Method (Digital)<br><span class="hi">भाग 2: जियोजेब्रा का तरीका</span>', items:[
+    q.likert('s_gg1','4. Dragging the vertices in GeoGebra helps me see how the area of a rectangle/square changes as the sides change.<br><span class="hi">जियोजेब्रा में शीर्ष बिंदुओं को खींचने से मुझे समझ आता है कि भुजा बदलने पर आयत/वर्ग का क्षेत्रफल कैसे बदलता है।</span>'),
+    q.likert('s_gg2','5. Seeing the automatic area calculation (e.g., Area = base × height) makes me understand the formula better than copying it from the board.<br><span class="hi">क्षेत्रफल का ऑटोमैटिक कैलकुलेशन (जैसे क्षेत्रफल = आधार × ऊँचाई) देखकर मुझे सूत्र बोर्ड से नोट करने से बेहतर समझ आता है।</span>'),
+    q.likert('s_gg3','6. Watching a triangle being split and rearranged into a rectangle on screen helps me understand why the triangle formula has a "half" in it.<br><span class="hi">स्क्रीन पर त्रिभुज को काटकर आयत के रूप में जोड़ते देखने से मुझे समझ आता है कि त्रिभुज के सूत्र में "आधा" क्यों आता है।</span>')
+  ]},
+  { title:'Section 3: Direct Comparison & Output<br><span class="hi">भाग 3: सीधा मुक़ाबला</span>', items:[
+    q.radio('s_comp1','7. Which method helps you better understand WHY the area formulas work, rather than just memorising them?<br><span class="hi">क्षेत्रफल के सूत्र सिर्फ याद करने की बजाय, वे क्यों सही हैं यह समझने में कौन सा तरीका बेहतर मदद करता है?</span>', [
+        'Chalk & Board <span class="hi" style="display:inline">(चॉक और बोर्ड)</span>',
+        'GeoGebra <span class="hi" style="display:inline">(जियोजेब्रा)</span>',
+        'Both are equal <span class="hi" style="display:inline">(दोनों बराबर)</span>'
+    ]),
+    q.radio('s_comp2','8. When solving area-based word problems in an exam, which method\'s visual do you recall more easily?<br><span class="hi">परीक्षा में क्षेत्रफल आधारित शब्द-समस्याएँ हल करते समय किस तरीके का चित्र आपको आसानी से याद आता है?</span>', [
+        'Shapes on Blackboard <span class="hi" style="display:inline">(बोर्ड पर बनी आकृति)</span>',
+        'Dynamic shapes in GeoGebra <span class="hi" style="display:inline">(जियोजेब्रा की आकृति)</span>'
+    ]),
+    q.textarea('s_open','9. What was the most interesting thing you learned about area using GeoGebra today?<br><span class="hi">क्षेत्रफल के बारे में जियोजेब्रा के उपयोग से आज आपने सबसे रोचक बात क्या सीखी? (संक्षेप में बताएं)</span>')
+  ]},
+];
+
+/* TEACHER QUESTION SET -- topic: Area of Rectangle, Square, Triangle */
+const teacherSections = [
+  { title:'Section 1: Teaching Efficiency & Effort<br><span class="hi">भाग 1: शिक्षण क्षमता और समय</span>', items:[
+    q.likert('t_cb1','1. Drawing accurate rectangles/squares and marking correct measurements on the board takes significant time and effort.<br><span class="hi">बोर्ड पर सटीक आयत/वर्ग बनाना और सही माप अंकित करना काफी समय और मेहनत लेता है।</span>'),
+    q.likert('t_cb2','2. It is difficult to show students, using only chalk, how cutting and rearranging a triangle leads to its area formula.<br><span class="hi">सिर्फ चॉक से यह दिखाना मुश्किल है कि त्रिभुज को काटकर व्यवस्थित करने से उसका क्षेत्रफल सूत्र कैसे बनता है।</span>')
+  ]},
+  { title:'Section 2: Concept Delivery & GeoGebra Integration<br><span class="hi">भाग 2: कॉन्सेप्ट डिलीवरी</span>', items:[
+    q.likert('t_gg1','3. GeoGebra clearly helps students derive the area formulas themselves instead of memorising them directly.<br><span class="hi">जियोजेब्रा छात्रों को क्षेत्रफल के सूत्र सीधे याद करने की बजाय स्वयं निकालने में स्पष्ट रूप से मदद करता है।</span>'),
+    q.likert('t_gg2','4. The dynamic linking of side length, base, height and computed area helps bridge the gap between measurement and formula.<br><span class="hi">भुजा, आधार, ऊँचाई और गणना किए गए क्षेत्रफल का डायनामिक संबंध माप और सूत्र के बीच की खाई को पाटने में मदद करता है।</span>'),
+    q.likert('t_gg3','5. The dynamic interface encourages students to ask "What if the base is doubled?" and test it instantly.<br><span class="hi">डायनामिक इंटरफेस छात्रों को "अगर आधार दोगुना कर दें तो?" जैसे सवाल पूछने और तुरंत जांचने के लिए प्रेरित करता है।</span>')
+  ]},
+  { title:'Section 3: Student Response & Application', items:[
+    q.likert('t_out1','6. Weak/back-bench students participated more actively when GeoGebra was used to teach area, compared to chalk.<br><span class="hi">चॉक मेथड की तुलना में क्षेत्रफल पढ़ाते समय जियोजेब्रा से कमजोर छात्रों ने कक्षा में अधिक हिस्सा लिया।</span>'),
+    q.likert('t_out2','7. GeoGebra improves students\' ability to apply area formulas to new, unseen shapes better than traditional drilling.<br><span class="hi">पारंपरिक अभ्यास की तुलना में जियोजेब्रा छात्रों को नई आकृतियों पर क्षेत्रफल के सूत्र लागू करने की क्षमता बेहतर बनाता है।</span>'),
+    q.radio('t_comp1','8. Which method resulted in fewer calculation/conceptual mistakes in students\' area-related test answers?<br><span class="hi">छात्रों के क्षेत्रफल संबंधी उत्तरों में किस तरीके से गणना/वैचारिक गलतियाँ कम हुईं?</span>', [
+        'Chalk Method <span class="hi" style="display:inline">(चॉक मेथड से)</span>',
+        'GeoGebra Method <span class="hi" style="display:inline">(जियोजेब्रा मेथड से)</span>',
+        'No noticeable difference <span class="hi" style="display:inline">(कोई खास अंतर नहीं)</span>'
+    ]),
+    q.textarea('t_open','9. What practical challenges do you face in using GeoGebra regularly to teach area-related topics?<br><span class="hi">क्षेत्रफल से संबंधित विषय नियमित रूप से जियोजेब्रा से पढ़ाने में आपको क्या व्यावहारिक चुनौतियाँ आती हैं?</span>')
+  ]},
+];
+
+function renderField(item){
+  const div = document.createElement('div');
+  div.className = 'field';
+  const label = document.createElement('label');
+  label.className = 'q';
+  label.innerHTML = item.label;
+  label.setAttribute('for', item.id);
+  div.appendChild(label);
+
+  if(item.type === 'text'){
+    div.innerHTML += `<input type="text" id="${item.id}" name="${item.id}" required>`;
+  } else if(item.type === 'number'){
+    div.innerHTML += `<input type="number" id="${item.id}" name="${item.id}" min="5" max="100" required>`;
+  } else if(item.type === 'textarea'){
+    div.innerHTML += `<textarea id="${item.id}" name="${item.id}"></textarea>`;
+  } else if(item.type === 'radio'){
+    const g = document.createElement('div');
+    g.className = item.inline ? 'radio-group-inline' : 'radio-group';
+    item.options.forEach((opt)=>{
+      g.innerHTML += `<label><input type="radio" name="${item.id}" value="${opt.replace(/<[^>]*>?/gm, '').trim()}"> <span>${opt}</span></label>`;
+    });
+    div.appendChild(g);
+  } else if(item.type === 'likert'){
+    const g = document.createElement('div'); g.className = 'likert-row';
+    LIKERT.forEach((opt, index)=>{
+      const cleanValue = index + 1;
+      g.innerHTML += `<label class="likert-opt"><input type="radio" name="${item.id}" value="${cleanValue}"><span>${opt}</span></label>`;
+    });
+    div.appendChild(g);
+  }
+  return div;
+}
+
+function renderSections(container, sections){
+  sections.forEach(sec=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    const title = document.createElement('div');
+    title.className = 'section-title';
+    title.innerHTML = sec.title;
+    card.appendChild(title);
+    sec.items.forEach(item=> card.appendChild(renderField(item)));
+    container.appendChild(card);
+  });
+}
+
+const roleContainer = document.getElementById('roleField');
+roleOptions.forEach(opt=>{
+  roleContainer.innerHTML += `
+    <label>
+      <input type="radio" name="c_role" value="${opt.value}">
+      <div class="clabel">${opt.clabel}</div>
+    </label>`;
+});
+
+const commonContainer = document.getElementById('commonFields');
+commonFields.forEach(item => commonContainer.appendChild(renderField(item)));
+renderSections(document.getElementById('setStudent'), studentSections);
+renderSections(document.getElementById('setTeacher'), teacherSections);
+
+document.querySelectorAll('input[name="c_role"]').forEach(radio=>{
+  radio.addEventListener('change', (e)=>{
+    const role = e.target.value;
+    document.getElementById('commonContainer').classList.remove('hidden');
+    document.getElementById('submitBtn').classList.remove('hidden');
+    document.getElementById('setStudent').classList.toggle('hidden', role !== 'student');
+    document.getElementById('setTeacher').classList.toggle('hidden', role !== 'teacher');
+  });
+});
+
+function collectAnswers(fieldList){
+  const out = {};
+  fieldList.forEach(item=>{
+    if(item.type === 'radio' || item.type === 'likert'){
+      const sel = document.querySelector(`input[name="${item.id}"]:checked`);
+      out[item.id] = sel ? sel.value : '';
+    } else {
+      const el = document.getElementById(item.id);
+      out[item.id] = el ? el.value : '';
+    }
+  });
+  return out;
+}
+
+function showError(msg){
+  const banner = document.getElementById('errorBanner');
+  banner.textContent = msg;
+  banner.classList.remove('hidden');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('surveyForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  document.getElementById('errorBanner').classList.add('hidden');
+
+  if(GAS_URL.includes('PASTE_YOUR')){
+    showError('Database URL not linked yet! (Developer: update the GAS_URL variable in the code).');
+    return;
+  }
+
+  const name = document.getElementById('c_name').value.trim();
+  const school = document.getElementById('c_school').value.trim();
+  const role = document.querySelector('input[name="c_role"]:checked');
+
+  if(!name || !school){
+    showError('Please fill in your Name and School / कृपया अपना नाम और स्कूल भरें।');
+    return;
+  }
+
+  const common = collectAnswers(commonFields);
+  common.c_role = role.value;
+
+  let branchFields = [];
+  if(role.value === 'student') branchFields = studentSections.flatMap(s=>s.items);
+  if(role.value === 'teacher') branchFields = teacherSections.flatMap(s=>s.items);
+
+  const branchAnswers = collectAnswers(branchFields);
+
+  const record = {
+    id: 'req_' + Date.now(),
+    timestamp: new Date().toLocaleString(),
+    ...common,
+    ...branchAnswers,
+  };
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting... / कृपया प्रतीक्षा करें...';
+
+  try{
+    await fetch(GAS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(record),
+    });
+    document.getElementById('surveyForm').classList.add('hidden');
+    document.getElementById('successMsg').classList.remove('hidden');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }catch(err){
+    console.error(err);
+    showError('Network Error. Please try again / नेटवर्क समस्या, कृपया पुनः प्रयास करें।');
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = 'Submit Response <br><span style="font-size:12px; font-weight:normal;">submit</span>';
+  }
+});
+</script>
+</body>
+</html>
