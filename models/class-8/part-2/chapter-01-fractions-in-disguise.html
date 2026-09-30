@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Class 8: Fractions in Disguise | Digital E-Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --blueprint-dk: #061c30; --blueprint-md: #0c3559; --blueprint-lt: #2f75ac;
+        --grid-line: rgba(210, 232, 255, 0.1); --grid-line-strong: rgba(210, 232, 255, 0.25);
+        --brass: #c98a3e; --brass-lt: #e3ac6a; --brass-glow: rgba(201, 138, 62, 0.4);
+        --paper-bg: #f5f0e1; --paper-text: #1a2a3a; --paper-line: #d1c7b1;
+        --text-hi: #ffffff; --text-mid: #a8c4df; --success: #2f8a5b; --danger: #c1452f; --violet: #8b6fc9; --rose:#c9527a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+        font-family: 'IBM Plex Sans', sans-serif; background-color: var(--blueprint-dk); color: var(--text-hi);
+        height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+    }
+    header {
+        padding: 12px 20px; background: linear-gradient(180deg, #041220 0%, var(--blueprint-md) 100%);
+        border-bottom: 1px solid var(--grid-line-strong); display: flex; align-items: center; justify-content: space-between;
+        z-index: 10; flex-wrap: wrap; gap: 10px; flex: none;
+    }
+    .brand-area { display: flex; align-items: center; gap: 15px; }
+    .back-btn { color: var(--brass-lt); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; border: 1px solid var(--brass); padding: 5px 12px; border-radius: 20px; transition: 0.2s; white-space: nowrap; }
+    .back-btn:hover { background: var(--brass); color: var(--blueprint-dk); box-shadow: 0 0 10px var(--brass-glow); }
+    .module-title h1 { font-family: 'Fraunces', serif; font-size: 1.2rem; margin-bottom: 2px; }
+    .module-title p { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); letter-spacing: 1px; }
+    .tabs-bar { display: flex; gap: 8px; padding: 10px 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--grid-line-strong); overflow-x: auto; flex: none; }
+    .tab-btn { background: transparent; border: 1px solid var(--blueprint-lt); color: var(--text-mid); padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex: none; }
+    .tab-btn:hover { border-color: var(--brass-lt); color: var(--text-hi); }
+    .tab-btn.active { background: var(--brass); color: var(--blueprint-dk); border-color: var(--brass); font-weight: 700; box-shadow: 0 0 15px rgba(201,138,62,0.3); }
+    .workspace { display: flex; flex: 1; min-height: 0; position: relative; overflow: hidden; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 25px 25px; }
+    .sidebar { width: 380px; background: var(--paper-bg); color: var(--paper-text); border-right: 4px solid var(--brass); display: flex; flex-direction: column; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5); flex: none; min-height: 0; }
+    .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
+    .toggle-btn { position: absolute; top: 20px; right: -40px; width: 40px; height: 50px; background: var(--brass); border: none; border-radius: 0 8px 8px 0; color: var(--blueprint-dk); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 4px 0 10px rgba(0,0,0,0.2); transition: 0.2s; z-index: 6; }
+    .toggle-btn:hover { background: var(--brass-lt); width: 45px; right: -45px;}
+    .sidebar-content { padding: 20px; overflow-y: auto; flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; }
+    .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.26rem; color: var(--blueprint-dk); margin-bottom: 5px; }
+    .sidebar-content p { font-size: 0.86rem; line-height: 1.5; color: #4a5a6a; margin-bottom: 14px; }
+    .data-panel { background: #ffffff; border: 1px solid var(--paper-line); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+    .data-row { display: flex; justify-content: space-between; align-items:center; font-family: 'IBM Plex Mono', monospace; font-size: 0.84rem; padding: 5px 0; border-bottom: 1px dashed #eee; gap:10px; }
+    .data-row:last-child { border-bottom: none; }
+    .badge { display: block; text-align: center; padding: 10px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 1rem; margin-bottom: 14px; word-break: break-word; }
+    .badge.success { background: #e4f3ea; color: var(--success); border: 1px solid var(--success); }
+    .badge.info { background: #e3f2fd; color: #0277bd; border: 1px solid #0277bd; }
+    .badge.danger { background: #fbe9e5; color: var(--danger); border: 1px solid var(--danger); }
+    .badge.violet { background: #efe9fb; color: var(--violet); border: 1px solid var(--violet); }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .btn-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+    .action-btn { padding: 9px; border: 1px solid var(--blueprint-md); background: white; border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; transition: 0.2s; }
+    .action-btn:hover { background: var(--blueprint-md); color: white; }
+    .action-btn.primary { background: var(--brass); border-color: var(--brass); color: white; font-weight: 700; }
+    .action-btn.primary:hover { background: var(--brass-lt); }
+    .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .action-btn.wide { width: 100%; margin-bottom: 12px; }
+    .proof-box { background: rgba(47, 117, 172, 0.1); border-left: 4px solid var(--blueprint-lt); padding: 12px; border-radius: 0 8px 8px 0; font-size: 0.82rem; line-height:1.55; margin-bottom: 4px; }
+    .pill-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .pill-btn { flex: 1; padding: 9px 6px; border: 1px solid var(--blueprint-md); background: white; border-radius: 20px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; text-align: center; transition: 0.2s; min-width: 70px; }
+    .pill-btn.active { background: var(--blueprint-md); color: white; font-weight: 700; }
+    .range-row { margin-bottom: 12px; }
+    .range-row label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; }
+    .range-row input[type=range] { width: 100%; accent-color: var(--brass); height: 22px; cursor: pointer; }
+    .num-input { width: 100%; padding: 9px 12px; border: 1px solid var(--blueprint-md); border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.95rem; margin-bottom: 12px; background: white; }
+    .select-input { width: 100%; padding: 9px 12px; border: 1px solid var(--blueprint-md); border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; margin-bottom: 12px; background: white; }
+    .stage { flex: 1; min-width: 0; position: relative; display: flex; align-items: center; justify-content: center; padding: 20px;}
+    .canvas-container { width: 100%; max-width: 920px; height: 100%; max-height: 640px; background: rgba(4, 18, 32, 0.6); border: 1px solid var(--grid-line-strong); border-radius: 12px; box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; display:flex; }
+    #stageContainer { width:100%; height:100%; min-height:0; }
+    .html-stage { width: 100%; height: 100%; min-height: 0; overflow-y: auto; padding: 22px; color: var(--text-hi); -webkit-overflow-scrolling: touch; }
+    .html-stage h3 { font-family:'Fraunces',serif; font-size:1.22rem; margin-bottom:14px; color: var(--brass-lt); text-align: center; }
+    table.ref-table { width: 100%; border-collapse: collapse; font-family:'IBM Plex Mono',monospace; font-size: 0.78rem; }
+    table.ref-table th { background: var(--blueprint-md); color: var(--brass-lt); padding: 8px 6px; position: sticky; top:0; text-align:center; }
+    table.ref-table td { padding: 7px 6px; text-align:center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    table.ref-table tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+    table.ref-table input { width:70px; padding:5px; border-radius:4px; border:none; font-family:'IBM Plex Mono',monospace; text-align:center; }
+    .icon-chip { display: inline-flex; flex-direction: column; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); border: 1px solid var(--grid-line-strong); border-radius: 10px; padding: 8px 10px; color: var(--brass-lt); }
+    .icon-chip span { font-size: 0.68rem; color: var(--text-mid); }
+    .quiz-wrap { max-width: 560px; margin: 0 auto; text-align: center; }
+    .quiz-progress { font-family:'IBM Plex Mono',monospace; color: var(--text-mid); margin-bottom: 14px; font-size:0.82rem; }
+    .quiz-prompt { font-family:'Fraunces',serif; font-size: 1.35rem; margin-bottom: 22px; line-height:1.4; }
+    .quiz-input-row { display:flex; gap:10px; justify-content:center; margin-bottom: 16px; flex-wrap: wrap; }
+    .quiz-input-row input { width: 200px; padding: 12px; font-size:1.05rem; border-radius:8px; border:none; font-family:'IBM Plex Mono',monospace; text-align:center; }
+    .quiz-btn { padding: 12px 22px; border-radius: 8px; border:none; background: var(--brass); color: white; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; }
+    .quiz-btn:hover { background: var(--brass-lt); }
+    .quiz-tf-row { display:flex; gap:14px; justify-content:center; margin-bottom:16px; }
+    .quiz-tf-row button { flex:1; max-width:150px; padding:14px; border-radius:8px; border:none; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:0.95rem; }
+    .quiz-tf-row button.true-btn { background: var(--success); color:white; }
+    .quiz-tf-row button.false-btn { background: var(--danger); color:white; }
+    .quiz-feedback { padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem; }
+    .quiz-feedback.correct { background: rgba(47,138,91,0.2); border:1px solid var(--success); }
+    .quiz-feedback.wrong { background: rgba(193,69,47,0.2); border:1px solid var(--danger); }
+    .timeline-step { background: rgba(255,255,255,0.05); border: 1px solid var(--grid-line-strong); border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; }
+    .timeline-step b { color: var(--brass-lt); }
+    .work-box { max-width:480px; margin:14px auto; text-align:left; font-family:'IBM Plex Mono',monospace; font-size:0.9rem; background:rgba(255,255,255,0.05); border:1px solid var(--grid-line-strong); border-radius:10px; padding:16px; line-height:1.85; }
+    .work-box .eq { display:block; }
+    .bar-wrap { max-width:560px; margin:0 auto; }
+    .bar-track { position:relative; background: rgba(255,255,255,0.08); border-radius: 10px; height: 40px; overflow: hidden; margin: 10px 0; border:1px solid var(--grid-line-strong); }
+    .bar-fill { position:absolute; left:0; top:0; bottom:0; border-radius:10px; transition: width 0.2s; }
+    .bar-label { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-weight:700; color:white; font-size:0.86rem; text-shadow:0 1px 3px rgba(0,0,0,0.6); }
+    .bar-ticks { display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-mid); padding: 0 2px; }
+    .fdp-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; max-width:480px; margin:0 auto; }
+    .fdp-box { background: rgba(255,255,255,0.06); border:1px solid var(--grid-line-strong); border-radius:10px; padding:14px; text-align:center; }
+    .fdp-box label { display:block; font-size:0.7rem; color:var(--text-mid); margin-bottom:6px; font-family:'IBM Plex Mono',monospace; }
+    .fdp-box input { width:100%; padding:8px; border-radius:6px; border:none; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:1rem; }
+    .legend-row { display:flex; align-items:center; gap:8px; font-size:0.78rem; color:var(--text-mid); margin-bottom:6px; }
+    .legend-swatch { width:14px; height:14px; border-radius:3px; flex:none; }
+    .diagram-legend { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; margin-top:14px; }
+    @media (max-width: 860px) {
+        .sidebar { width: 88vw; } .module-title h1 { font-size: 1rem; }
+        .toggle-btn { top: auto; bottom: 18px; right: -46px; width: 46px; height: 46px; border-radius: 50%; }
+        .fdp-grid { grid-template-columns: 1fr; }
+    }
+    .sidebar-content::-webkit-scrollbar, .html-stage::-webkit-scrollbar { width: 8px; }
+    .sidebar-content::-webkit-scrollbar-thumb, .html-stage::-webkit-scrollbar-thumb { background: var(--paper-line); border-radius: 6px; }
+    .html-stage::-webkit-scrollbar-thumb { background: var(--blueprint-lt); }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="brand-area">
+        <a href="../index.html" class="back-btn">← E-Lab</a>
+        <div class="module-title">
+            <h1>Fractions in Disguise</h1>
+            <p>CLASS 8 · PART II · CHAPTER 01 · GANITA PRAKASH · INTERACTIVE ENGINE</p>
+        </div>
+    </div>
+</header>
+
+<div class="tabs-bar" id="tabsBar"></div>
+
+<div class="workspace">
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()" title="Show/hide panel">☰</button>
+        <div class="sidebar-content" id="sidebarContent"></div>
+    </aside>
+    <main class="stage">
+        <div class="canvas-container">
+            <div id="stageContainer"></div>
+        </div>
+    </main>
+</div>
+
+<script>
+// =========================================================================
+// 1. UTILITIES
+// =========================================================================
+const MathUtils = {
+    randInt(a, b) { return Math.floor(Math.random() * (b - a + 1)) + a; },
+    round(n, p) { p = p === undefined ? 2 : p; const m = Math.pow(10, p); return Math.round(n * m) / m; },
+    gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; },
+    simplifyFraction(n, d) { const g = this.gcd(n, d) || 1; return [n / g, d / g]; },
+    fmtMoney(n) { return '₹' + MathUtils.round(n, 2).toLocaleString('en-IN'); }
+};
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+function legendRow(color, text) { return `<div class="legend-row"><span class="legend-swatch" style="background:${color};"></span>${text}</div>`; }
+
+// A general-purpose horizontal proportion bar. pct can exceed 100 (capped visually at maxScale).
+function barHTML(pct, opts) {
+    opts = opts || {};
+    const maxScale = opts.max || Math.max(100, Math.ceil(pct / 50) * 50 + 50);
+    const color = opts.color || (pct > 100 ? 'linear-gradient(90deg,#c98a3e,#e3ac6a)' : 'linear-gradient(90deg,#2f75ac,#4a9bd9)');
+    const widthPct = Math.max(0, Math.min(100, (pct / maxScale) * 100));
+    const label = opts.label !== undefined ? opts.label : `${MathUtils.round(pct, 2)}%`;
+    const ticks = [];
+    const tickCount = maxScale <= 150 ? 4 : Math.round(maxScale / 50);
+    for (let i = 0; i <= tickCount; i++) { ticks.push(Math.round((maxScale / tickCount) * i)); }
+    return `<div class="bar-wrap">
+        <div class="bar-track"><div class="bar-fill" style="width:${widthPct}%;background:${color};"></div><div class="bar-label">${label}</div></div>
+        <div class="bar-ticks">${ticks.map(t => `<span>${t}%</span>`).join('')}</div>
+    </div>`;
+}
+
+// =========================================================================
+// 2. MODULE 1 — FRACTION ↔ PERCENTAGE CONVERTER (§1.1)
+// =========================================================================
+class FracPctModule {
+    constructor() { this.dir = 'f2p'; this.n = 3; this.d = 4; this.pct = 75; }
+    setDir(d) { this.dir = d; app.render(); }
+    setN(v) { this.n = Math.max(0, Math.min(999, parseInt(v) || 0)); app.render(); }
+    setD(v) { this.d = Math.max(1, Math.min(999, parseInt(v) || 1)); app.render(); }
+    setPct(v) { this.pct = Math.max(0, Math.min(500, parseFloat(v) || 0)); app.render(); }
+    preset(n, d) { this.n = n; this.d = d; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Fraction ⇄ Percentage</h2>
+            <p><b>§1.1</b> · "Per cent" (Latin <i>per centum</i>) means "out of a hundred". A percentage is just a fraction with denominator 100: x% = x⁄100.</p>
+            <div class="pill-row">
+                <div class="pill-btn ${this.dir === 'f2p' ? 'active' : ''}" onclick="app.activeModule.setDir('f2p')">Fraction → %</div>
+                <div class="pill-btn ${this.dir === 'p2f' ? 'active' : ''}" onclick="app.activeModule.setDir('p2f')">% → Fraction</div>
+            </div>
+            ${this.dir === 'f2p' ? `
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Numerator</label>
+                <input class="num-input" type="number" min="0" value="${this.n}" onchange="app.activeModule.setN(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Denominator</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" min="1" value="${this.d}" onchange="app.activeModule.setD(this.value)">
+            </div>
+            <div class="btn-grid three" style="margin-bottom:14px;">
+                <button class="action-btn" onclick="app.activeModule.preset(3,4)">3/4</button>
+                <button class="action-btn" onclick="app.activeModule.preset(2,5)">2/5</button>
+                <button class="action-btn" onclick="app.activeModule.preset(9,20)">9/20</button>
+            </div>
+            ` : `
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Percentage (%)</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" min="0" step="0.5" value="${this.pct}" onchange="app.activeModule.setPct(this.value)">
+            </div>
+            `}
+            <div class="proof-box"><b>Method:</b> multiply the fraction by 100 to get a percentage; divide a percentage by 100 (then simplify) to get a fraction.</div>
+        `;
+    }
+    renderStage() {
+        if (this.dir === 'f2p') {
+            const n = this.n, d = this.d;
+            const pct = d ? (n / d) * 100 : 0;
+            const [sn, sd] = MathUtils.simplifyFraction(n, d);
+            let html = `<h3>${n}/${d} as a Percentage</h3>
+            ${barHTML(pct, { max: Math.max(100, Math.ceil(pct/50)*50+50) })}
+            <div class="work-box">
+                <span class="eq">${n}/${d} = ${sn}/${sd} (simplified)</span>
+                <span class="eq">${n}/${d} × 100 = ${MathUtils.round(pct, 3)}%</span>
+                <span class="eq" style="color:#7bdcaa;">So ${n}/${d} = ${MathUtils.round(pct, 3)}%</span>
+            </div>
+            <div style="text-align:center;color:var(--text-mid);font-size:0.85rem;">Bar shows ${n} out of every ${d} parts shaded, scaled to a 100-part bar.</div>`;
+            return { type: 'html', html };
+        }
+        const pct = this.pct;
+        const [sn, sd] = MathUtils.simplifyFraction(Math.round(pct * 100), 10000);
+        let html = `<h3>${pct}% as a Fraction</h3>
+        ${barHTML(pct, { max: Math.max(100, Math.ceil(pct/50)*50+50) })}
+        <div class="work-box">
+            <span class="eq">${pct}% = ${pct}/100</span>
+            <span class="eq" style="color:#7bdcaa;">= ${sn}/${sd} (simplified)</span>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 3. MODULE 2 — PERCENTAGE OF A QUANTITY (§1.2)
+// =========================================================================
+class PercentOfModule {
+    constructor() { this.pct = 25; this.qty = 120; }
+    setPct(v) { this.pct = Math.max(0, Math.min(500, parseFloat(v) || 0)); app.render(); }
+    setQty(v) { this.qty = Math.max(0, parseFloat(v) || 0); app.render(); }
+    preset(p, q) { this.pct = p; this.qty = q; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Percentage of a Quantity</h2>
+            <p><b>§1.2</b> · y% of some value z is y⁄100 × z. Benchmark percentages (10%, 20%, 25%, 50%) can be found mentally, then combined: 20% + 5% = 25%!</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Percentage — ${this.pct}%</label>
+                <input type="range" min="0" max="200" value="${this.pct}" oninput="app.activeModule.setPct(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Of the quantity</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" min="0" value="${this.qty}" onchange="app.activeModule.setQty(this.value)">
+            </div>
+            <div class="btn-grid three" style="margin-bottom:14px;">
+                <button class="action-btn" onclick="app.activeModule.preset(25,120)">25% of 120</button>
+                <button class="action-btn" onclick="app.activeModule.preset(80,75)">80% of 75</button>
+                <button class="action-btn" onclick="app.activeModule.preset(15,200)">15% of 200</button>
+            </div>
+            <div class="proof-box"><b>Mental math tip:</b> 10% = divide by 10. 20% = double the 10%. 5% = half the 10%. 25% = quarter of the value.</div>
+        `;
+    }
+    renderStage() {
+        const val = (this.pct / 100) * this.qty;
+        let html = `<h3>${this.pct}% of ${this.qty}</h3>
+        ${barHTML(this.pct, { max: Math.max(100, Math.ceil(this.pct/50)*50+50), label: `${this.pct}% = ${MathUtils.round(val,3)}` })}
+        <div class="work-box">
+            <span class="eq">${this.pct}% of ${this.qty} = (${this.pct}/100) × ${this.qty}</span>
+            <span class="eq" style="color:#7bdcaa;">= ${MathUtils.round(val, 4)}</span>
+        </div>
+        <h3 style="margin-top:22px;">Quick benchmark table for ${this.qty}</h3>
+        <table class="ref-table" style="max-width:400px;margin:0 auto;">
+        <thead><tr><th>%</th><th>Value</th></tr></thead>
+        <tbody>
+        ${[10,20,25,50,75,90].map(p => `<tr><td>${p}%</td><td>${MathUtils.round((p/100)*this.qty,3)}</td></tr>`).join('')}
+        </tbody></table>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 4. MODULE 3 — THE FDP TRIO (Fraction-Decimal-Percentage) (§1.2)
+// =========================================================================
+class FDPModule {
+    constructor() { this.pct = 50; }
+    setFromPct(v) { const p = parseFloat(v); if (!isNaN(p)) { this.pct = p; app.render(); } }
+    setFromDecimal(v) { const d = parseFloat(v); if (!isNaN(d)) { this.pct = d * 100; app.render(); } }
+    setFromFraction(n, d) { if (d) { this.pct = (parseFloat(n) / parseFloat(d)) * 100; app.render(); } }
+    preset(p) { this.pct = p; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>The FDP Trio</h2>
+            <p>Fractions, Decimals, and Percentages are three faces of the same idea. Change any one on the right — the others update instantly!</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Quick presets</label>
+                <div class="pill-row" style="margin-bottom:0;">
+                    ${[10,25,50,75,100].map(p => `<div class="pill-btn ${this.pct===p?'active':''}" onclick="app.activeModule.preset(${p})">${p}%</div>`).join('')}
+                </div>
+            </div>
+            <div class="proof-box">50% = ½ = 0.5. 25% = ¼ = 0.25. 10% = 1/10 = 0.1. Memorising these benchmarks makes mental maths much faster!</div>
+        `;
+    }
+    renderStage() {
+        const pct = this.pct;
+        const decimal = pct / 100;
+        const [sn, sd] = MathUtils.simplifyFraction(Math.round(pct * 1000), 100000);
+        let html = `<h3>The Three Faces of ${MathUtils.round(pct,3)}%</h3>
+        <div class="fdp-grid">
+            <div class="fdp-box"><label>PERCENTAGE</label><input type="number" step="0.1" value="${MathUtils.round(pct,3)}" oninput="app.activeModule.setFromPct(this.value)"><label style="margin-top:8px;">%</label></div>
+            <div class="fdp-box"><label>DECIMAL</label><input type="number" step="0.001" value="${MathUtils.round(decimal,4)}" oninput="app.activeModule.setFromDecimal(this.value)"></div>
+            <div class="fdp-box"><label>FRACTION (simplified)</label><div style="font-family:'IBM Plex Mono',monospace;font-size:1.3rem;padding:8px 0;color:var(--brass-lt);">${sn}/${sd}</div></div>
+        </div>
+        ${barHTML(pct, { max: Math.max(100, Math.ceil(pct/50)*50+50) })}
+        <div class="work-box">
+            <span class="eq">Percentage → Decimal: divide by 100</span>
+            <span class="eq">Decimal → Percentage: multiply by 100</span>
+            <span class="eq">Percentage → Fraction: put over 100, then simplify</span>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 5. MODULE 4 — PERCENTAGES GREATER THAN 100% (§1.2)
+// =========================================================================
+class Over100Module {
+    constructor() { this.target = 5000; this.achieved = 6000; }
+    setTarget(v) { this.target = Math.max(1, parseFloat(v) || 1); app.render(); }
+    setAchieved(v) { this.achieved = Math.max(0, parseFloat(v) || 0); app.render(); }
+    preset(t, a) { this.target = t; this.achieved = a; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Percentages Beyond 100%</h2>
+            <p><b>§1.2</b> · When the achieved amount exceeds the target, the percentage crosses 100! Kishanlal's garment shop targets ₹5000/day sales — some days he exceeds it.</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Target (100%)</label>
+                <input class="num-input" type="number" min="1" value="${this.target}" onchange="app.activeModule.setTarget(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Amount achieved</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" min="0" value="${this.achieved}" onchange="app.activeModule.setAchieved(this.value)">
+            </div>
+            <div class="btn-grid three" style="margin-bottom:14px;">
+                <button class="action-btn" onclick="app.activeModule.preset(5000,2000)">Day 1</button>
+                <button class="action-btn" onclick="app.activeModule.preset(5000,6000)">Day 4</button>
+                <button class="action-btn" onclick="app.activeModule.preset(5000,9550)">Day 6</button>
+            </div>
+            <div class="proof-box">1000 is 20% of 5000, so 6000 = 5000+1000 is 100%+20% = 120% of target.</div>
+        `;
+    }
+    renderStage() {
+        const pct = (this.achieved / this.target) * 100;
+        const diff = pct - 100;
+        let html = `<h3>${MathUtils.fmtMoney(this.achieved)} out of a target of ${MathUtils.fmtMoney(this.target)}</h3>
+        ${barHTML(pct, { max: Math.max(200, Math.ceil(pct/50)*50+50) })}
+        <div class="work-box">
+            <span class="eq">% of target = (${this.achieved} / ${this.target}) × 100</span>
+            <span class="eq" style="color:#7bdcaa;">= ${MathUtils.round(pct, 2)}%</span>
+        </div>
+        <div style="max-width:480px;margin:0 auto;text-align:center;">
+            <div class="badge ${diff >= 0 ? 'success' : 'danger'}">${diff >= 0 ? `✓ ${MathUtils.round(diff,2)}% MORE than target` : `${MathUtils.round(-diff,2)}% SHORT of target`}</div>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 6. MODULE 5 — COMPARING PROPORTIONS (§1.3)
+// =========================================================================
+class CompareModule {
+    constructor() { this.label1 = 'English'; this.a1 = 42; this.b1 = 50; this.label2 = 'Science'; this.a2 = 70; this.b2 = 80; }
+    setA1(v) { this.a1 = Math.max(0, parseFloat(v) || 0); app.render(); }
+    setB1(v) { this.b1 = Math.max(1, parseFloat(v) || 1); app.render(); }
+    setA2(v) { this.a2 = Math.max(0, parseFloat(v) || 0); app.render(); }
+    setB2(v) { this.b2 = Math.max(1, parseFloat(v) || 1); app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Comparing Proportions</h2>
+            <p><b>§1.3</b> · Eesha scored 42/50 in English and 70/80 in Science. Which is better? Converting to percentages makes different-sized wholes directly comparable!</p>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;color:var(--blueprint-md);">Score / Ingredient 1</div>
+                <label style="display:block;font-size:0.78rem;margin-bottom:4px;">Obtained</label>
+                <input class="num-input" type="number" min="0" value="${this.a1}" onchange="app.activeModule.setA1(this.value)">
+                <label style="display:block;font-size:0.78rem;margin-bottom:4px;">Out of (total)</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" min="1" value="${this.b1}" onchange="app.activeModule.setB1(this.value)">
+            </div>
+            <div class="data-panel">
+                <div style="font-weight:700;margin-bottom:6px;color:var(--blueprint-md);">Score / Ingredient 2</div>
+                <label style="display:block;font-size:0.78rem;margin-bottom:4px;">Obtained</label>
+                <input class="num-input" type="number" min="0" value="${this.a2}" onchange="app.activeModule.setA2(this.value)">
+                <label style="display:block;font-size:0.78rem;margin-bottom:4px;">Out of (total)</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" min="1" value="${this.b2}" onchange="app.activeModule.setB2(this.value)">
+            </div>
+            <div class="proof-box">Also works for KYC (Know Your Contents!) — compare sugar content across two food packets of different total weights.</div>
+        `;
+    }
+    renderStage() {
+        const p1 = (this.a1 / this.b1) * 100, p2 = (this.a2 / this.b2) * 100;
+        const winner = p1 === p2 ? 'Tie!' : (p1 > p2 ? 'First' : 'Second');
+        let html = `<h3>${this.a1}/${this.b1} vs ${this.a2}/${this.b2}</h3>
+        <div style="max-width:520px;margin:0 auto;">
+            <div style="font-family:'IBM Plex Mono',monospace;color:var(--text-mid);margin-bottom:4px;">First: ${MathUtils.round(p1,2)}%</div>
+            ${barHTML(p1, { max: 100, color: 'linear-gradient(90deg,#2f75ac,#4a9bd9)' })}
+            <div style="font-family:'IBM Plex Mono',monospace;color:var(--text-mid);margin:14px 0 4px;">Second: ${MathUtils.round(p2,2)}%</div>
+            ${barHTML(p2, { max: 100, color: 'linear-gradient(90deg,#8b6fc9,#c9527a)' })}
+        </div>
+        <div style="max-width:460px;margin:16px auto 0;text-align:center;">
+            <div class="badge success">${winner === 'Tie!' ? 'Both are equal!' : `${winner} has the higher proportion (${MathUtils.round(Math.max(p1,p2),2)}%)`}</div>
+        </div>
+        <div class="work-box">
+            <span class="eq">First: (${this.a1}/${this.b1}) × 100 = ${MathUtils.round(p1,2)}%</span>
+            <span class="eq">Second: (${this.a2}/${this.b2}) × 100 = ${MathUtils.round(p2,2)}%</span>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 7. MODULE 6 — PERCENTAGE INCREASE / DECREASE (§1.3)
+// =========================================================================
+class IncDecModule {
+    constructor() { this.orig = 30; this.now = 42; }
+    setOrig(v) { this.orig = Math.max(0.01, parseFloat(v) || 0.01); app.render(); }
+    setNow(v) { this.now = Math.max(0, parseFloat(v) || 0); app.render(); }
+    preset(o, n) { this.orig = o; this.now = n; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Percentage Increase / Decrease</h2>
+            <p><b>§1.3</b> · % change = (amount of change ÷ original amount) × 100. Tomato prices, footfall, populations — this formula is everywhere.</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Original value</label>
+                <input class="num-input" type="number" min="0.01" step="0.5" value="${this.orig}" onchange="app.activeModule.setOrig(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">New value</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" min="0" step="0.5" value="${this.now}" onchange="app.activeModule.setNow(this.value)">
+            </div>
+            <div class="btn-grid" style="margin-bottom:14px;">
+                <button class="action-btn" onclick="app.activeModule.preset(30,42)">Tomatoes 30→42</button>
+                <button class="action-btn" onclick="app.activeModule.preset(160,100)">Footfall 160→100</button>
+            </div>
+            <div class="proof-box">"165% of original" and "increased by 65%" mean the exact same thing — both give new = 1.65 × original.</div>
+        `;
+    }
+    renderStage() {
+        const change = this.now - this.orig;
+        const pctChange = (change / this.orig) * 100;
+        const isIncrease = change >= 0;
+        const asMultiple = this.now / this.orig;
+        let html = `<h3>${this.orig} → ${this.now}</h3>
+        <div style="max-width:480px;margin:0 auto;text-align:center;">
+            <div class="badge ${isIncrease ? 'success' : 'danger'}" style="font-size:1.3rem;">${isIncrease ? '▲' : '▼'} ${MathUtils.round(Math.abs(pctChange),2)}% ${isIncrease ? 'increase' : 'decrease'}</div>
+        </div>
+        <div class="work-box">
+            <span class="eq">Change = ${this.now} − ${this.orig} = ${MathUtils.round(change,3)}</span>
+            <span class="eq">% change = (${MathUtils.round(change,3)} / ${this.orig}) × 100</span>
+            <span class="eq" style="color:#7bdcaa;">= ${MathUtils.round(pctChange,3)}%</span>
+            <span class="eq" style="margin-top:8px;color:var(--text-mid);">Equivalently: new value = ${MathUtils.round(asMultiple,3)} × original = ${MathUtils.round(asMultiple*100,2)}% of original</span>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 8. MODULE 7 — PROFIT, LOSS & DISCOUNT (§1.3)
+// =========================================================================
+class ProfitLossModule {
+    constructor() { this.sub = 'pl'; this.cp = 300; this.sp = 430; this.mp = 1800; this.disc = 35; this.margin = 20; }
+    setSub(s) { this.sub = s; app.render(); }
+    setCP(v) { this.cp = Math.max(0.01, parseFloat(v) || 0.01); app.render(); }
+    setSP(v) { this.sp = Math.max(0, parseFloat(v) || 0); app.render(); }
+    setMP(v) { this.mp = Math.max(0.01, parseFloat(v) || 0.01); app.render(); }
+    setDisc(v) { this.disc = Math.max(0, Math.min(99, parseFloat(v) || 0)); app.render(); }
+    setMargin(v) { this.margin = Math.max(-99, Math.min(300, parseFloat(v) || 0)); app.render(); }
+    updatePoint() {}
+    tabsHTML() {
+        return `<div class="pill-row">
+            <div class="pill-btn ${this.sub === 'pl' ? 'active' : ''}" onclick="app.activeModule.setSub('pl')">Profit/Loss %</div>
+            <div class="pill-btn ${this.sub === 'sp' ? 'active' : ''}" onclick="app.activeModule.setSub('sp')">Find Selling Price</div>
+            <div class="pill-btn ${this.sub === 'disc' ? 'active' : ''}" onclick="app.activeModule.setSub('disc')">Discount</div>
+        </div>`;
+    }
+    getSidebarHTML() {
+        const common = `<h2>Profit, Loss &amp; Discount</h2>${this.tabsHTML()}`;
+        if (this.sub === 'pl') {
+            return common + `
+            <p><b>§1.3</b> · Cost Price (CP) is what the seller paid. Selling Price (SP) is what the buyer pays. Profit/Loss % is always calculated <b>with respect to CP</b>.</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Cost Price (CP)</label>
+                <input class="num-input" type="number" min="0.01" value="${this.cp}" onchange="app.activeModule.setCP(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Selling Price (SP)</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" min="0" value="${this.sp}" onchange="app.activeModule.setSP(this.value)">
+            </div>
+            <div class="proof-box">Profit % = (SP − CP)/CP × 100. If SP &lt; CP, this comes out negative — a loss.</div>`;
+        }
+        if (this.sub === 'sp') {
+            return common + `
+            <p>Given the cost price and a desired profit margin (%), find the selling price you should charge.</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Cost Price (CP)</label>
+                <input class="num-input" type="number" min="0.01" value="${this.cp}" onchange="app.activeModule.setCP(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Desired margin % (negative = loss)</label>
+                <input class="num-input" style="margin-bottom:0;" type="number" value="${this.margin}" onchange="app.activeModule.setMargin(this.value)">
+            </div>
+            <div class="proof-box">SP = CP × (1 + margin/100)</div>`;
+        }
+        return common + `
+        <p>A discount is a percentage reduction on the Marked Price (MP) — usually the MRP.</p>
+        <div class="data-panel">
+            <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Marked Price (MP)</label>
+            <input class="num-input" type="number" min="0.01" value="${this.mp}" onchange="app.activeModule.setMP(this.value)">
+            <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Discount % — ${this.disc}%</label>
+            <input type="range" min="0" max="90" value="${this.disc}" oninput="app.activeModule.setDisc(this.value)">
+        </div>
+        <div class="proof-box">SP = MP × (1 − discount/100)</div>`;
+    }
+    renderStage() {
+        if (this.sub === 'pl') {
+            const profit = this.sp - this.cp;
+            const pct = (profit / this.cp) * 100;
+            const isProfit = profit >= 0;
+            let html = `<h3>CP = ${MathUtils.fmtMoney(this.cp)}, SP = ${MathUtils.fmtMoney(this.sp)}</h3>
+            <div style="max-width:480px;margin:0 auto;text-align:center;">
+                <div class="badge ${isProfit ? 'success' : 'danger'}" style="font-size:1.3rem;">${isProfit ? 'PROFIT' : 'LOSS'}: ${MathUtils.fmtMoney(Math.abs(profit))} (${MathUtils.round(Math.abs(pct),2)}%)</div>
+            </div>
+            <div class="work-box">
+                <span class="eq">${isProfit ? 'Profit' : 'Loss'} = |SP − CP| = |${this.sp} − ${this.cp}| = ${MathUtils.round(Math.abs(profit),2)}</span>
+                <span class="eq">% = (${MathUtils.round(Math.abs(profit),2)} / ${this.cp}) × 100 = ${MathUtils.round(Math.abs(pct),3)}%</span>
+            </div>`;
+            return { type: 'html', html };
+        }
+        if (this.sub === 'sp') {
+            const sp = this.cp * (1 + this.margin / 100);
+            let html = `<h3>CP = ${MathUtils.fmtMoney(this.cp)}, margin = ${this.margin}%</h3>
+            <div style="max-width:480px;margin:0 auto;text-align:center;">
+                <div class="badge success" style="font-size:1.3rem;">Selling Price = ${MathUtils.fmtMoney(sp)}</div>
+            </div>
+            <div class="work-box">
+                <span class="eq">SP = CP × (1 + ${this.margin}/100)</span>
+                <span class="eq">SP = ${this.cp} × ${MathUtils.round(1+this.margin/100,4)} = ${MathUtils.round(sp,2)}</span>
+            </div>`;
+            return { type: 'html', html };
+        }
+        const sp = this.mp * (1 - this.disc / 100);
+        const saved = this.mp - sp;
+        let html = `<h3>MP = ${MathUtils.fmtMoney(this.mp)}, discount = ${this.disc}%</h3>
+        ${barHTML(100 - this.disc, { max: 100, label: `You pay ${MathUtils.round(100-this.disc,1)}% of MP`, color: 'linear-gradient(90deg,#2f8a5b,#7bdcaa)' })}
+        <div class="work-box">
+            <span class="eq">Discount amount = ${this.disc}% of ${this.mp} = ${MathUtils.round((this.disc/100)*this.mp,2)}</span>
+            <span class="eq" style="color:#7bdcaa;">Selling Price = ${this.mp} − ${MathUtils.round((this.disc/100)*this.mp,2)} = ${MathUtils.round(sp,2)}</span>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 9. MODULE 8 — GROWTH & COMPOUNDING (§1.3)
+// =========================================================================
+class CompoundingModule {
+    constructor() { this.mode = 'growth'; this.p = 6000; this.r = 10; this.t = 3; }
+    setMode(m) { this.mode = m; app.render(); }
+    setP(v) { this.p = Math.max(1, parseFloat(v) || 1); app.render(); }
+    setR(v) { this.r = parseFloat(v) || 0; app.render(); }
+    setT(v) { this.t = Math.max(1, Math.min(15, parseInt(v) || 1)); app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        return `
+            <h2>Growth &amp; Compounding</h2>
+            <p><b>§1.3</b> · Without compounding, interest is always on the same principal (linear growth). With compounding, interest is earned on interest too (exponential growth)!</p>
+            <div class="pill-row">
+                <div class="pill-btn ${this.mode==='growth'?'active':''}" onclick="app.activeModule.setMode('growth')">Growth (+r%)</div>
+                <div class="pill-btn ${this.mode==='decline'?'active':''}" onclick="app.activeModule.setMode('decline')">Decline (−r%)</div>
+            </div>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Principal (P)</label>
+                <input class="num-input" type="number" min="1" value="${this.p}" onchange="app.activeModule.setP(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Rate per term (r%) — ${this.r}%</label>
+                <input type="range" min="0" max="30" step="0.5" value="${this.r}" oninput="app.activeModule.setR(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin:10px 0 6px;">Number of terms (t) — ${this.t}</label>
+                <input type="range" min="1" max="15" value="${this.t}" oninput="app.activeModule.setT(this.value)">
+            </div>
+            <div class="proof-box">Without compounding: P(1 + rt). With compounding: P(1 ± r)ᵗ. For decline (depreciation/population fall), use P(1 − r)ᵗ.</div>
+        `;
+    }
+    renderStage() {
+        const p = this.p, r = this.r / 100, t = this.t;
+        const sign = this.mode === 'growth' ? 1 : -1;
+        const noComp = p * (1 + sign * r * t);
+        const withComp = p * Math.pow(1 + sign * r, t);
+        let rows = '';
+        let runningNo = p, runningComp = p;
+        for (let i = 1; i <= t; i++) {
+            runningNo = p * (1 + sign * r * i);
+            runningComp = runningComp * (1 + sign * r);
+            rows += `<tr><td>${i}</td><td>${MathUtils.round(runningNo,2)}</td><td>${MathUtils.round(runningComp,2)}</td></tr>`;
+        }
+        let html = `<h3>${MathUtils.fmtMoney(p)} at ${this.r}% per term for ${t} terms (${this.mode === 'growth' ? 'growth' : 'decline'})</h3>
+        <table class="ref-table" style="max-width:480px;margin:0 auto 18px;">
+        <thead><tr><th>Term</th><th>Without Compounding</th><th>With Compounding</th></tr></thead>
+        <tbody>${rows}</tbody>
+        </table>
+        <div class="diagram-legend">
+            <div class="badge info" style="min-width:220px;">No compounding: ${MathUtils.fmtMoney(noComp)}</div>
+            <div class="badge success" style="min-width:220px;">Compounded: ${MathUtils.fmtMoney(withComp)}</div>
+        </div>
+        <div class="work-box">
+            <span class="eq">Without compounding: P(1 ${sign>0?'+':'−'} rt) = ${p}(1 ${sign>0?'+':'−'} ${MathUtils.round(r,3)}×${t}) = ${MathUtils.round(noComp,2)}</span>
+            <span class="eq">With compounding: P(1 ${sign>0?'+':'−'} r)ᵗ = ${p}(1 ${sign>0?'+':'−'} ${MathUtils.round(r,3)})^${t} = ${MathUtils.round(withComp,2)}</span>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 10. MODULE 9 — TRICKY PERCENTAGES (§1.3)
+// =========================================================================
+class TrickyModule {
+    constructor() { this.sub = 'successive'; this.price = 200; this.d1 = 30; this.d2 = 20; this.margin = 50; this.discount = 50; }
+    setSub(s) { this.sub = s; app.render(); }
+    setPrice(v) { this.price = Math.max(1, parseFloat(v) || 1); app.render(); }
+    setD1(v) { this.d1 = Math.max(0, Math.min(90, parseFloat(v) || 0)); app.render(); }
+    setD2(v) { this.d2 = Math.max(0, Math.min(90, parseFloat(v) || 0)); app.render(); }
+    setMargin(v) { this.margin = Math.max(0, Math.min(200, parseFloat(v) || 0)); app.render(); }
+    setDiscount(v) { this.discount = Math.max(0, Math.min(90, parseFloat(v) || 0)); app.render(); }
+    updatePoint() {}
+    tabsHTML() {
+        return `<div class="pill-row">
+            <div class="pill-btn ${this.sub === 'successive' ? 'active' : ''}" onclick="app.activeModule.setSub('successive')">Successive Discounts</div>
+            <div class="pill-btn ${this.sub === 'mishap' ? 'active' : ''}" onclick="app.activeModule.setSub('mishap')">Margin + Discount Mishap</div>
+        </div>`;
+    }
+    getSidebarHTML() {
+        const common = `<h2>Tricky Percentages</h2>${this.tabsHTML()}`;
+        if (this.sub === 'successive') {
+            return common + `
+            <p><b>§1.3</b> · "30% + 20% off" is NOT the same as "50% off"! Successive discounts compound, just like interest.</p>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Original price</label>
+                <input class="num-input" type="number" min="1" value="${this.price}" onchange="app.activeModule.setPrice(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">First discount — ${this.d1}%</label>
+                <input type="range" min="0" max="90" value="${this.d1}" oninput="app.activeModule.setD1(this.value)">
+                <label style="display:block;font-size:0.82rem;font-weight:600;margin:10px 0 6px;">Second discount — ${this.d2}%</label>
+                <input type="range" min="0" max="90" value="${this.d2}" oninput="app.activeModule.setD2(this.value)">
+            </div>
+            <div class="proof-box">Second discount applies to the ALREADY discounted price, not the original.</div>`;
+        }
+        return common + `
+        <p>A shopkeeper marks up goods by a profit margin, then offers a discount on THAT marked-up price. Same % for both doesn't mean "no profit no loss"!</p>
+        <div class="data-panel">
+            <label style="display:block;font-size:0.82rem;font-weight:600;margin-bottom:6px;">Profit margin added — ${this.margin}%</label>
+            <input type="range" min="0" max="200" value="${this.margin}" oninput="app.activeModule.setMargin(this.value)">
+            <label style="display:block;font-size:0.82rem;font-weight:600;margin:10px 0 6px;">Discount then offered — ${this.discount}%</label>
+            <input type="range" min="0" max="90" value="${this.discount}" oninput="app.activeModule.setDiscount(this.value)">
+        </div>
+        <div class="proof-box">Final price = CP × (1 + margin/100) × (1 − discount/100). Compare this to CP itself!</div>`;
+    }
+    renderStage() {
+        if (this.sub === 'successive') {
+            const p = this.price;
+            const afterD1 = p * (1 - this.d1/100);
+            const afterD2 = afterD1 * (1 - this.d2/100);
+            const combinedNaive = p * (1 - (this.d1+this.d2)/100);
+            const effectivePct = 100 * (1 - afterD2/p);
+            let html = `<h3>${this.d1}% + ${this.d2}% off ₹${p}, applied one after another</h3>
+            <div class="work-box">
+                <span class="eq">After ${this.d1}% off: ${p} × ${MathUtils.round(1-this.d1/100,3)} = ${MathUtils.round(afterD1,2)}</span>
+                <span class="eq">After further ${this.d2}% off: ${MathUtils.round(afterD1,2)} × ${MathUtils.round(1-this.d2/100,3)} = ${MathUtils.round(afterD2,2)}</span>
+                <span class="eq" style="color:#7bdcaa;">Effective single discount = ${MathUtils.round(effectivePct,2)}%</span>
+            </div>
+            <div class="diagram-legend">
+                <div class="badge success" style="min-width:230px;">Actual final price: ${MathUtils.fmtMoney(afterD2)}</div>
+                <div class="badge danger" style="min-width:230px;">Naive "${this.d1+this.d2}% off" price: ${MathUtils.fmtMoney(combinedNaive)}</div>
+            </div>
+            <div style="text-align:center;color:var(--text-mid);font-size:0.85rem;max-width:480px;margin:14px auto 0;">Successive discounts are always LESS generous than simply adding the percentages (unless one of them is 0%).</div>`;
+            return { type: 'html', html };
+        }
+        const cp = 1000; // model CP as 1000 for cleanliness, generalises via ratio
+        const markedUp = cp * (1 + this.margin/100);
+        const finalPrice = markedUp * (1 - this.discount/100);
+        const netPct = ((finalPrice - cp) / cp) * 100;
+        let html = `<h3>Margin ${this.margin}% then Discount ${this.discount}% (CP = ₹1000, any CP scales the same)</h3>
+        <div class="work-box">
+            <span class="eq">Marked-up price = 1000 × ${MathUtils.round(1+this.margin/100,3)} = ${MathUtils.round(markedUp,2)}</span>
+            <span class="eq">After ${this.discount}% discount = ${MathUtils.round(markedUp,2)} × ${MathUtils.round(1-this.discount/100,3)} = ${MathUtils.round(finalPrice,2)}</span>
+            <span class="eq" style="color:${netPct>=0?'#7bdcaa':'#f0a08c'};">Net result vs CP: ${netPct>=0?'PROFIT':'LOSS'} of ${MathUtils.round(Math.abs(netPct),2)}%</span>
+        </div>
+        <div style="max-width:460px;margin:0 auto;text-align:center;">
+            <div class="badge ${netPct>=0?'success':'danger'}">${netPct===0?'Exactly break-even!':(netPct>0?`Still a ${MathUtils.round(netPct,2)}% profit`:`A ${MathUtils.round(-netPct,2)}% loss — the "cancel out" intuition is WRONG!`)}</div>
+        </div>`;
+        return { type: 'html', html };
+    }
+}
+
+// =========================================================================
+// 11. MODULE 10 — QUIZ ARENA
+// =========================================================================
+class QuizModule {
+    constructor() {
+        this.total = 10;
+        this.started = false;
+        this.questions = [];
+        this.index = 0;
+        this.score = 0;
+        this.answered = false;
+        this.lastCorrect = null;
+        this.userVal = '';
+        this.tfBank = [
+            { stmt: "50% is the same as 0.5 and also the same as 1/2.", a: true },
+            { stmt: "A discount of 30%+20% is the same as a 50% discount.", a: false },
+            { stmt: "Compound interest always gives more money than simple interest (for positive rates).", a: true },
+            { stmt: "Profit percentage is always calculated with respect to the Selling Price.", a: false },
+            { stmt: "165% of a value means the value increased by 65%.", a: true },
+            { stmt: "If a shopkeeper adds a 50% margin then gives a 50% discount, there's no profit or loss.", a: false },
+            { stmt: "Percentage decrease uses the ORIGINAL value as the base, not the new value.", a: true },
+            { stmt: "'per cent' comes from the Latin 'per centum', meaning out of a hundred.", a: true }
+        ];
+    }
+    setTotal(n) { this.total = n; app.render(); }
+    start() { this.questions = this.generateQuestions(this.total); this.index = 0; this.score = 0; this.answered = false; this.lastCorrect = null; this.userVal = ''; this.started = true; app.render(); }
+    restart() { this.started = false; app.render(); }
+    generateQuestions(count) {
+        const arr = [];
+        for (let i = 0; i < count; i++) {
+            const roll = Math.random();
+            if (roll < 0.18) {
+                const n = MathUtils.randInt(1, 19), d = MathUtils.randInt(n + 1, 20);
+                arr.push({ type: 'numeric', prompt: `Express ${n}/${d} as a percentage (round to 1 decimal if needed).`, answer: MathUtils.round((n/d)*100, 1) });
+            } else if (roll < 0.36) {
+                const p = [10, 20, 25, 50, 75][MathUtils.randInt(0, 4)];
+                const q = MathUtils.randInt(2, 20) * 10;
+                arr.push({ type: 'numeric', prompt: `What is ${p}% of ${q}?`, answer: (p / 100) * q });
+            } else if (roll < 0.54) {
+                const cp = MathUtils.randInt(50, 500);
+                const sp = cp + MathUtils.randInt(-100, 150);
+                const pct = MathUtils.round(((sp - cp) / cp) * 100, 1);
+                arr.push({ type: 'numeric', prompt: `CP = ₹${cp}, SP = ₹${sp}. What is the profit/loss percentage? (use negative for loss)`, answer: pct });
+            } else if (roll < 0.7) {
+                const p = MathUtils.randInt(1000, 10000);
+                const r = [5, 10, 20][MathUtils.randInt(0, 2)];
+                const t = MathUtils.randInt(2, 3);
+                const amt = Math.round(p * Math.pow(1 + r / 100, t));
+                arr.push({ type: 'numeric', prompt: `₹${p} compounded at ${r}% p.a. for ${t} years. What is the final amount (rounded to nearest rupee)?`, answer: amt });
+            } else if (roll < 0.86) {
+                const orig = MathUtils.randInt(20, 200);
+                const now = orig + MathUtils.randInt(-50, 80);
+                const pct = MathUtils.round(Math.abs((now - orig) / orig) * 100, 1);
+                arr.push({ type: 'numeric', prompt: `A value changes from ${orig} to ${now}. What is the percentage change (as a positive number)?`, answer: pct });
+            } else {
+                const bank = this.tfBank[MathUtils.randInt(0, this.tfBank.length - 1)];
+                arr.push({ type: 'tf', prompt: bank.stmt, answer: bank.a });
+            }
+        }
+        return arr;
+    }
+    setUserVal(v) { this.userVal = v; }
+    submitNumeric() {
+        if (this.answered) return;
+        const q = this.questions[this.index];
+        this.answered = true;
+        const given = parseFloat(this.userVal);
+        this.lastCorrect = !isNaN(given) && Math.abs(given - q.answer) < 0.6;
+        if (this.lastCorrect) this.score++;
+        app.render();
+    }
+    submitTF(bool) {
+        if (this.answered) return;
+        const q = this.questions[this.index];
+        this.answered = true;
+        this.lastCorrect = (bool === q.answer);
+        if (this.lastCorrect) this.score++;
+        app.render();
+    }
+    next() { this.index++; this.answered = false; this.lastCorrect = null; this.userVal = ''; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        if (!this.started) {
+            return `
+                <h2>Quiz Arena</h2>
+                <p>Test yourself on fraction-percent conversion, profit/loss, compounding, and percentage change.</p>
+                <div class="data-panel">
+                    <div style="font-weight:700;margin-bottom:8px;">Number of questions</div>
+                    <div class="pill-row">
+                        <div class="pill-btn ${this.total===5?'active':''}" onclick="app.activeModule.setTotal(5)">5</div>
+                        <div class="pill-btn ${this.total===10?'active':''}" onclick="app.activeModule.setTotal(10)">10</div>
+                        <div class="pill-btn ${this.total===15?'active':''}" onclick="app.activeModule.setTotal(15)">15</div>
+                    </div>
+                </div>
+                <button class="action-btn primary wide" onclick="app.activeModule.start()">▶ Start Quiz</button>
+                <div class="proof-box">Numeric answers are accepted within a small rounding tolerance.</div>
+            `;
+        }
+        if (this.index >= this.questions.length) {
+            return `
+                <h2>Quiz Arena</h2>
+                <div class="badge success">Final score: ${this.score} / ${this.questions.length}</div>
+                <p>Nice work! Try again for a fresh set of questions.</p>
+                <button class="action-btn primary wide" onclick="app.activeModule.restart()">↻ New Quiz</button>
+            `;
+        }
+        return `
+            <h2>Quiz Arena</h2>
+            <div class="badge info">Question ${this.index + 1} / ${this.questions.length} · Score ${this.score}</div>
+            <p>Answer on the right.</p>
+            <button class="action-btn wide" onclick="app.activeModule.restart()">← Back to setup</button>
+        `;
+    }
+    renderStage() {
+        if (!this.started) {
+            return { type: 'html', html: `<div class="quiz-wrap"><h3>Ready when you are</h3><p style="color:var(--text-mid);">Choose a question count on the left, then hit Start Quiz.</p></div>` };
+        }
+        if (this.index >= this.questions.length) {
+            const pct = Math.round(100 * this.score / this.questions.length);
+            return { type: 'html', html: `<div class="quiz-wrap">
+                <h3>Quiz complete!</h3>
+                <div style="font-size:3rem;font-family:'IBM Plex Mono',monospace;color:var(--brass-lt);margin:20px 0;">${this.score}/${this.questions.length}</div>
+                <p style="color:var(--text-mid);">${pct >= 80 ? 'Excellent work! 🌟' : pct >= 50 ? 'Good effort — keep practising!' : 'Review the chapter and try again!'}</p>
+            </div>` };
+        }
+        const q = this.questions[this.index];
+        let body = `<div class="quiz-wrap">
+            <div class="quiz-progress">QUESTION ${this.index + 1} OF ${this.questions.length}</div>
+            <div class="quiz-prompt">${q.prompt}</div>`;
+        if (!this.answered) {
+            if (q.type === 'numeric') {
+                body += `<div class="quiz-input-row">
+                    <input type="number" step="any" value="${this.userVal}" oninput="app.activeModule.setUserVal(this.value)" onkeypress="if(event.key==='Enter'){app.activeModule.submitNumeric();}">
+                    <button class="quiz-btn" onclick="app.activeModule.submitNumeric()">Submit</button>
+                </div>`;
+            } else {
+                body += `<div class="quiz-tf-row">
+                    <button class="true-btn" onclick="app.activeModule.submitTF(true)">TRUE</button>
+                    <button class="false-btn" onclick="app.activeModule.submitTF(false)">FALSE</button>
+                </div>`;
+            }
+        } else {
+            body += `<div class="quiz-feedback ${this.lastCorrect ? 'correct' : 'wrong'}">
+                ${this.lastCorrect ? '✓ Correct!' : `✕ Not quite — the answer is ${q.type === 'tf' ? (q.answer ? 'TRUE' : 'FALSE') : q.answer}`}
+            </div>
+            <button class="quiz-btn" onclick="app.activeModule.next()">${this.index + 1 < this.questions.length ? 'Next question →' : 'See results →'}</button>`;
+        }
+        body += `</div>`;
+        return { type: 'html', html: body };
+    }
+}
+
+// =========================================================================
+// 12. MAIN APP CONTROLLER
+// =========================================================================
+const app = {
+    modules: {
+        'fracpct': new FracPctModule(),
+        'pctof': new PercentOfModule(),
+        'fdp': new FDPModule(),
+        'over100': new Over100Module(),
+        'compare': new CompareModule(),
+        'incdec': new IncDecModule(),
+        'profitloss': new ProfitLossModule(),
+        'compounding': new CompoundingModule(),
+        'tricky': new TrickyModule(),
+        'quiz': new QuizModule(),
+    },
+    tabDefs: [
+        { id: 'fracpct', name: '1 · Fraction ⇄ %' },
+        { id: 'pctof', name: '2 · % of a Quantity' },
+        { id: 'fdp', name: '3 · FDP Trio' },
+        { id: 'over100', name: '4 · Beyond 100%' },
+        { id: 'compare', name: '5 · Compare Proportions' },
+        { id: 'incdec', name: '6 · Increase / Decrease' },
+        { id: 'profitloss', name: '7 · Profit, Loss & Discount' },
+        { id: 'compounding', name: '8 · Growth & Compounding' },
+        { id: 'tricky', name: '9 · Tricky Percentages' },
+        { id: 'quiz', name: '10 · Quiz Arena' },
+    ],
+    activeTab: 'fracpct',
+    activeModule: null,
+
+    init() {
+        this.activeModule = this.modules[this.activeTab];
+        this.renderTabs();
+        this.render();
+    },
+    renderTabs() {
+        document.getElementById('tabsBar').innerHTML = this.tabDefs.map(t =>
+            `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`
+        ).join('');
+    },
+    switchTab(id) {
+        if (!this.modules[id]) return;
+        this.activeTab = id;
+        this.activeModule = this.modules[id];
+        this.renderTabs();
+        this.render();
+    },
+    render() {
+        document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
+        const stageObj = this.activeModule.renderStage();
+        const container = document.getElementById('stageContainer');
+        if (stageObj.type === 'svg') {
+            container.innerHTML = `<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">${stageObj.html}</svg>`;
+        } else {
+            container.innerHTML = `<div class="html-stage">${stageObj.html}</div>`;
+        }
+    }
+};
+
+window.onload = () => app.init();
+</script>
+</body>
+</html>
