@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Class 8: Proportional Reasoning-2 | Digital E-Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --blueprint-dk: #061c30; --blueprint-md: #0c3559; --blueprint-lt: #2f75ac;
+        --grid-line: rgba(210, 232, 255, 0.1); --grid-line-strong: rgba(210, 232, 255, 0.25);
+        --brass: #c98a3e; --brass-lt: #e3ac6a; --brass-glow: rgba(201, 138, 62, 0.4);
+        --paper-bg: #f5f0e1; --paper-text: #1a2a3a; --paper-line: #d1c7b1;
+        --text-hi: #ffffff; --text-mid: #a8c4df; --success: #2f8a5b; --danger: #c1452f; --violet: #8b6fc9; --rose:#c9527a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+        font-family: 'IBM Plex Sans', sans-serif; background-color: var(--blueprint-dk); color: var(--text-hi);
+        height: 100vh; height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+    }
+    header {
+        padding: 12px 20px; background: linear-gradient(180deg, #041220 0%, var(--blueprint-md) 100%);
+        border-bottom: 1px solid var(--grid-line-strong); display: flex; align-items: center; justify-content: space-between;
+        z-index: 10; flex-wrap: wrap; gap: 10px; flex: none;
+    }
+    .brand-area { display: flex; align-items: center; gap: 15px; }
+    .back-btn { color: var(--brass-lt); text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; border: 1px solid var(--brass); padding: 5px 12px; border-radius: 20px; transition: 0.2s; white-space: nowrap; }
+    .back-btn:hover { background: var(--brass); color: var(--blueprint-dk); box-shadow: 0 0 10px var(--brass-glow); }
+    .module-title h1 { font-family: 'Fraunces', serif; font-size: 1.2rem; margin-bottom: 2px; }
+    .module-title p { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-mid); letter-spacing: 1px; }
+    .tabs-bar { display: flex; gap: 8px; padding: 10px 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--grid-line-strong); overflow-x: auto; flex: none; }
+    .tab-btn { background: transparent; border: 1px solid var(--blueprint-lt); color: var(--text-mid); padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem; border-radius: 6px; cursor: pointer; transition: 0.3s; white-space: nowrap; flex: none; }
+    .tab-btn:hover { border-color: var(--brass-lt); color: var(--text-hi); }
+    .tab-btn.active { background: var(--brass); color: var(--blueprint-dk); border-color: var(--brass); font-weight: 700; box-shadow: 0 0 15px rgba(201,138,62,0.3); }
+    .workspace { display: flex; flex: 1; min-height: 0; position: relative; overflow: hidden; background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px); background-size: 25px 25px; }
+    .sidebar { width: 300px; background: var(--paper-bg); color: var(--paper-text); border-right: 4px solid var(--brass); display: flex; flex-direction: column; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); position: relative; z-index: 5; box-shadow: 5px 0 25px rgba(0,0,0,0.5); flex: none; min-height: 0; }
+    .sidebar.collapsed { transform: translateX(-100%); position: absolute; height: 100%; }
+    .toggle-btn { position: absolute; top: 20px; right: -40px; width: 40px; height: 50px; background: var(--brass); border: none; border-radius: 0 8px 8px 0; color: var(--blueprint-dk); font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 4px 0 10px rgba(0,0,0,0.2); transition: 0.2s; z-index: 6; }
+    .toggle-btn:hover { background: var(--brass-lt); width: 45px; right: -45px;}
+    .sidebar-content { padding: 18px; overflow-y: auto; flex: 1; min-height: 0; -webkit-overflow-scrolling: touch; }
+    .sidebar-content h2 { font-family: 'Fraunces', serif; font-size: 1.14rem; color: var(--blueprint-dk); margin-bottom: 4px; }
+    .sidebar-content .hint { font-size: 0.78rem; line-height: 1.45; color: #5a6a7a; margin-bottom: 12px; }
+    .sidebar-content .hint b { color: var(--blueprint-md); }
+    .data-panel { background: #ffffff; border: 1px solid var(--paper-line); border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .data-row { display: flex; justify-content: space-between; align-items:center; font-family: 'IBM Plex Mono', monospace; font-size: 0.84rem; padding: 5px 0; border-bottom: 1px dashed #eee; gap:10px; }
+    .data-row:last-child { border-bottom: none; }
+    .badge { display: block; text-align: center; padding: 9px; border-radius: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: bold; font-size: 0.98rem; margin-bottom: 12px; word-break: break-word; }
+    .badge.success { background: #e4f3ea; color: var(--success); border: 1px solid var(--success); }
+    .badge.info { background: #e3f2fd; color: #0277bd; border: 1px solid #0277bd; }
+    .badge.danger { background: #fbe9e5; color: var(--danger); border: 1px solid var(--danger); }
+    .badge.violet { background: #efe9fb; color: var(--violet); border: 1px solid var(--violet); }
+    .pill-row { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+    .pill-btn { flex: 1; padding: 8px 6px; border: 1px solid var(--blueprint-md); background: white; border-radius: 20px; cursor: pointer; font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; text-align: center; transition: 0.2s; min-width: 66px; }
+    .pill-btn.active { background: var(--blueprint-md); color: white; font-weight: 700; }
+    .touch-hint { display:flex; align-items:center; gap:8px; background: rgba(201,138,62,0.12); border:1px dashed var(--brass); border-radius:8px; padding:9px 11px; font-size:0.74rem; color:#7a5a2a; margin-bottom:12px; }
+    .stage { flex: 1; min-width: 0; position: relative; display: flex; align-items: center; justify-content: center; padding: 16px;}
+    .canvas-container { width: 100%; max-width: 980px; height: 100%; max-height: 660px; background: rgba(4, 18, 32, 0.6); border: 1px solid var(--grid-line-strong); border-radius: 12px; box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.3); position: relative; overflow: hidden; display:flex; }
+    #stageContainer { width:100%; height:100%; min-height:0; overflow-y:auto; -webkit-overflow-scrolling: touch; }
+    .stage-svg-wrap { width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding: 10px; }
+    .stage-title { text-align:center; font-family:'Fraunces',serif; color:var(--brass-lt); font-size:1.12rem; padding: 10px 10px 0; }
+    .stage-sub { text-align:center; font-family:'IBM Plex Mono',monospace; color:var(--text-mid); font-size:0.74rem; padding: 2px 10px 6px; }
+    .handle { cursor: grab; touch-action: none; }
+    .handle:active { cursor: grabbing; }
+    .val-badge-row { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; padding: 8px 10px 14px; }
+    .val-chip { background: rgba(255,255,255,0.06); border:1px solid var(--grid-line-strong); border-radius: 10px; padding: 8px 16px; font-family:'IBM Plex Mono',monospace; text-align:center; }
+    .val-chip .vlabel { font-size:0.68rem; color:var(--text-mid); display:block; margin-bottom:2px; }
+    .val-chip .vnum { font-size:1.15rem; color:var(--brass-lt); font-weight:700; }
+    .quiz-wrap { max-width: 560px; margin: 0 auto; text-align: center; padding: 10px; }
+    .quiz-progress { font-family:'IBM Plex Mono',monospace; color: var(--text-mid); margin-bottom: 14px; font-size:0.82rem; }
+    .quiz-prompt { font-family:'Fraunces',serif; font-size: 1.3rem; margin-bottom: 22px; line-height:1.4; }
+    .quiz-input-row { display:flex; gap:10px; justify-content:center; margin-bottom: 16px; flex-wrap: wrap; }
+    .quiz-input-row input { width: 200px; padding: 12px; font-size:1.05rem; border-radius:8px; border:none; font-family:'IBM Plex Mono',monospace; text-align:center; }
+    .quiz-btn { padding: 12px 22px; border-radius: 8px; border:none; background: var(--brass); color: white; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; }
+    .quiz-btn:hover { background: var(--brass-lt); }
+    .quiz-tf-row { display:flex; gap:14px; justify-content:center; margin-bottom:16px; }
+    .quiz-tf-row button { flex:1; max-width:150px; padding:14px; border-radius:8px; border:none; font-weight:700; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:0.95rem; }
+    .quiz-tf-row button.true-btn { background: var(--success); color:white; }
+    .quiz-tf-row button.false-btn { background: var(--danger); color:white; }
+    .quiz-mc-row { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+    .quiz-mc-row button { padding:12px; border-radius:8px; border:1px solid var(--blueprint-lt); background:rgba(255,255,255,0.05); color:white; cursor:pointer; font-family:'IBM Plex Mono',monospace; font-size:0.88rem; }
+    .quiz-mc-row button:hover { background: rgba(201,138,62,0.3); }
+    .quiz-feedback { padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem; }
+    .quiz-feedback.correct { background: rgba(47,138,91,0.2); border:1px solid var(--success); }
+    .quiz-feedback.wrong { background: rgba(193,69,47,0.2); border:1px solid var(--danger); }
+    @media (max-width: 860px) {
+        .sidebar { width: 82vw; } .module-title h1 { font-size: 1rem; }
+        .toggle-btn { top: auto; bottom: 18px; right: -46px; width: 46px; height: 46px; border-radius: 50%; }
+    }
+    .sidebar-content::-webkit-scrollbar, #stageContainer::-webkit-scrollbar { width: 8px; }
+    .sidebar-content::-webkit-scrollbar-thumb { background: var(--paper-line); border-radius: 6px; }
+    #stageContainer::-webkit-scrollbar-thumb { background: var(--blueprint-lt); border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="brand-area">
+        <a href="../index.html" class="back-btn">← E-Lab</a>
+        <div class="module-title">
+            <h1>Proportional Reasoning – 2</h1>
+            <p>CLASS 8 · PART II · CHAPTER 03 · GANITA PRAKASH · TOUCH-LAB ENGINE</p>
+        </div>
+    </div>
+</header>
+
+<div class="tabs-bar" id="tabsBar"></div>
+
+<div class="workspace">
+    <aside class="sidebar" id="sidebar">
+        <button class="toggle-btn" onclick="toggleSidebar()" title="Show/hide panel">☰</button>
+        <div class="sidebar-content" id="sidebarContent"></div>
+    </aside>
+    <main class="stage">
+        <div class="canvas-container">
+            <div id="stageContainer"></div>
+        </div>
+    </main>
+</div>
+
+<script>
+// =========================================================================
+// 1. UTILITIES
+// =========================================================================
+const MathUtils = {
+    round(n, p) { p = p === undefined ? 2 : p; const m = Math.pow(10, p); return Math.round(n * m) / m; },
+    gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; },
+    clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); },
+    fmt(n, p) { return MathUtils.round(n, p === undefined ? 2 : p); }
+};
+
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+
+// Converts a pointer/mouse event's client coords into the SVG's own user-space coordinates,
+// so dragging works correctly no matter how the viewBox is scaled on screen (desktop or mobile).
+function svgPoint(svg, evt) {
+    const pt = svg.createSVGPoint();
+    pt.x = evt.clientX; pt.y = evt.clientY;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return { x: 0, y: 0 };
+    const loc = pt.matrixTransform(ctm.inverse());
+    return { x: loc.x, y: loc.y };
+}
+
+// Wires up a fully touch/mouse/pen-capable drag on `handle` (an SVG element) living inside `svg`.
+// onMove(pt, evt) fires continuously with live SVG-space coordinates; onEnd() fires once on release.
+function makeDraggable(svg, handle, onMove, onEnd) {
+    handle.classList.add('handle');
+    handle.addEventListener('pointerdown', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        handle.setPointerCapture(e.pointerId);
+        const move = (e2) => { const p = svgPoint(svg, e2); onMove(p, e2); };
+        const up = (e2) => {
+            try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
+            handle.removeEventListener('pointermove', move);
+            handle.removeEventListener('pointerup', up);
+            handle.removeEventListener('pointercancel', up);
+            if (onEnd) onEnd();
+        };
+        handle.addEventListener('pointermove', move);
+        handle.addEventListener('pointerup', up);
+        handle.addEventListener('pointercancel', up);
+    });
+}
+
+function stageWrap(title, sub, svgInner, viewBox, chips) {
+    const chipsHtml = chips ? `<div class="val-badge-row">${chips.map(c => `<div class="val-chip"><span class="vlabel">${c.label}</span><span class="vnum" id="${c.id}">${c.value}</span></div>`).join('')}</div>` : '';
+    return `<div style="display:flex;flex-direction:column;height:100%;min-height:0;">
+        <div class="stage-title">${title}</div>
+        ${sub ? `<div class="stage-sub">${sub}</div>` : ''}
+        <div class="stage-svg-wrap" style="flex:1;min-height:0;">
+            <svg id="mainSvg" viewBox="${viewBox}" style="width:100%;height:100%;max-height:100%;">${svgInner}</svg>
+        </div>
+        ${chipsHtml}
+    </div>`;
+}
+
+// =========================================================================
+// 2. MODULE 1 — RATIO BALANCE (cross-multiplication) §3.1
+// =========================================================================
+class RatioBalanceModule {
+    constructor() { this.a = 6; this.b = 3; this.c = 4; this.d = 2; }
+    updatePoint() {}
+    getSidebarHTML() {
+        const prod1 = this.a * this.d, prod2 = this.b * this.c;
+        const proportional = prod1 === prod2;
+        return `
+            <h2>Ratio Balance</h2>
+            <p class="hint">Drag the 4 knobs on the beam directly. Two ratios <b>a:b</b> and <b>c:d</b> are proportional when a×d = b×c — watch the scale balance!</p>
+            <div class="touch-hint">👆 Drag any coloured knob on the stage</div>
+            <div class="data-panel">
+                <div class="data-row"><span>a : b</span><span>${this.a} : ${this.b}</span></div>
+                <div class="data-row"><span>c : d</span><span>${this.c} : ${this.d}</span></div>
+                <div class="data-row"><span>a × d</span><span>${prod1}</span></div>
+                <div class="data-row"><span>b × c</span><span>${prod2}</span></div>
+            </div>
+            <div class="badge ${proportional ? 'success' : 'info'}">${proportional ? '✓ Balanced — proportional!' : 'Not balanced yet'}</div>
+        `;
+    }
+    renderStage() {
+        const W = 600, H = 480;
+        const trackX0 = 90, trackX1 = 510, trackY = [70, 140, 210, 280];
+        const valToX = v => trackX0 + ((v - 1) / 19) * (trackX1 - trackX0);
+        const xToVal = x => Math.round(1 + ((x - trackX0) / (trackX1 - trackX0)) * 19);
+        const colors = { a: '#2f75ac', b: '#8b6fc9', c: '#c98a3e', d: '#c9527a' };
+        const labels = ['a', 'b', 'c', 'd'];
+        const vals = [this.a, this.b, this.c, this.d];
+        let tracks = '';
+        labels.forEach((lab, i) => {
+            const y = trackY[i];
+            tracks += `<line x1="${trackX0}" y1="${y}" x2="${trackX1}" y2="${y}" stroke="rgba(255,255,255,0.2)" stroke-width="4" stroke-linecap="round"/>`;
+            tracks += `<text x="${trackX0 - 30}" y="${y + 6}" class="svg-label" font-size="20" fill="${colors[lab]}" font-family="Fraunces, serif" font-weight="700">${lab}</text>`;
+            tracks += `<circle id="handle_${lab}" cx="${valToX(vals[i])}" cy="${y}" r="16" fill="${colors[lab]}" stroke="#fff" stroke-width="3"/>`;
+            tracks += `<text id="valtext_${lab}" x="${valToX(vals[i])}" y="${y - 26}" text-anchor="middle" font-size="18" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${vals[i]}</text>`;
+        });
+        const beamY = 380, beamCX = 300;
+        const prod1 = this.a * this.d, prod2 = this.b * this.c;
+        const angle = MathUtils.clamp((prod2 - prod1) * 1.1, -18, 18);
+        const beam = `<g id="beamGroup" transform="rotate(${angle} ${beamCX} ${beamY})">
+            <line x1="150" y1="${beamY}" x2="450" y2="${beamY}" stroke="#e3ac6a" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="150" cy="${beamY}" r="26" fill="rgba(47,117,172,0.5)" stroke="#2f75ac" stroke-width="2"/>
+            <text id="prod1text" x="150" y="${beamY+6}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${prod1}</text>
+            <circle cx="450" cy="${beamY}" r="26" fill="rgba(139,111,201,0.5)" stroke="#8b6fc9" stroke-width="2"/>
+            <text id="prod2text" x="450" y="${beamY+6}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${prod2}</text>
+        </g>
+        <polygon points="${beamCX-10},340 ${beamCX+10},340 ${beamCX},360" fill="#c98a3e"/>
+        <text x="150" y="${beamY+50}" text-anchor="middle" font-size="12" fill="var(--text-mid)" font-family="IBM Plex Mono, monospace">a × d</text>
+        <text x="450" y="${beamY+50}" text-anchor="middle" font-size="12" fill="var(--text-mid)" font-family="IBM Plex Mono, monospace">b × c</text>`;
+        const svgInner = tracks + beam;
+        const html = stageWrap('Drag a, b, c, d — make the scale balance!', `a:b = ${this.a}:${this.b} · · · c:d = ${this.c}:${this.d}`, svgInner, `0 0 ${W} ${H}`);
+        return {
+            type: 'html', html,
+            mount: (container) => {
+                const svg = container.querySelector('#mainSvg');
+                labels.forEach((lab, i) => {
+                    const handle = svg.querySelector('#handle_' + lab);
+                    const y = trackY[i];
+                    let draftVal = vals[i];
+                    makeDraggable(svg, handle,
+                        (p) => {
+                            const x = MathUtils.clamp(p.x, trackX0, trackX1);
+                            draftVal = xToVal(x);
+                            handle.setAttribute('cx', valToX(draftVal));
+                            const vt = svg.querySelector('#valtext_' + lab);
+                            vt.setAttribute('x', valToX(draftVal));
+                            vt.textContent = draftVal;
+                            const A = lab === 'a' ? draftVal : this.a, B = lab === 'b' ? draftVal : this.b;
+                            const C = lab === 'c' ? draftVal : this.c, D = lab === 'd' ? draftVal : this.d;
+                            const p1 = A * D, p2 = B * C;
+                            const ang = MathUtils.clamp((p2 - p1) * 1.1, -18, 18);
+                            svg.querySelector('#beamGroup').setAttribute('transform', `rotate(${ang} 300 380)`);
+                            svg.querySelector('#prod1text').textContent = p1;
+                            svg.querySelector('#prod2text').textContent = p2;
+                        },
+                        () => { this[lab] = draftVal; app.render(); }
+                    );
+                });
+            }
+        };
+    }
+}
+
+// =========================================================================
+// 3. MODULE 2 — MAP SCALE RULER (RF) §3.2
+// =========================================================================
+class MapScaleModule {
+    constructor() { this.cityB = { x: 480, y: 150 }; this.rfIndex = 4; this.rfOptions = [1000000, 2000000, 3000000, 6000000, 10000000]; }
+    updatePoint() {}
+    getSidebarHTML() {
+        const rf = this.rfOptions[this.rfIndex];
+        return `
+            <h2>Map Scale Ruler</h2>
+            <p class="hint">A Representative Fraction like 1 : ${rf.toLocaleString('en-IN')} tells you how map centimetres translate to real ground distance.</p>
+            <div class="touch-hint">👆 Drag City B or the scale knob</div>
+            <div class="data-panel">
+                <div class="data-row"><span>RF (map scale)</span><span>1 : ${rf.toLocaleString('en-IN')}</span></div>
+                <div class="data-row"><span>1 cm on map =</span><span>${MathUtils.fmt(rf/100000,2)} km real</span></div>
+            </div>
+        `;
+    }
+    renderStage() {
+        const W = 640, H = 460;
+        const A = { x: 160, y: 310 };
+        const pxPerCm = 60;
+        const rf = this.rfOptions[this.rfIndex];
+        const distPx = Math.hypot(this.cityB.x - A.x, this.cityB.y - A.y);
+        const distCm = distPx / pxPerCm;
+        const distKm = MathUtils.fmt((distCm * rf) / 100000, 2);
+        const knobX0 = 120, knobX1 = 520, knobY = 410;
+        const knobX = knobX0 + (this.rfIndex / (this.rfOptions.length - 1)) * (knobX1 - knobX0);
+        const svgInner = `
+            <rect x="20" y="20" width="${W-40}" height="${H-120}" rx="16" fill="rgba(47,117,172,0.12)" stroke="rgba(47,117,172,0.4)"/>
+            <line id="routeLine" x1="${A.x}" y1="${A.y}" x2="${this.cityB.x}" y2="${this.cityB.y}" stroke="#c98a3e" stroke-width="3" stroke-dasharray="8 6"/>
+            <circle cx="${A.x}" cy="${A.y}" r="10" fill="#2f8a5b" stroke="#fff" stroke-width="2"/>
+            <text x="${A.x}" y="${A.y+30}" text-anchor="middle" font-size="15" fill="#fff" font-family="IBM Plex Mono, monospace" font-weight="700">City A</text>
+            <circle id="cityB" cx="${this.cityB.x}" cy="${this.cityB.y}" r="14" fill="#c9527a" stroke="#fff" stroke-width="3"/>
+            <text id="cityBLabel" x="${this.cityB.x}" y="${this.cityB.y-24}" text-anchor="middle" font-size="15" fill="#fff" font-family="IBM Plex Mono, monospace" font-weight="700">City B</text>
+            <text id="distLabel" x="${(A.x+this.cityB.x)/2}" y="${(A.y+this.cityB.y)/2 - 14}" text-anchor="middle" font-size="14" fill="#e3ac6a" font-family="IBM Plex Mono, monospace" font-weight="700">${distKm} km</text>
+            <line x1="${knobX0}" y1="${knobY}" x2="${knobX1}" y2="${knobY}" stroke="rgba(255,255,255,0.2)" stroke-width="4" stroke-linecap="round"/>
+            <text x="${knobX0-20}" y="${knobY+5}" text-anchor="end" font-size="12" fill="var(--text-mid)" font-family="IBM Plex Mono, monospace">Zoomed</text>
+            <text x="${knobX1+20}" y="${knobY+5}" text-anchor="start" font-size="12" fill="var(--text-mid)" font-family="IBM Plex Mono, monospace">Zoomed out</text>
+            <circle id="rfHandle" cx="${knobX}" cy="${knobY}" r="15" fill="#c98a3e" stroke="#fff" stroke-width="3"/>
+            <text id="rfLabel" x="${knobX}" y="${knobY-24}" text-anchor="middle" font-size="14" fill="#fff" font-family="IBM Plex Mono, monospace" font-weight="700">1:${rf.toLocaleString('en-IN')}</text>
+        `;
+        const html = stageWrap('Drag City B and the scale knob', 'Watch the real-world distance change live', svgInner, `0 0 ${W} ${H}`,
+            [{ id: 'kmChip', label: 'Real Distance', value: distKm + ' km' }]);
+        return {
+            type: 'html', html,
+            mount: (container) => {
+                const svg = container.querySelector('#mainSvg');
+                const cityBHandle = svg.querySelector('#cityB');
+                let draftB = { ...this.cityB };
+                const recompute = () => {
+                    const dPx = Math.hypot(draftB.x - A.x, draftB.y - A.y);
+                    const dCm = dPx / pxPerCm;
+                    const dKm = MathUtils.fmt((dCm * this.rfOptions[this.rfIndex]) / 100000, 2);
+                    svg.querySelector('#routeLine').setAttribute('x2', draftB.x);
+                    svg.querySelector('#routeLine').setAttribute('y2', draftB.y);
+                    svg.querySelector('#distLabel').setAttribute('x', (A.x + draftB.x) / 2);
+                    svg.querySelector('#distLabel').setAttribute('y', (A.y + draftB.y) / 2 - 14);
+                    svg.querySelector('#distLabel').textContent = dKm + ' km';
+                    svg.querySelector('#cityBLabel').setAttribute('x', draftB.x);
+                    svg.querySelector('#cityBLabel').setAttribute('y', draftB.y - 24);
+                    const chip = container.querySelector('#kmChip'); if (chip) chip.textContent = dKm + ' km';
+                };
+                makeDraggable(svg, cityBHandle,
+                    (p) => {
+                        draftB = { x: MathUtils.clamp(p.x, 40, W - 40), y: MathUtils.clamp(p.y, 40, H - 100) };
+                        cityBHandle.setAttribute('cx', draftB.x); cityBHandle.setAttribute('cy', draftB.y);
+                        recompute();
+                    },
+                    () => { this.cityB = draftB; app.render(); }
+                );
+                const rfHandle = svg.querySelector('#rfHandle');
+                let draftIdx = this.rfIndex;
+                makeDraggable(svg, rfHandle,
+                    (p) => {
+                        const x = MathUtils.clamp(p.x, knobX0, knobX1);
+                        const idx = Math.round(((x - knobX0) / (knobX1 - knobX0)) * (this.rfOptions.length - 1));
+                        draftIdx = idx;
+                        const nx = knobX0 + (idx / (this.rfOptions.length - 1)) * (knobX1 - knobX0);
+                        rfHandle.setAttribute('cx', nx);
+                        svg.querySelector('#rfLabel').setAttribute('x', nx);
+                        svg.querySelector('#rfLabel').textContent = '1:' + this.rfOptions[idx].toLocaleString('en-IN');
+                        const dPx = Math.hypot(draftB.x - A.x, draftB.y - A.y);
+                        const dCm = dPx / pxPerCm;
+                        const dKm = MathUtils.fmt((dCm * this.rfOptions[idx]) / 100000, 2);
+                        svg.querySelector('#distLabel').textContent = dKm + ' km';
+                        const chip = container.querySelector('#kmChip'); if (chip) chip.textContent = dKm + ' km';
+                    },
+                    () => { this.rfIndex = draftIdx; app.render(); }
+                );
+            }
+        };
+    }
+}
+
+// =========================================================================
+// 4. MODULE 3 — RATIO MIXER (multi-term ratios) §3.3
+// =========================================================================
+class RatioMixerModule {
+    constructor() {
+        this.recipes = [
+            { name: 'Purple Paint', terms: ['Red', 'Blue', 'White'], ratio: [2, 3, 5], unit: 'L', colors: ['#c1452f', '#2f75ac', '#e8e2d0'] },
+            { name: 'Spice Mix', terms: ['Coriander', 'Chilli', 'Toor Dal', 'Methi'], ratio: [8, 4, 2, 1], unit: 'spoon', colors: ['#8a6a3a', '#c1452f', '#c98a3e', '#7a8a3a'] },
+            { name: 'Concrete', terms: ['Cement', 'Sand', 'Gravel'], ratio: [1, 1.5, 3], unit: 'bag', colors: ['#a8a8a8', '#e3ac6a', '#6a5a4a'] }
+        ];
+        this.recipeIdx = 0;
+        this.vals = this.recipes[0].ratio.map(r => r * 2);
+    }
+    setRecipe(i) { this.recipeIdx = i; this.vals = this.recipes[i].ratio.map(r => r * 2); app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        const r = this.recipes[this.recipeIdx];
+        const total = this.vals.reduce((a, b) => a + b, 0);
+        return `
+            <h2>Ratio Mixer</h2>
+            <p class="hint">Drag any ingredient bar — every other ingredient rescales automatically to keep the <b>same ratio</b> ${r.ratio.join(':')}.</p>
+            <div class="touch-hint">👆 Drag the top of any bar up/down</div>
+            <div class="pill-row">
+                ${this.recipes.map((rc, i) => `<div class="pill-btn ${i===this.recipeIdx?'active':''}" onclick="app.activeModule.setRecipe(${i})">${rc.name}</div>`).join('')}
+            </div>
+            <div class="data-panel">
+                ${r.terms.map((t, i) => `<div class="data-row"><span>${t}</span><span>${MathUtils.fmt(this.vals[i],2)} ${r.unit}</span></div>`).join('')}
+            </div>
+            <div class="badge success">Total = ${MathUtils.fmt(total,2)} ${r.unit}</div>
+        `;
+    }
+    renderStage() {
+        const r = this.recipes[this.recipeIdx];
+        const n = r.terms.length;
+        const W = 640, H = 480;
+        const baseY = 400, topY = 60, maxVal = Math.max(...r.ratio) * 6;
+        const barW = 70, gap = (W - 100) / n;
+        const valToY = v => baseY - (v / maxVal) * (baseY - topY);
+        let bars = '';
+        for (let i = 0; i < n; i++) {
+            const cx = 90 + gap * i + gap / 2;
+            const y = valToY(this.vals[i]);
+            bars += `<line x1="${cx}" y1="${baseY}" x2="${cx}" y2="${topY}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+            bars += `<rect id="bar_${i}" x="${cx - barW/2}" y="${y}" width="${barW}" height="${baseY - y}" rx="8" fill="${r.colors[i]}" opacity="0.85" stroke="#fff" stroke-width="1.5"/>`;
+            bars += `<text id="lbl_${i}" x="${cx}" y="${y - 14}" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${MathUtils.fmt(this.vals[i],2)}</text>`;
+            bars += `<text x="${cx}" y="${baseY + 22}" text-anchor="middle" font-size="12" fill="var(--text-mid)" font-family="IBM Plex Sans">${r.terms[i]}</text>`;
+            bars += `<circle id="handle_${i}" cx="${cx}" cy="${y}" r="14" fill="${r.colors[i]}" stroke="#fff" stroke-width="3"/>`;
+        }
+        const svgInner = bars;
+        const total = this.vals.reduce((a, b) => a + b, 0);
+        const html = stageWrap(`${r.name} — ratio ${r.ratio.join(':')}`, 'Drag one bar; the rest rescale to match the ratio', svgInner, `0 0 ${W} ${H}`,
+            [{ id: 'totalChip', label: 'Total', value: MathUtils.fmt(total,2) + ' ' + r.unit }]);
+        return {
+            type: 'html', html,
+            mount: (container) => {
+                const svg = container.querySelector('#mainSvg');
+                let draftVals = this.vals.slice();
+                for (let i = 0; i < n; i++) {
+                    const handle = svg.querySelector('#handle_' + i);
+                    makeDraggable(svg, handle,
+                        (p) => {
+                            const y = MathUtils.clamp(p.y, topY, baseY);
+                            const v = MathUtils.clamp(((baseY - y) / (baseY - topY)) * maxVal, 0.1, maxVal);
+                            const unit = v / r.ratio[i];
+                            draftVals = r.ratio.map(part => part * unit);
+                            for (let j = 0; j < n; j++) {
+                                const ny = valToY(draftVals[j]);
+                                svg.querySelector('#bar_' + j).setAttribute('y', ny);
+                                svg.querySelector('#bar_' + j).setAttribute('height', baseY - ny);
+                                svg.querySelector('#handle_' + j).setAttribute('cy', ny);
+                                svg.querySelector('#lbl_' + j).setAttribute('y', ny - 14);
+                                svg.querySelector('#lbl_' + j).textContent = MathUtils.fmt(draftVals[j], 2);
+                            }
+                            const tot = draftVals.reduce((a, b) => a + b, 0);
+                            const chip = container.querySelector('#totalChip'); if (chip) chip.textContent = MathUtils.fmt(tot,2) + ' ' + r.unit;
+                        },
+                        () => { this.vals = draftVals; app.render(); }
+                    );
+                }
+            }
+        };
+    }
+}
+
+// =========================================================================
+// 5. MODULE 4 — DIVIDE THE WHOLE (draggable dividers) §3.4
+// =========================================================================
+class DivideWholeModule {
+    constructor() {
+        this.presets = [
+            { name: '₹10:₹5:₹2:₹1 coins', parts: 4, total: 100 },
+            { name: '3 Languages', parts: 3, total: 288 },
+            { name: 'Warm-up:Bat:Bowl:Field', parts: 4, total: 150 }
+        ];
+        this.presetIdx = 0;
+        this.n = this.presets[0].parts;
+        this.total = this.presets[0].total;
+        this.fracs = this.equalFracs(this.n);
+    }
+    equalFracs(n) { const f = []; for (let i = 0; i < n; i++) f.push(1 / n); return f; }
+    setPreset(i) { this.presetIdx = i; this.n = this.presets[i].parts; this.total = this.presets[i].total; this.fracs = this.equalFracs(this.n); app.render(); }
+    setTotal(v) { this.total = Math.max(1, parseFloat(v) || 1); app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        const preset = this.presets[this.presetIdx];
+        return `
+            <h2>Divide the Whole</h2>
+            <p class="hint">Drag the vertical dividers on the bar to split the whole into a custom ratio — the numbers update live!</p>
+            <div class="touch-hint">👆 Drag a divider left or right</div>
+            <div class="pill-row">
+                ${this.presets.map((p, i) => `<div class="pill-btn ${i===this.presetIdx?'active':''}" onclick="app.activeModule.setPreset(${i})">${p.name}</div>`).join('')}
+            </div>
+            <div class="data-panel">
+                <label style="display:block;font-size:0.78rem;font-weight:600;margin-bottom:6px;">Total value</label>
+                <input class="num-input" style="width:100%;padding:8px;border:1px solid var(--blueprint-md);border-radius:6px;font-family:'IBM Plex Mono',monospace;" type="number" min="1" value="${this.total}" onchange="app.activeModule.setTotal(this.value)">
+            </div>
+        `;
+    }
+    renderStage() {
+        const W = 640, H = 340;
+        const barX0 = 60, barX1 = 580, barY = 140, barH = 90;
+        const n = this.n;
+        let cum = 0;
+        const boundaries = [0];
+        for (let i = 0; i < n; i++) { cum += this.fracs[i]; boundaries.push(cum); }
+        const fracToX = f => barX0 + f * (barX1 - barX0);
+        let segs = '';
+        const colors = ['#2f75ac', '#8b6fc9', '#c98a3e', '#c9527a', '#2f8a5b', '#e3ac6a'];
+        for (let i = 0; i < n; i++) {
+            const x0 = fracToX(boundaries[i]), x1 = fracToX(boundaries[i + 1]);
+            const val = this.total * this.fracs[i];
+            segs += `<rect id="seg_${i}" x="${x0}" y="${barY}" width="${x1-x0}" height="${barH}" fill="${colors[i%colors.length]}" opacity="0.8" stroke="#fff" stroke-width="1"/>`;
+            segs += `<text id="segtext_${i}" x="${(x0+x1)/2}" y="${barY+barH/2+6}" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${MathUtils.fmt(val,1)}</text>`;
+            segs += `<text id="pcttext_${i}" x="${(x0+x1)/2}" y="${barY-14}" text-anchor="middle" font-size="12" fill="var(--brass-lt)" font-family="IBM Plex Mono, monospace">${MathUtils.fmt(this.fracs[i]*100,1)}%</text>`;
+        }
+        let dividers = '';
+        for (let i = 1; i < n; i++) {
+            const x = fracToX(boundaries[i]);
+            dividers += `<circle id="div_${i}" cx="${x}" cy="${barY + barH/2}" r="15" fill="#061c30" stroke="#e3ac6a" stroke-width="3"/>`;
+            dividers += `<line x1="${x}" y1="${barY}" x2="${x}" y2="${barY+barH}" stroke="#e3ac6a" stroke-width="2" stroke-dasharray="3 3" opacity="0.7"/>`;
+        }
+        const svgInner = `<rect x="${barX0}" y="${barY}" width="${barX1-barX0}" height="${barH}" rx="10" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>${segs}${dividers}`;
+        const html = stageWrap('Drag the dividers to reshape the ratio', `Total = ${this.total}`, svgInner, `0 0 ${W} ${H}`);
+        return {
+            type: 'html', html,
+            mount: (container) => {
+                const svg = container.querySelector('#mainSvg');
+                let draftBoundaries = boundaries.slice();
+                const minGap = 0.03;
+                for (let i = 1; i < n; i++) {
+                    const handle = svg.querySelector('#div_' + i);
+                    makeDraggable(svg, handle,
+                        (p) => {
+                            const lo = draftBoundaries[i - 1] + minGap, hi = draftBoundaries[i + 1] - minGap;
+                            let f = (p.x - barX0) / (barX1 - barX0);
+                            f = MathUtils.clamp(f, lo, hi);
+                            draftBoundaries[i] = f;
+                            const x = fracToX(f);
+                            handle.setAttribute('cx', x);
+                            const line = svg.querySelectorAll('line[stroke="#e3ac6a"]')[i - 1];
+                            if (line) { line.setAttribute('x1', x); line.setAttribute('x2', x); }
+                            // redraw the two adjacent segments (i-1 and i)
+                            [i - 1, i].forEach(segIdx => {
+                                const x0 = fracToX(draftBoundaries[segIdx]), x1 = fracToX(draftBoundaries[segIdx + 1]);
+                                const frac = draftBoundaries[segIdx + 1] - draftBoundaries[segIdx];
+                                const val = this.total * frac;
+                                const rect = svg.querySelector('#seg_' + segIdx);
+                                rect.setAttribute('x', x0); rect.setAttribute('width', x1 - x0);
+                                const txt = svg.querySelector('#segtext_' + segIdx);
+                                txt.setAttribute('x', (x0 + x1) / 2); txt.textContent = MathUtils.fmt(val, 1);
+                                const pct = svg.querySelector('#pcttext_' + segIdx);
+                                pct.setAttribute('x', (x0 + x1) / 2); pct.textContent = MathUtils.fmt(frac * 100, 1) + '%';
+                            });
+                        },
+                        () => {
+                            const newFracs = [];
+                            for (let k = 0; k < n; k++) newFracs.push(draftBoundaries[k + 1] - draftBoundaries[k]);
+                            this.fracs = newFracs;
+                            app.render();
+                        }
+                    );
+                }
+            }
+        };
+    }
+}
+
+// =========================================================================
+// 6. MODULE 5 — PIE CHART BUILDER (draggable slice boundaries) §3.5
+// =========================================================================
+class PieChartModule {
+    constructor() {
+        this.datasets = [
+            { name: 'Grades', labels: ['A', 'B', 'C', 'D', 'E'], values: [12, 10, 8, 6, 4], colors: ['#2f75ac', '#8b6fc9', '#c98a3e', '#c9527a', '#2f8a5b'] },
+            { name: 'Seasons', labels: ['Summer', 'Rainy', 'Winter'], values: [90, 120, 150], colors: ['#c98a3e', '#2f75ac', '#8b6fc9'] },
+            { name: 'TV Channels', labels: ['Entertainment', 'Sports', 'News', 'Info'], values: [50, 25, 15, 10], colors: ['#c9527a', '#2f8a5b', '#2f75ac', '#c98a3e'] }
+        ];
+        this.dIdx = 0;
+    }
+    setDataset(i) { this.dIdx = i; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        const d = this.datasets[this.dIdx];
+        const total = d.values.reduce((a, b) => a + b, 0);
+        return `
+            <h2>Pie Chart Builder</h2>
+            <p class="hint">Drag any slice boundary handle around the circle — the two neighbouring slices redistribute their share live.</p>
+            <div class="touch-hint">👆 Drag a boundary dot around the pie</div>
+            <div class="pill-row">
+                ${this.datasets.map((ds, i) => `<div class="pill-btn ${i===this.dIdx?'active':''}" onclick="app.activeModule.setDataset(${i})">${ds.name}</div>`).join('')}
+            </div>
+            <div class="data-panel">
+                ${d.labels.map((l, i) => `<div class="data-row"><span><span style="display:inline-block;width:10px;height:10px;background:${d.colors[i]};border-radius:2px;margin-right:6px;"></span>${l}</span><span>${MathUtils.fmt((d.values[i]/total)*360,1)}°</span></div>`).join('')}
+            </div>
+            <div class="badge info">Total = ${MathUtils.fmt(total,1)}</div>
+        `;
+    }
+    renderStage() {
+        const d = this.datasets[this.dIdx];
+        const n = d.labels.length;
+        const total = d.values.reduce((a, b) => a + b, 0);
+        const W = 640, H = 480;
+        const cx = 320, cy = 250, r = 170;
+        let cum = 0;
+        const angles = [0];
+        d.values.forEach(v => { cum += (v / total) * 2 * Math.PI; angles.push(cum); });
+        function slicePath(a0, a1) {
+            const x0 = cx + r * Math.cos(a0 - Math.PI / 2), y0 = cy + r * Math.sin(a0 - Math.PI / 2);
+            const x1 = cx + r * Math.cos(a1 - Math.PI / 2), y1 = cy + r * Math.sin(a1 - Math.PI / 2);
+            const large = (a1 - a0) > Math.PI ? 1 : 0;
+            return `M${cx},${cy} L${x0},${y0} A${r},${r} 0 ${large} 1 ${x1},${y1} Z`;
+        }
+        let slices = '';
+        for (let i = 0; i < n; i++) {
+            slices += `<path id="slice_${i}" d="${slicePath(angles[i], angles[i+1])}" fill="${d.colors[i]}" opacity="0.88" stroke="#061c30" stroke-width="2"/>`;
+            const midA = (angles[i] + angles[i + 1]) / 2;
+            const lx = cx + (r * 0.65) * Math.cos(midA - Math.PI / 2), ly = cy + (r * 0.65) * Math.sin(midA - Math.PI / 2);
+            slices += `<text id="slicetext_${i}" x="${lx}" y="${ly}" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${d.labels[i]}<tspan x="${lx}" dy="16">${MathUtils.fmt((d.values[i]/total)*100,1)}%</tspan></text>`;
+        }
+        let handles = '';
+        for (let i = 1; i < n; i++) {
+            const a = angles[i];
+            const hx = cx + r * Math.cos(a - Math.PI / 2), hy = cy + r * Math.sin(a - Math.PI / 2);
+            handles += `<circle id="bhandle_${i}" cx="${hx}" cy="${hy}" r="13" fill="#061c30" stroke="#fff" stroke-width="3"/>`;
+        }
+        const svgInner = `<circle cx="${cx}" cy="${cy}" r="${r+4}" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>` + slices + handles;
+        const html = stageWrap(`${d.name} Pie Chart`, 'Drag the white-ringed dots along the circle edge', svgInner, `0 0 ${W} ${H}`);
+        return {
+            type: 'html', html,
+            mount: (container) => {
+                const svg = container.querySelector('#mainSvg');
+                let draftAngles = angles.slice();
+                let draftValues = d.values.slice();
+                const minAngle = 0.08;
+                for (let i = 1; i < n; i++) {
+                    const handle = svg.querySelector('#bhandle_' + i);
+                    makeDraggable(svg, handle,
+                        (p) => {
+                            let ang = Math.atan2(p.y - cy, p.x - cx) + Math.PI / 2;
+                            if (ang < 0) ang += 2 * Math.PI;
+                            // unwrap relative to neighbour range which may cross 0
+                            let lo = draftAngles[i - 1] + minAngle, hi = draftAngles[i + 1] - minAngle;
+                            if (ang < draftAngles[i - 1] - Math.PI) ang += 2 * Math.PI;
+                            ang = MathUtils.clamp(ang, lo, hi);
+                            const combinedSpan = draftAngles[i + 1] - draftAngles[i - 1];
+                            const combinedVal = draftValues[i - 1] + draftValues[i];
+                            const newSpanBefore = ang - draftAngles[i - 1];
+                            const fracBefore = newSpanBefore / combinedSpan;
+                            draftValues[i - 1] = combinedVal * fracBefore;
+                            draftValues[i] = combinedVal * (1 - fracBefore);
+                            draftAngles[i] = ang;
+                            const hx = cx + r * Math.cos(ang - Math.PI / 2), hy = cy + r * Math.sin(ang - Math.PI / 2);
+                            handle.setAttribute('cx', hx); handle.setAttribute('cy', hy);
+                            [i - 1, i].forEach(segIdx => {
+                                const path = svg.querySelector('#slice_' + segIdx);
+                                path.setAttribute('d', slicePath(draftAngles[segIdx], draftAngles[segIdx + 1]));
+                                const midA = (draftAngles[segIdx] + draftAngles[segIdx + 1]) / 2;
+                                const lx = cx + (r * 0.65) * Math.cos(midA - Math.PI / 2), ly = cy + (r * 0.65) * Math.sin(midA - Math.PI / 2);
+                                const txt = svg.querySelector('#slicetext_' + segIdx);
+                                txt.setAttribute('x', lx); txt.setAttribute('y', ly);
+                                const tspan = txt.querySelector('tspan'); tspan.setAttribute('x', lx);
+                                tspan.textContent = MathUtils.fmt((draftValues[segIdx] / total) * 100, 1) + '%';
+                            });
+                        },
+                        () => {
+                            this.datasets[this.dIdx].values = draftValues.map(v => MathUtils.fmt(v, 2));
+                            app.render();
+                        }
+                    );
+                }
+            }
+        };
+    }
+}
+
+// =========================================================================
+// 7. MODULE 6 — INVERSE PROPORTION LAB §3.6
+// =========================================================================
+class InverseModule {
+    constructor() {
+        this.scenarios = [
+            { name: 'Workers & Days', xLabel: 'Workers', yLabel: 'Days', k: 80, xMin: 2, xMax: 40, icon: '👷' },
+            { name: 'Pumps & Hours', xLabel: 'Pumps', yLabel: 'Hours', k: 36, xMin: 1, xMax: 20, icon: '🚰' },
+            { name: 'Families & Days (food)', xLabel: 'Families', yLabel: 'Days', k: 1200, xMin: 10, xMax: 100, icon: '🏠' }
+        ];
+        this.sIdx = 0;
+        this.x = 20;
+    }
+    setScenario(i) { this.sIdx = i; this.x = this.scenarios[i].k / ((this.scenarios[i].xMin+this.scenarios[i].xMax)/2); this.x = MathUtils.clamp(Math.round(this.x), this.scenarios[i].xMin, this.scenarios[i].xMax); app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        const s = this.scenarios[this.sIdx];
+        const y = s.k / this.x;
+        return `
+            <h2>Inverse Proportion Lab</h2>
+            <p class="hint">Drag the knob to change ${s.xLabel} — watch ${s.yLabel} shrink or grow the OPPOSITE way. x × y stays constant!</p>
+            <div class="touch-hint">👆 Drag the big knob left/right</div>
+            <div class="pill-row">
+                ${this.scenarios.map((sc, i) => `<div class="pill-btn ${i===this.sIdx?'active':''}" onclick="app.activeModule.setScenario(${i})">${sc.name}</div>`).join('')}
+            </div>
+            <div class="data-panel">
+                <div class="data-row"><span>${s.xLabel}</span><span>${this.x}</span></div>
+                <div class="data-row"><span>${s.yLabel}</span><span>${MathUtils.fmt(y,2)}</span></div>
+                <div class="data-row"><span>Product (constant k)</span><span>${s.k}</span></div>
+            </div>
+        `;
+    }
+    renderStage() {
+        const s = this.scenarios[this.sIdx];
+        const W = 640, H = 480;
+        const trackX0 = 100, trackX1 = 560, trackY = 80;
+        const xToPos = v => trackX0 + ((v - s.xMin) / (s.xMax - s.xMin)) * (trackX1 - trackX0);
+        const posToX = px => Math.round(s.xMin + ((px - trackX0) / (trackX1 - trackX0)) * (s.xMax - s.xMin));
+        const y = s.k / this.x;
+        const yMax = s.k / s.xMin;
+        const barMaxH = 220;
+        const barH = MathUtils.clamp((y / yMax) * barMaxH, 8, barMaxH);
+        const iconCount = Math.min(20, this.x);
+        let icons = '';
+        for (let i = 0; i < iconCount; i++) {
+            const col = i % 10, row = Math.floor(i / 10);
+            icons += `<text x="${130 + col*24}" y="${170 + row*26}" font-size="20" id="icon_${i}">${s.icon}</text>`;
+        }
+        const svgInner = `
+            <line x1="${trackX0}" y1="${trackY}" x2="${trackX1}" y2="${trackY}" stroke="rgba(255,255,255,0.2)" stroke-width="5" stroke-linecap="round"/>
+            <circle id="xHandle" cx="${xToPos(this.x)}" cy="${trackY}" r="17" fill="#2f75ac" stroke="#fff" stroke-width="3"/>
+            <text id="xLabel" x="${xToPos(this.x)}" y="${trackY-28}" text-anchor="middle" font-size="16" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${s.xLabel}: ${this.x}</text>
+            <g id="iconGroup">${icons}</g>
+            <text x="130" y="235" font-size="11" fill="var(--text-mid)" font-family="IBM Plex Mono, monospace" id="iconCaption">${iconCount < this.x ? `(+${this.x - iconCount} more)` : ''}</text>
+            <rect x="440" y="${420-barH}" width="70" height="${barH}" rx="8" id="yBar" fill="#c98a3e" opacity="0.85" stroke="#fff" stroke-width="1.5"/>
+            <text id="yLabel" x="475" y="${420-barH-14}" text-anchor="middle" font-size="16" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${MathUtils.fmt(y,2)}</text>
+            <text x="475" y="440" text-anchor="middle" font-size="12" fill="var(--text-mid)" font-family="IBM Plex Sans">${s.yLabel}</text>
+            <line x1="440" y1="420" x2="510" y2="420" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+        `;
+        const html = stageWrap(`${s.name}: x × y = ${s.k}`, 'Drag the blue knob — the bar responds inversely', svgInner, `0 0 ${W} ${H}`);
+        return {
+            type: 'html', html,
+            mount: (container) => {
+                const svg = container.querySelector('#mainSvg');
+                const handle = svg.querySelector('#xHandle');
+                let draftX = this.x;
+                makeDraggable(svg, handle,
+                    (p) => {
+                        const px = MathUtils.clamp(p.x, trackX0, trackX1);
+                        draftX = MathUtils.clamp(posToX(px), s.xMin, s.xMax);
+                        handle.setAttribute('cx', xToPos(draftX));
+                        svg.querySelector('#xLabel').setAttribute('x', xToPos(draftX));
+                        svg.querySelector('#xLabel').textContent = `${s.xLabel}: ${draftX}`;
+                        const ny = s.k / draftX;
+                        const nBarH = MathUtils.clamp((ny / yMax) * barMaxH, 8, barMaxH);
+                        svg.querySelector('#yBar').setAttribute('y', 420 - nBarH);
+                        svg.querySelector('#yBar').setAttribute('height', nBarH);
+                        svg.querySelector('#yLabel').setAttribute('y', 420 - nBarH - 14);
+                        svg.querySelector('#yLabel').textContent = MathUtils.fmt(ny, 2);
+                        const ic = Math.min(20, draftX);
+                        const grp = svg.querySelector('#iconGroup');
+                        grp.querySelectorAll('text').forEach((el, idx) => { el.style.display = idx < ic ? '' : 'none'; });
+                        svg.querySelector('#iconCaption').textContent = ic < draftX ? `(+${draftX - ic} more)` : '';
+                    },
+                    () => { this.x = draftX; app.render(); }
+                );
+            }
+        };
+    }
+}
+
+// =========================================================================
+// 8. MODULE 7 — WORK TOGETHER RACE §3.6
+// =========================================================================
+class WorkTogetherModule {
+    constructor() { this.tA = 1; this.tB = 1.5; }
+    updatePoint() {}
+    getSidebarHTML() {
+        const rateA = 1 / this.tA, rateB = 1 / this.tB;
+        const combined = 1 / (rateA + rateB);
+        return `
+            <h2>Work Together Race</h2>
+            <p class="hint">Ram takes tᴬ hours alone, Shyam takes tᴮ hours alone. Drag their knobs — see how fast they finish working <b>together</b>!</p>
+            <div class="touch-hint">👆 Drag the pink or blue knob</div>
+            <div class="data-panel">
+                <div class="data-row"><span>Ram alone</span><span>${MathUtils.fmt(this.tA,2)} hr</span></div>
+                <div class="data-row"><span>Shyam alone</span><span>${MathUtils.fmt(this.tB,2)} hr</span></div>
+                <div class="data-row"><span>Combined rate</span><span>${MathUtils.fmt(rateA+rateB,3)} /hr</span></div>
+            </div>
+            <div class="badge success">Together: ${MathUtils.fmt(combined,3)} hours</div>
+        `;
+    }
+    renderStage() {
+        const W = 640, H = 420;
+        const trackX0 = 140, trackX1 = 560;
+        const tToPos = (v, min, max) => trackX0 + ((v - min) / (max - min)) * (trackX1 - trackX0);
+        const posToT = (px, min, max) => MathUtils.clamp(min + ((px - trackX0) / (trackX1 - trackX0)) * (max - min), min, max);
+        const rateA = 1 / this.tA, rateB = 1 / this.tB, combined = 1 / (rateA + rateB);
+        const barMaxW = trackX1 - trackX0;
+        const rateMax = 2;
+        const barA = MathUtils.clamp((rateA / rateMax) * barMaxW, 6, barMaxW);
+        const barB = MathUtils.clamp((rateB / rateMax) * barMaxW, 6, barMaxW);
+        const barC = MathUtils.clamp(((rateA+rateB) / rateMax) * barMaxW, 6, barMaxW);
+        const svgInner = `
+            <text x="80" y="70" font-size="14" fill="#c9527a" font-family="IBM Plex Mono, monospace" font-weight="700">Ram</text>
+            <line x1="${trackX0}" y1="60" x2="${trackX1}" y2="60" stroke="rgba(255,255,255,0.2)" stroke-width="5" stroke-linecap="round"/>
+            <circle id="handleA" cx="${tToPos(this.tA,0.5,5)}" cy="60" r="16" fill="#c9527a" stroke="#fff" stroke-width="3"/>
+            <text id="labelA" x="${tToPos(this.tA,0.5,5)}" y="40" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${MathUtils.fmt(this.tA,2)} hr</text>
+
+            <text x="80" y="150" font-size="14" fill="#2f75ac" font-family="IBM Plex Mono, monospace" font-weight="700">Shyam</text>
+            <line x1="${trackX0}" y1="140" x2="${trackX1}" y2="140" stroke="rgba(255,255,255,0.2)" stroke-width="5" stroke-linecap="round"/>
+            <circle id="handleB" cx="${tToPos(this.tB,0.5,5)}" cy="140" r="16" fill="#2f75ac" stroke="#fff" stroke-width="3"/>
+            <text id="labelB" x="${tToPos(this.tB,0.5,5)}" y="120" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">${MathUtils.fmt(this.tB,2)} hr</text>
+
+            <text x="80" y="230" font-size="13" fill="var(--text-mid)" font-family="IBM Plex Sans">Rate of work (bars = speed)</text>
+            <rect x="${trackX0}" y="245" width="${barA}" height="26" rx="6" fill="#c9527a" opacity="0.85"/>
+            <rect x="${trackX0}" y="280" width="${barB}" height="26" rx="6" fill="#2f75ac" opacity="0.85"/>
+            <rect id="barC" x="${trackX0}" y="320" width="${barC}" height="32" rx="6" fill="#2f8a5b" opacity="0.9"/>
+            <text x="${trackX0}" y="240" font-size="11" fill="var(--text-mid)" font-family="IBM Plex Mono, monospace">Ram</text>
+            <text x="${trackX0}" y="278" font-size="11" fill="var(--text-mid)" font-family="IBM Plex Mono, monospace">Shyam</text>
+            <text x="${trackX0}" y="315" font-size="12" fill="#7bdcaa" font-family="IBM Plex Mono, monospace" font-weight="700">Together</text>
+            <text id="combinedLabel" x="${trackX0 + barC + 14}" y="340" font-size="16" font-weight="700" fill="#7bdcaa" font-family="IBM Plex Mono, monospace">${MathUtils.fmt(combined,3)} hr</text>
+        `;
+        const html = stageWrap('Drag Ram\u2019s and Shyam\u2019s knobs', 'The green bar shows their combined speed of work', svgInner, `0 0 ${W} ${H}`);
+        return {
+            type: 'html', html,
+            mount: (container) => {
+                const svg = container.querySelector('#mainSvg');
+                let draftA = this.tA, draftB = this.tB;
+                const update = () => {
+                    const rA = 1/draftA, rB = 1/draftB, comb = 1/(rA+rB);
+                    const bA = MathUtils.clamp((rA/rateMax)*barMaxW,6,barMaxW);
+                    const bB = MathUtils.clamp((rB/rateMax)*barMaxW,6,barMaxW);
+                    const bC = MathUtils.clamp(((rA+rB)/rateMax)*barMaxW,6,barMaxW);
+                    svg.querySelectorAll('rect')[0].setAttribute('width', bA);
+                    svg.querySelectorAll('rect')[1].setAttribute('width', bB);
+                    const barCEl = svg.querySelector('#barC');
+                    barCEl.setAttribute('width', bC);
+                    svg.querySelector('#combinedLabel').setAttribute('x', trackX0 + bC + 14);
+                    svg.querySelector('#combinedLabel').textContent = MathUtils.fmt(comb,3) + ' hr';
+                };
+                makeDraggable(svg, svg.querySelector('#handleA'),
+                    (p) => {
+                        const px = MathUtils.clamp(p.x, trackX0, trackX1);
+                        draftA = MathUtils.fmt(posToT(px, 0.5, 5), 2);
+                        svg.querySelector('#handleA').setAttribute('cx', tToPos(draftA,0.5,5));
+                        const lab = svg.querySelector('#labelA'); lab.setAttribute('x', tToPos(draftA,0.5,5)); lab.textContent = MathUtils.fmt(draftA,2)+' hr';
+                        update();
+                    },
+                    () => { this.tA = draftA; app.render(); }
+                );
+                makeDraggable(svg, svg.querySelector('#handleB'),
+                    (p) => {
+                        const px = MathUtils.clamp(p.x, trackX0, trackX1);
+                        draftB = MathUtils.fmt(posToT(px, 0.5, 5), 2);
+                        svg.querySelector('#handleB').setAttribute('cx', tToPos(draftB,0.5,5));
+                        const lab = svg.querySelector('#labelB'); lab.setAttribute('x', tToPos(draftB,0.5,5)); lab.textContent = MathUtils.fmt(draftB,2)+' hr';
+                        update();
+                    },
+                    () => { this.tB = draftB; app.render(); }
+                );
+            }
+        };
+    }
+}
+
+// =========================================================================
+// 9. MODULE 8 — QUIZ ARENA
+// =========================================================================
+class QuizModule {
+    constructor() {
+        this.total = 10; this.started = false; this.questions = []; this.index = 0; this.score = 0;
+        this.answered = false; this.lastCorrect = null; this.userVal = '';
+        this.tfBank = [
+            { stmt: "Two ratios a:b and c:d are proportional if a×d = b×c.", a: true },
+            { stmt: "On a map with RF 1:1,00,000, 1 cm represents 1 km on the ground.", a: true },
+            { stmt: "When one quantity increases and another decreases by the same factor, they are directly proportional.", a: false },
+            { stmt: "If workers double, and work stays inversely proportional, days needed will halve.", a: true },
+            { stmt: "A pie chart's slice angles must add up to 360°.", a: true },
+            { stmt: "Speed and travel time (for a fixed distance) are directly proportional.", a: false },
+            { stmt: "More pumps filling a tank together means LESS time needed.", a: true },
+            { stmt: "In inverse proportion, x1/x2 = y1/y2.", a: false }
+        ];
+    }
+    setTotal(n) { this.total = n; app.render(); }
+    start() { this.questions = this.generateQuestions(this.total); this.index = 0; this.score = 0; this.answered = false; this.lastCorrect = null; this.userVal = ''; this.started = true; app.render(); }
+    restart() { this.started = false; app.render(); }
+    generateQuestions(count) {
+        const arr = [];
+        for (let i = 0; i < count; i++) {
+            const roll = Math.random();
+            if (roll < 0.2) {
+                const parts = [2,3,4][Math.floor(Math.random()*3)]===2?[2,3]:[1,2,3];
+                const total = (Math.floor(Math.random()*20)+5) * parts.reduce((a,b)=>a+b,0);
+                const idx = Math.floor(Math.random()*parts.length);
+                const val = total * parts[idx] / parts.reduce((a,b)=>a+b,0);
+                arr.push({ type:'numeric', prompt:`Divide ${total} in the ratio ${parts.join(':')}. What is the ${idx===0?'first':idx===1?'second':'third'} part?`, answer: MathUtils.fmt(val,1) });
+            } else if (roll < 0.4) {
+                const w1 = [5,10,20,40][Math.floor(Math.random()*4)], d1 = [80,40,20,10][Math.floor(Math.random()*4)];
+                const w2 = w1*2;
+                arr.push({ type:'numeric', prompt:`${w1} workers finish a job in ${d1} days. How many days will ${w2} workers take (inverse proportion)?`, answer: MathUtils.fmt((w1*d1)/w2,2) });
+            } else if (roll < 0.6) {
+                const total = [100,200,300,360][Math.floor(Math.random()*4)];
+                const share = [10,20,25,50][Math.floor(Math.random()*4)];
+                arr.push({ type:'numeric', prompt:`A pie chart slice represents ${share}% of ${total} people. How many people does this slice show?`, answer: MathUtils.fmt((share/100)*total,1) });
+            } else if (roll < 0.8) {
+                const deg = [36,72,90,108,120,180,270][Math.floor(Math.random()*7)];
+                arr.push({ type:'numeric', prompt:`A pie slice takes up ${deg}° out of the full circle. What percentage of the data does this slice represent?`, answer: MathUtils.fmt((deg/360)*100,1) });
+            } else {
+                const bank = this.tfBank[Math.floor(Math.random()*this.tfBank.length)];
+                arr.push({ type:'tf', prompt: bank.stmt, answer: bank.a });
+            }
+        }
+        return arr;
+    }
+    setUserVal(v) { this.userVal = v; }
+    submitNumeric() {
+        if (this.answered) return;
+        const q = this.questions[this.index];
+        this.answered = true;
+        const given = parseFloat(this.userVal);
+        this.lastCorrect = !isNaN(given) && Math.abs(given - q.answer) < 0.6;
+        if (this.lastCorrect) this.score++;
+        app.render();
+    }
+    submitTF(bool) {
+        if (this.answered) return;
+        const q = this.questions[this.index];
+        this.answered = true;
+        this.lastCorrect = (bool === q.answer);
+        if (this.lastCorrect) this.score++;
+        app.render();
+    }
+    next() { this.index++; this.answered = false; this.lastCorrect = null; this.userVal = ''; app.render(); }
+    updatePoint() {}
+    getSidebarHTML() {
+        if (!this.started) {
+            return `
+                <h2>Quiz Arena</h2>
+                <p class="hint">Ratio division, inverse proportion, and pie-chart percentages — all mixed together.</p>
+                <div class="data-panel">
+                    <div style="font-weight:700;margin-bottom:8px;">Number of questions</div>
+                    <div class="pill-row">
+                        <div class="pill-btn ${this.total===5?'active':''}" onclick="app.activeModule.setTotal(5)">5</div>
+                        <div class="pill-btn ${this.total===10?'active':''}" onclick="app.activeModule.setTotal(10)">10</div>
+                        <div class="pill-btn ${this.total===15?'active':''}" onclick="app.activeModule.setTotal(15)">15</div>
+                    </div>
+                </div>
+                <button class="action-btn primary wide" style="width:100%;padding:10px;border-radius:8px;background:var(--brass);color:white;border:none;font-weight:700;cursor:pointer;" onclick="app.activeModule.start()">▶ Start Quiz</button>
+            `;
+        }
+        if (this.index >= this.questions.length) {
+            return `
+                <h2>Quiz Arena</h2>
+                <div class="badge success">Final score: ${this.score} / ${this.questions.length}</div>
+                <button class="action-btn primary wide" style="width:100%;padding:10px;border-radius:8px;background:var(--brass);color:white;border:none;font-weight:700;cursor:pointer;" onclick="app.activeModule.restart()">↻ New Quiz</button>
+            `;
+        }
+        return `
+            <h2>Quiz Arena</h2>
+            <div class="badge info">Question ${this.index + 1} / ${this.questions.length} · Score ${this.score}</div>
+            <button class="action-btn" style="width:100%;padding:8px;border-radius:6px;background:white;border:1px solid var(--blueprint-md);cursor:pointer;" onclick="app.activeModule.restart()">← Back to setup</button>
+        `;
+    }
+    renderStage() {
+        if (!this.started) {
+            return { type: 'html', html: `<div class="quiz-wrap"><h3 style="color:var(--brass-lt);font-family:'Fraunces',serif;">Ready when you are</h3><p style="color:var(--text-mid);margin-top:10px;">Choose a question count on the left, then hit Start Quiz.</p></div>` };
+        }
+        if (this.index >= this.questions.length) {
+            const pct = Math.round(100 * this.score / this.questions.length);
+            return { type: 'html', html: `<div class="quiz-wrap">
+                <h3 style="color:var(--brass-lt);font-family:'Fraunces',serif;">Quiz complete!</h3>
+                <div style="font-size:3rem;font-family:'IBM Plex Mono',monospace;color:var(--brass-lt);margin:20px 0;">${this.score}/${this.questions.length}</div>
+                <p style="color:var(--text-mid);">${pct >= 80 ? 'Excellent work! 🌟' : pct >= 50 ? 'Good effort — keep practising!' : 'Review the chapter and try again!'}</p>
+            </div>` };
+        }
+        const q = this.questions[this.index];
+        let body = `<div class="quiz-wrap">
+            <div class="quiz-progress">QUESTION ${this.index + 1} OF ${this.questions.length}</div>
+            <div class="quiz-prompt">${q.prompt}</div>`;
+        if (!this.answered) {
+            if (q.type === 'numeric') {
+                body += `<div class="quiz-input-row">
+                    <input type="number" step="any" value="${this.userVal}" oninput="app.activeModule.setUserVal(this.value)" onkeypress="if(event.key==='Enter'){app.activeModule.submitNumeric();}">
+                    <button class="quiz-btn" onclick="app.activeModule.submitNumeric()">Submit</button>
+                </div>`;
+            } else {
+                body += `<div class="quiz-tf-row">
+                    <button class="true-btn" onclick="app.activeModule.submitTF(true)">TRUE</button>
+                    <button class="false-btn" onclick="app.activeModule.submitTF(false)">FALSE</button>
+                </div>`;
+            }
+        } else {
+            body += `<div class="quiz-feedback ${this.lastCorrect ? 'correct' : 'wrong'}">
+                ${this.lastCorrect ? '✓ Correct!' : `✕ Not quite — the answer is ${q.type === 'tf' ? (q.answer ? 'TRUE' : 'FALSE') : q.answer}`}
+            </div>
+            <button class="quiz-btn" onclick="app.activeModule.next()">${this.index + 1 < this.questions.length ? 'Next question →' : 'See results →'}</button>`;
+        }
+        body += `</div>`;
+        return { type: 'html', html: body };
+    }
+}
+
+// =========================================================================
+// 10. MAIN APP CONTROLLER
+// =========================================================================
+const app = {
+    modules: {
+        'ratio': new RatioBalanceModule(),
+        'map': new MapScaleModule(),
+        'mixer': new RatioMixerModule(),
+        'divide': new DivideWholeModule(),
+        'pie': new PieChartModule(),
+        'inverse': new InverseModule(),
+        'together': new WorkTogetherModule(),
+        'quiz': new QuizModule(),
+    },
+    tabDefs: [
+        { id: 'ratio', name: '1 · Ratio Balance' },
+        { id: 'map', name: '2 · Map Scale' },
+        { id: 'mixer', name: '3 · Ratio Mixer' },
+        { id: 'divide', name: '4 · Divide the Whole' },
+        { id: 'pie', name: '5 · Pie Chart Builder' },
+        { id: 'inverse', name: '6 · Inverse Proportion' },
+        { id: 'together', name: '7 · Work Together' },
+        { id: 'quiz', name: '8 · Quiz Arena' },
+    ],
+    activeTab: 'ratio',
+    activeModule: null,
+
+    init() {
+        this.activeModule = this.modules[this.activeTab];
+        this.renderTabs();
+        this.render();
+    },
+    renderTabs() {
+        document.getElementById('tabsBar').innerHTML = this.tabDefs.map(t =>
+            `<button class="tab-btn ${t.id === this.activeTab ? 'active' : ''}" onclick="app.switchTab('${t.id}')">${t.name}</button>`
+        ).join('');
+    },
+    switchTab(id) {
+        if (!this.modules[id]) return;
+        this.activeTab = id;
+        this.activeModule = this.modules[id];
+        this.renderTabs();
+        this.render();
+    },
+    render() {
+        document.getElementById('sidebarContent').innerHTML = this.activeModule.getSidebarHTML();
+        const stageObj = this.activeModule.renderStage();
+        const container = document.getElementById('stageContainer');
+        if (stageObj.type === 'svg') {
+            container.innerHTML = `<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">${stageObj.html}</svg>`;
+        } else {
+            container.innerHTML = stageObj.html;
+        }
+        if (stageObj.mount) stageObj.mount(container);
+    }
+};
+
+window.onload = () => app.init();
+</script>
+</body>
+</html>
